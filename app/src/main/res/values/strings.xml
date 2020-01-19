@@ -38,5 +38,5 @@
     <string name="fb_login_protocol_scheme">fb1494372374060300</string>
     <string name="login_button">facebook</string>
     <string name="username">Username</string>
-    <String name="phone">Phone</String>
+    <string name="phone">Phone</string>
 </resources>
