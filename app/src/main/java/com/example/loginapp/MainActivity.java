@@ -27,23 +27,28 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
+    AccessToken accessToken;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
 
-        auth = FirebaseAuth.getInstance();
 
         //get current user
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+       accessToken = AccessToken.getCurrentAccessToken();
 
         if(accessToken!=null)
-        {}
-        else {
-            authListener = new FirebaseAuth.AuthStateListener() {
+        {
+
+        }
+        else
+            {
+                auth = FirebaseAuth.getInstance();
+
+                authListener = new FirebaseAuth.AuthStateListener() {
                 @Override
                 public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                     FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -212,8 +217,10 @@ public class MainActivity extends AppCompatActivity {
         btnRemoveUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
-                if (user != null) {
+
+                if (user != null)
+                {
+                    progressBar.setVisibility(View.VISIBLE);
                     user.delete()
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
@@ -256,13 +263,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
+        if(accessToken==null)
         auth.addAuthStateListener(authListener);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (authListener != null) {
+
+        if (authListener != null)
+        {
+
             auth.removeAuthStateListener(authListener);
         }
     }
