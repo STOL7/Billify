@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,6 +24,10 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.Profile;
+import com.facebook.ProfileTracker;
+import com.facebook.login.LoginBehavior;
+import com.facebook.login.LoginManager;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -30,7 +35,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -63,8 +71,13 @@ public class SignupActivity extends AppCompatActivity {
         inputUserName = (EditText) findViewById(R.id.username);
         inputPhone = (EditText) findViewById(R.id.phone);
 
+
+
         callbackManager = CallbackManager.Factory.create();
-        btnFacebook.setPermissions(String.valueOf(Arrays.asList(inputEmail)));
+        btnFacebook.setPermissions(Arrays.asList("email", "public_profile"));
+
+
+
 
         btnResetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,10 +97,10 @@ public class SignupActivity extends AppCompatActivity {
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email = inputEmail.getText().toString().trim();
-                String password = inputPassword.getText().toString().trim();
-                String username = inputUserName.getText().toString().trim();
-                String phone = inputPhone.getText().toString().trim();
+                final String email = inputEmail.getText().toString().trim();
+                final String password = inputPassword.getText().toString().trim();
+                final String username = inputUserName.getText().toString().trim();
+                final String phone = inputPhone.getText().toString().trim();
 
 
                 if(TextUtils.isEmpty(email)){
@@ -128,6 +141,19 @@ public class SignupActivity extends AppCompatActivity {
                         }
 
                         else{
+                            FirebaseUser currentperson = FirebaseAuth.getInstance().getCurrentUser();
+
+                            DatabaseReference ref= FirebaseDatabase.getInstance().getReference().child("Users").child(currentperson.getUid());
+
+                            ref.child("Username").setValue(username);
+
+                            ref.child("Phone").setValue(phone);
+
+                            ref.child("Email").setValue(email);
+
+                            ref.child("Password").setValue(password);
+
+
                             sendVerificationEmail();
                         }
                     }
@@ -140,6 +166,33 @@ public class SignupActivity extends AppCompatActivity {
         btnFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+
+                GraphRequest.newMeRequest(
+                        loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+                            @Override
+                            public void onCompleted(JSONObject me, GraphResponse response) {
+                                if (response.getError() != null) {
+
+                                } else {
+                                    String email = response.getJSONObject().optString("email");
+                                    String id = me.optString("id");
+                                    String name = me.optString("name");
+
+
+
+                                    FirebaseUser currentperson = FirebaseAuth.getInstance().getCurrentUser();
+
+                                    DatabaseReference ref= FirebaseDatabase.getInstance().getReference().child("Users").child(id);
+
+                                    ref.child("Email").setValue(email);
+
+                                    ref.child("Name").setValue(name);
+
+
+                                    startActivity(new Intent(SignupActivity.this,MainActivity.class));
+                                }
+                            }
+                        }).executeAsync();
 
             }
 
@@ -167,33 +220,18 @@ public class SignupActivity extends AppCompatActivity {
     AccessTokenTracker tokenManager = new AccessTokenTracker(){
         protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken,AccessToken currentAccessToken){
 
+            if(currentAccessToken==null){
+                inputEmail.setText("");
+                inputPhone.setText("");
+                inputUserName.setText("");
+                Toast.makeText(SignupActivity.this,"User logged out",Toast.LENGTH_SHORT).show();
+            }
         }
+
     };
 
-    private void loaduserProfile(AccessToken newAccessToken){
-        GraphRequest request = GraphRequest.newMeRequest(newAccessToken, new GraphRequest.GraphJSONObjectCallback() {
-            @Override
-            public void onCompleted(JSONObject object, GraphResponse response) {
-
-                try {
-                    String user_name = object.getString("first_name");
-                    String email = object.getString("email");
-                    String phone = object.getString("phone");
-
-                    inputEmail.setText("email");
 
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        Bundle parameters = new Bundle();
-        parameters.putString("fields","user_name,email,phone");
-        request.setParameters(parameters);
-        request.executeAsync();
-    }
 
     public void OnResume(){
         super.onResume();
