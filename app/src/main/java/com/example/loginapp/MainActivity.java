@@ -132,10 +132,15 @@ public class MainActivity extends AppCompatActivity
                         if(AccessToken.getCurrentAccessToken() != null)
                         {
                             LoginManager.getInstance().logOut();
+                            Intent marketIntent = new Intent(MainActivity.this, ChooseLoginSignupActivity.class);
+                            startActivity(marketIntent);
+
                         }
                         else
                         {
                             FirebaseAuth.getInstance().signOut();
+                            Intent marketIntent = new Intent(MainActivity.this, ChooseLoginSignupActivity.class);
+                            startActivity(marketIntent);
 
 
                         }
@@ -146,7 +151,7 @@ public class MainActivity extends AppCompatActivity
                     }
                     else
                     {
-                        Intent marketIntent = new Intent(MainActivity.this, LoginActivity.class);
+                        Intent marketIntent = new Intent(MainActivity.this, ChooseLoginSignupActivity.class);
                         startActivity(marketIntent);
 
                     }

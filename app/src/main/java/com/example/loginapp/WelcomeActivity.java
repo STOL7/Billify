@@ -36,7 +36,7 @@ public class WelcomeActivity extends AppCompatActivity
             public void run()
             {
 
-                Intent intent  = new Intent(WelcomeActivity.this,MainActivity.class);
+                Intent intent  = new Intent(WelcomeActivity.this,ChooseLoginSignupActivity.class);
                 startActivity(intent);
                 finish();
             }

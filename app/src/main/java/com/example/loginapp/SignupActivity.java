@@ -39,7 +39,6 @@ public class SignupActivity extends AppCompatActivity {
 
     private EditText inputUserName,inputPhone,inputEmail,inputPassword;
     private Button btnSignIn,btnSignUp,btnResetPassword;
-    private LoginButton btnFacebook;
     private ProgressBar progressBar;
     private FirebaseAuth auth;
     private CallbackManager callbackManager;
@@ -57,14 +56,12 @@ public class SignupActivity extends AppCompatActivity {
         inputPassword = (EditText) findViewById(R.id.password);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         btnResetPassword = (Button) findViewById(R.id.btn_reset_password);
-        btnFacebook = (LoginButton) findViewById(R.id.login_button);
         inputUserName = (EditText) findViewById(R.id.username);
         inputPhone = (EditText) findViewById(R.id.phone);
 
 
 
         callbackManager = CallbackManager.Factory.create();
-        btnFacebook.setPermissions(Arrays.asList("email", "public_profile"));
 
 
 
@@ -153,72 +150,11 @@ public class SignupActivity extends AppCompatActivity {
 
         });
 
-        btnFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
 
-                GraphRequest.newMeRequest(
-                        loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
-                            @Override
-                            public void onCompleted(JSONObject me, GraphResponse response) {
-                                if (response.getError() != null) {
-
-                                } else {
-                                    //String email = response.getJSONObject().optString("email");
-                                    String id = me.optString("id");
-                                    String name = me.optString("name");
-
-
-                                    new MainActivity().fname=name;
-                                    //FirebaseUser currentperson = FirebaseAuth.getInstance().getCurrentUser();
-
-                                    DatabaseReference ref= FirebaseDatabase.getInstance().getReference().child("Users").child(id);
-
-                                   // ref.child("Email").setValue(email);
-
-                                    ref.child("Name").setValue(name);
-
-
-                                    startActivity(new Intent(SignupActivity.this,MainActivity.class));
-                                }
-                            }
-                        }).executeAsync();
-
-            }
-
-            @Override
-            public void onCancel() {
-
-            }
-
-            @Override
-            public void onError(FacebookException exception) {
-
-            }
-        });
 
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-
-        callbackManager.onActivityResult(requestCode,resultCode,data);
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    AccessTokenTracker tokenManager = new AccessTokenTracker(){
-        protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken,AccessToken currentAccessToken){
-
-            if(currentAccessToken==null){
-                inputEmail.setText("");
-                inputPhone.setText("");
-                inputUserName.setText("");
-                Toast.makeText(SignupActivity.this,"User logged out",Toast.LENGTH_SHORT).show();
-            }
-        }
-
-    };
 
 
 
