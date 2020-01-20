@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+   <item android:title="Home"
+          android:icon="@drawable/home"
+
+          android:id="@+id/nav_item_home"/>
+
+
+    <item android:title="Test Notification"
+        android:icon="@drawable/baseline_notification_important_24"
+
+        android:id="@+id/nav_item_test"/>
+
+ <item android:title="Login"
+
+     android:icon="@android:drawable/ic_lock_power_off"
+     android:id="@+id/nav_item_login"/>
+
+
+    <item android:title="Restore"
+        android:icon="@drawable/baseline_get_app_24"
+        android:id="@+id/nav_item_restore"/>
+
+
+    <item android:title="Backup"
+        android:icon="@drawable/baseline_backup_24"
+        android:id="@+id/nav_item_backup"/>
+
+      <item android:title="Help"
+      android:icon="@drawable/baseline_help_24"
+      android:id="@+id/nav_item_help"/>
+
+
+    <item android:title="Share"
+        android:icon="@drawable/baseline_share_24"
+        android:id="@+id/nav_item_share"/>
+
+
+
+    <item android:title="Rate"
+          android:icon="@drawable/baseline_star_24"
+          android:id="@+id/nav_item_rate"/>
+
+
+    <item android:title="Contact us"
+        android:icon="@drawable/newu"
+        android:id="@+id/nav_item_feedback"/>
+
+
+</menu>

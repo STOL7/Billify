@@ -5,10 +5,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,18 +14,12 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
-import com.facebook.AccessTokenManager;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.Profile;
-import com.facebook.ProfileTracker;
-import com.facebook.login.LoginBehavior;
-import com.facebook.login.LoginManager;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -38,8 +30,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
@@ -174,17 +164,17 @@ public class SignupActivity extends AppCompatActivity {
                                 if (response.getError() != null) {
 
                                 } else {
-                                    String email = response.getJSONObject().optString("email");
+                                    //String email = response.getJSONObject().optString("email");
                                     String id = me.optString("id");
                                     String name = me.optString("name");
 
 
-
-                                    FirebaseUser currentperson = FirebaseAuth.getInstance().getCurrentUser();
+                                    new MainActivity().fname=name;
+                                    //FirebaseUser currentperson = FirebaseAuth.getInstance().getCurrentUser();
 
                                     DatabaseReference ref= FirebaseDatabase.getInstance().getReference().child("Users").child(id);
 
-                                    ref.child("Email").setValue(email);
+                                   // ref.child("Email").setValue(email);
 
                                     ref.child("Name").setValue(name);
 
