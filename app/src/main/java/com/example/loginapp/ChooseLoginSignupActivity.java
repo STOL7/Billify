@@ -1,5 +1,6 @@
 package com.example.loginapp;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,11 +14,27 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.login.LoginResult;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.OptionalPendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.common.api.internal.OnConnectionFailedListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -31,14 +48,23 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 
-public class ChooseLoginSignupActivity extends AppCompatActivity {
+public class ChooseLoginSignupActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
+
+    private static final int RC_SIGN_IN = 1001;
+
 
     private Button btnSignIn,btnSignUp;
+    private SignInButton btnGoogleSignIn;
     private LoginButton btnFacebook;
     private CallbackManager callbackManager;
 
     private FirebaseAuth auth;
     private AccessToken accessToken;
+    private GoogleApiClient googleApiClient;
+    private GoogleSignInOptions gso;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +75,7 @@ public class ChooseLoginSignupActivity extends AppCompatActivity {
         btnSignUp = (Button) findViewById(R.id.sign_up_button);
 
         btnFacebook = (LoginButton) findViewById(R.id.login_button);
-
+        btnGoogleSignIn = (SignInButton) findViewById(R.id.google_button);
 
 
 
@@ -83,7 +109,7 @@ public class ChooseLoginSignupActivity extends AppCompatActivity {
                                 if (response.getError() != null) {
 
                                 } else {
-                                    //String email = response.getJSONObject().optString("email");
+                                    String email = response.getJSONObject().optString("email");
                                     String id = me.optString("id");
                                     String name = me.optString("name");
 
@@ -93,7 +119,7 @@ public class ChooseLoginSignupActivity extends AppCompatActivity {
 
                                     DatabaseReference ref= FirebaseDatabase.getInstance().getReference().child("Users").child(id);
 
-                                    // ref.child("Email").setValue(email);
+                                    ref.child("Email").setValue(email);
 
                                     ref.child("Name").setValue(name);
 
@@ -117,10 +143,49 @@ public class ChooseLoginSignupActivity extends AppCompatActivity {
         });
 
 
+
+        gso =  new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        googleApiClient=new GoogleApiClient.Builder(this)
+                .enableAutoManage(this,this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API,gso)
+                .build();
+
+        btnGoogleSignIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+                startActivityForResult(intent,RC_SIGN_IN);
+            }
+        });
+
+
+
+
     }
+
+
+
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
+        if(requestCode==RC_SIGN_IN){
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInResult(result);
+        }
 
         callbackManager.onActivityResult(requestCode,resultCode,data);
         super.onActivityResult(requestCode, resultCode, data);
@@ -130,10 +195,16 @@ public class ChooseLoginSignupActivity extends AppCompatActivity {
     {
         super.onStart();
 
+
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+
         accessToken = AccessToken.getCurrentAccessToken();
 
         if(accessToken != null)
         {
+            startActivity(new Intent(ChooseLoginSignupActivity.this,MainActivity.class));
+        }
+        else if(account!=null){
             startActivity(new Intent(ChooseLoginSignupActivity.this,MainActivity.class));
         }
         else
@@ -150,7 +221,37 @@ public class ChooseLoginSignupActivity extends AppCompatActivity {
 
     }
 
+    private void handleSignInResult(GoogleSignInResult result){
+        if(result.isSuccess()) {
+            GoogleSignInAccount account = result.getSignInAccount();
+            String userName = account.getDisplayName().toString();
+            String userEmail = account.getEmail().toString();
+            String userId = account.getId().toString();
+
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
+
+            ref.child("Email").setValue(userEmail);
+
+            ref.child("Name").setValue(userName);
+        }
+
+        else{
+            Toast.makeText(ChooseLoginSignupActivity.this,"sign in cancle",Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(ChooseLoginSignupActivity.this,ChooseLoginSignupActivity.class));
+        }
+
+            gotoMainActivity();
+
+    }
+
+    private void gotoMainActivity(){
+        Intent intent=new Intent(this,MainActivity.class);
+        startActivity(intent);
+    }
 
 
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
 }
