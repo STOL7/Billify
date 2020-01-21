@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ChooseLoginSignupActivity"></activity>
-        <activity android:name=".Main2Activity" />
+
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
