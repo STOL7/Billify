@@ -79,6 +79,8 @@ public class ChooseLoginSignupActivity extends AppCompatActivity implements Goog
 
 
 
+
+
         callbackManager = CallbackManager.Factory.create();
         btnFacebook.setPermissions(Arrays.asList("email", "public_profile"));
 
@@ -152,6 +154,10 @@ public class ChooseLoginSignupActivity extends AppCompatActivity implements Goog
                 .enableAutoManage(this,this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API,gso)
                 .build();
+
+        final GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+
 
         btnGoogleSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -233,19 +239,19 @@ public class ChooseLoginSignupActivity extends AppCompatActivity implements Goog
             ref.child("Email").setValue(userEmail);
 
             ref.child("Name").setValue(userName);
+            gotoMainActivity();
+
         }
 
         else{
             Toast.makeText(ChooseLoginSignupActivity.this,"sign in cancle",Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(ChooseLoginSignupActivity.this,ChooseLoginSignupActivity.class));
         }
 
-            gotoMainActivity();
 
     }
 
     private void gotoMainActivity(){
-        Intent intent=new Intent(this,MainActivity.class);
+        Intent intent=new Intent(ChooseLoginSignupActivity.this,MainActivity.class);
         startActivity(intent);
     }
 

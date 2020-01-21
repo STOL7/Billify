@@ -19,10 +19,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInApi;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -65,6 +74,23 @@ public class MainActivity extends AppCompatActivity
         mn = mNavigationView.getMenu();
         mitem=mn.findItem(R.id.nav_item_login);
         tx = (TextView)headerView.findViewById(R.id.useremail);
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+
+
+        final GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+
+
+
+
+
+
+        Toast.makeText(MainActivity.this,account.getEmail(),Toast.LENGTH_LONG).show();
 
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener()
         {
@@ -127,15 +153,16 @@ public class MainActivity extends AppCompatActivity
                 if(menuItem.getItemId()==R.id.nav_item_login)
                 {
 
+
                     if(menuItem.getTitle().equals("Logout"))
                     {
-                        if(AccessToken.getCurrentAccessToken() != null)
-                        {
+                        if(AccessToken.getCurrentAccessToken() != null) {
                             LoginManager.getInstance().logOut();
                             Intent marketIntent = new Intent(MainActivity.this, ChooseLoginSignupActivity.class);
                             startActivity(marketIntent);
 
                         }
+
                         else
                         {
                             FirebaseAuth.getInstance().signOut();
@@ -144,6 +171,8 @@ public class MainActivity extends AppCompatActivity
 
 
                         }
+                        mGoogleSignInClient.signOut();
+
                         finish();
                         overridePendingTransition(0, 0);
                         startActivity(getIntent());
@@ -151,7 +180,7 @@ public class MainActivity extends AppCompatActivity
                     }
                     else
                     {
-                        Intent marketIntent = new Intent(MainActivity.this, ChooseLoginSignupActivity.class);
+                        Intent marketIntent = new Intent(MainActivity.this, SignupActivity.class);
                         startActivity(marketIntent);
 
                     }
