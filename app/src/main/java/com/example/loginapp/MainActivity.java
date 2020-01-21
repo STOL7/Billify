@@ -1,20 +1,19 @@
 package com.example.loginapp;
 
-import androidx.annotation.NonNull;
+
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.viewpager.widget.ViewPager;
 
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,7 +22,11 @@ import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
+
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import java.util.ArrayList;
@@ -34,16 +37,20 @@ public class MainActivity extends AppCompatActivity
 
     Toolbar toolbar;
     MenuItem mitem;
+    private TabLayout tabLayout;
     private FirebaseAuth auth;
     AccessToken accessToken;
     DrawerLayout mDrawerLayout;
+    GoogleSignInAccount account;
   NavigationView mNavigationView;
+
+    private SimpleFragmentPageAdapter sadapter;
     FirebaseAuth firebaseAuth;
     String email,fname;
     TextView tx;
 
     View headerView;
-
+    FragmentManager mFragmentManager;
     Menu mn;
 
     @Override
@@ -58,7 +65,7 @@ public class MainActivity extends AppCompatActivity
         toolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
-
+        mFragmentManager = getSupportFragmentManager();
         headerView = mNavigationView.getHeaderView(0);
 
 
@@ -136,6 +143,10 @@ public class MainActivity extends AppCompatActivity
                             startActivity(marketIntent);
 
                         }
+                        else if(account!=null)
+                        {
+                            startActivity(new Intent(MainActivity.this,ChooseLoginSignupActivity.class));
+                        }
                         else
                         {
                             FirebaseAuth.getInstance().signOut();
@@ -189,11 +200,27 @@ public class MainActivity extends AppCompatActivity
     {
         super.onStart();
 
+        ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
+        sadapter = new SimpleFragmentPageAdapter(this, getSupportFragmentManager());
+        viewPager.setAdapter(sadapter);
+        viewPager.setCurrentItem(0);
+
+        tabLayout = (TabLayout) findViewById(R.id.tab);
+        tabLayout.setupWithViewPager(viewPager);
+
+        tabLayout.getTabAt(0).setText("All");
+        tabLayout.getTabAt(1).setText("Group ");
+
+         account = GoogleSignIn.getLastSignedInAccount(this);
         accessToken = AccessToken.getCurrentAccessToken();
 
         if(accessToken != null)
         {
             tx.setText(fname);
+            mitem.setTitle("Logout");
+        }
+        else if(account!=null)
+        {
             mitem.setTitle("Logout");
         }
         else

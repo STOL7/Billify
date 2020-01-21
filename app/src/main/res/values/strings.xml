@@ -40,4 +40,6 @@
     <string name="username">Username</string>
     <string name="phone">Phone</string>
     <string name="google_button">google</string>
+    <string name="no_birthday_data">No record available</string>
+    <string name="no_birthday_found">No record found</string>
 </resources>
