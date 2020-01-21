@@ -22,6 +22,7 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.login.LoginResult;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -42,6 +43,7 @@ public class SignupActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private FirebaseAuth auth;
     private CallbackManager callbackManager;
+    private Button hello;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
