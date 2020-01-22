@@ -43,7 +43,6 @@ public class SignupActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private FirebaseAuth auth;
     private CallbackManager callbackManager;
-    private Button hello;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
