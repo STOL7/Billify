@@ -25,6 +25,8 @@ import com.facebook.login.LoginManager;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -145,7 +147,13 @@ public class MainActivity extends AppCompatActivity
                         }
                         else if(account!=null)
                         {
-                            startActivity(new Intent(MainActivity.this,ChooseLoginSignupActivity.class));
+                            GoogleSignInOptions gso = new GoogleSignInOptions.
+                                    Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).
+                                    build();
+
+                            GoogleSignInClient googleSignInClient=GoogleSignIn.getClient(MainActivity.this,gso);
+                            googleSignInClient.signOut();
+                          //  startActivity(new Intent(MainActivity.this,ChooseLoginSignupActivity.class));
                         }
                         else
                         {

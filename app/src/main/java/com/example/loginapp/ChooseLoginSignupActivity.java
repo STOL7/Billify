@@ -55,6 +55,7 @@ public class ChooseLoginSignupActivity extends AppCompatActivity implements Goog
     private FirebaseAuth auth;
     private AccessToken accessToken;
     private GoogleApiClient googleApiClient;
+
     private GoogleSignInOptions gso;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
