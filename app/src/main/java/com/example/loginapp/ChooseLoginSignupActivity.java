@@ -110,7 +110,6 @@ public class ChooseLoginSignupActivity extends AppCompatActivity implements Goog
 
 
                                     new MainActivity().fname=name;
-                                    //FirebaseUser currentperson = FirebaseAuth.getInstance().getCurrentUser();
 
                                     DatabaseReference ref= FirebaseDatabase.getInstance().getReference().child("Users").child(id);
 
@@ -118,7 +117,10 @@ public class ChooseLoginSignupActivity extends AppCompatActivity implements Goog
 
                                     ref.child("Name").setValue(name);
 
+                                    new MainActivity().tx.setText(me.optString("name"));
 
+                                    Toast.makeText(new ChooseLoginSignupActivity(),name,Toast.LENGTH_LONG).show();
+                                    
                                     startActivity(new Intent(ChooseLoginSignupActivity.this,MainActivity.class));
                                 }
                             }

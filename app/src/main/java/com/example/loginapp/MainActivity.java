@@ -21,6 +21,8 @@ import android.widget.TextView;
 
 
 import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -31,6 +33,9 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 
@@ -224,11 +229,20 @@ public class MainActivity extends AppCompatActivity
 
         if(accessToken != null)
         {
-            tx.setText(fname);
+           final String[] username = new String[1];
+            GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
+                @Override
+                public void onCompleted(JSONObject object, GraphResponse response) {
+                     username[0] = object.optString("first_name");
+                    tx.setText(username[0]);
+
+                }
+            });
             mitem.setTitle("Logout");
         }
         else if(account!=null)
         {
+            tx.setText(account.getDisplayName());
             mitem.setTitle("Logout");
         }
         else
