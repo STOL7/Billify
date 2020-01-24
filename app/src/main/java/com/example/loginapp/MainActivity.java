@@ -54,9 +54,10 @@ public class MainActivity extends AppCompatActivity
     private SimpleFragmentPageAdapter sadapter;
     FirebaseAuth firebaseAuth;
     String email,fname;
-    TextView tx;
+    static TextView tx;
 
     View headerView;
+    Billify billify;
     FragmentManager mFragmentManager;
     Menu mn;
 
@@ -66,7 +67,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        billify=(Billify) getApplicationContext();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         mNavigationView = (NavigationView) findViewById(R.id.shitstuff) ;
         toolbar = findViewById(R.id.toolbar);
@@ -230,14 +231,8 @@ public class MainActivity extends AppCompatActivity
         if(accessToken != null)
         {
            final String[] username = new String[1];
-            GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
-                @Override
-                public void onCompleted(JSONObject object, GraphResponse response) {
-                     username[0] = object.optString("first_name");
-                    tx.setText(username[0]);
 
-                }
-            });
+            tx.setText(billify.fb_flag);
             mitem.setTitle("Logout");
         }
         else if(account!=null)

@@ -56,6 +56,7 @@ public class ChooseLoginSignupActivity extends AppCompatActivity implements Goog
     private AccessToken accessToken;
     private GoogleApiClient googleApiClient;
 
+    Billify billify;
     private GoogleSignInOptions gso;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -72,7 +73,7 @@ public class ChooseLoginSignupActivity extends AppCompatActivity implements Goog
         btnFacebook = (LoginButton) findViewById(R.id.login_button);
         btnGoogleSignIn = (SignInButton) findViewById(R.id.google_button);
 
-
+        billify=(Billify)getApplicationContext();
 
         callbackManager = CallbackManager.Factory.create();
         btnFacebook.setPermissions(Arrays.asList("email", "public_profile"));
@@ -109,7 +110,7 @@ public class ChooseLoginSignupActivity extends AppCompatActivity implements Goog
                                     String name = me.optString("name");
 
 
-                                    new MainActivity().fname=name;
+                                    billify.setFb_flag(name);
 
                                     DatabaseReference ref= FirebaseDatabase.getInstance().getReference().child("Users").child(id);
 
@@ -117,9 +118,10 @@ public class ChooseLoginSignupActivity extends AppCompatActivity implements Goog
 
                                     ref.child("Name").setValue(name);
 
-                                    new MainActivity().tx.setText(me.optString("name"));
 
-                                    Toast.makeText(new ChooseLoginSignupActivity(),name,Toast.LENGTH_LONG).show();
+
+
+                                    //Toast.makeText(new ChooseLoginSignupActivity(),name,Toast.LENGTH_LONG).show();
                                     
                                     startActivity(new Intent(ChooseLoginSignupActivity.this,MainActivity.class));
                                 }
