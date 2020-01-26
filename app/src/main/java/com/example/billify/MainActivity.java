@@ -1,4 +1,4 @@
-package com.example.loginapp;
+package com.example.billify;
 
 
 
@@ -20,9 +20,8 @@ import android.view.View;
 import android.widget.TextView;
 
 
+
 import com.facebook.AccessToken;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -33,10 +32,6 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity

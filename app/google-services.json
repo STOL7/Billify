@@ -1,42 +1,34 @@
 {
   "project_info": {
-    "project_number": "128405061417",
-    "firebase_url": "https://noobproject-a99c9.firebaseio.com",
-    "project_id": "noobproject-a99c9",
-    "storage_bucket": "noobproject-a99c9.appspot.com"
+    "project_number": "824024432450",
+    "firebase_url": "https://billify-be45a.firebaseio.com",
+    "project_id": "billify-be45a",
+    "storage_bucket": "billify-be45a.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:128405061417:android:532f46c204d10a0a1a4138",
+        "mobilesdk_app_id": "1:824024432450:android:e38a4c8e3ce25814d452db",
         "android_client_info": {
-          "package_name": "com.example.loginapp"
+          "package_name": "com.example.billify"
         }
       },
       "oauth_client": [
         {
-          "client_id": "128405061417-pjnn469g4ila36723a92pl2imga1umrt.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.loginapp",
-            "certificate_hash": "d4d6193ecf86a4101c377cc40211791228837680"
-          }
-        },
-        {
-          "client_id": "128405061417-lp098jue5dp8eppgap4lssdfsh052rak.apps.googleusercontent.com",
+          "client_id": "824024432450-r1f1ffjio1421li017dpggl4u6nehke8.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAmfJ1oZvJI8z1qfOP06-Z7t4Fji8hVoEo"
+          "current_key": "AIzaSyDAychfzVv95fhKM7E0nx5nwK8cefM9gX4"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "128405061417-lp098jue5dp8eppgap4lssdfsh052rak.apps.googleusercontent.com",
+              "client_id": "824024432450-r1f1ffjio1421li017dpggl4u6nehke8.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

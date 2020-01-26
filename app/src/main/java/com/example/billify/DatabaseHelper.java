@@ -1,5 +1,6 @@
-package com.example.loginapp;
+package com.example.billify;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -239,11 +240,40 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return  friends;
     }
 
+    public  boolean addNew(String name,String email,String contact)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+// Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        Log.d("instered", "sadsadad");
+        values.put("Name", name);
+        values.put("Email", email);
+
+        values.put("Contact",contact);
 
 
+// Insert the new row, returning the primary key value of the new row
+        try
+        {
+            long newRowId = db.insert("partner", null, values);
+            return  true;
+        }
 
-
-
+        catch (Exception ex)
+        {
+            return  false;
+        }
 
 
     }
+
+
+
+
+
+
+
+
+
+}

@@ -1,4 +1,4 @@
-package com.example.loginapp;
+package com.example.billify;
 
 import android.app.Application;
 
