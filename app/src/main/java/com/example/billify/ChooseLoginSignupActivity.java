@@ -1,4 +1,4 @@
-package com.example.loginapp;
+package com.example.billify;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -45,12 +45,12 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 
-public class ChooseLoginSignupActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
+public class ChooseLoginSignupActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     private static final int RC_SIGN_IN = 1001;
 
 
-    private Button btnSignIn,btnSignUp;
+    private Button btnSignIn, btnSignUp;
     private SignInButton btnGoogleSignIn;
     private LoginButton btnFacebook;
     private CallbackManager callbackManager;
@@ -73,34 +73,27 @@ public class ChooseLoginSignupActivity extends AppCompatActivity implements Goog
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_login_signup);
 
-        btnSignIn = (Button) findViewById(R.id.sign_in_button);
-        btnSignUp = (Button) findViewById(R.id.sign_up_button);
-
-        btnFacebook = (LoginButton) findViewById(R.id.login_button);
-        btnGoogleSignIn = (SignInButton) findViewById(R.id.google_button);
 
 
 
-        callbackManager = CallbackManager.Factory.create();
-        btnFacebook.setPermissions(Arrays.asList("email", "public_profile"));
 
-        btnSignIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                startActivity(new Intent(ChooseLoginSignupActivity.this,LoginActivity.class));
-            }
-        });
 
-        btnSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        fragmentManager = getSupportFragmentManager();
 
-                startActivity(new Intent(ChooseLoginSignupActivity.this,SignupActivity.class));
-            }
-        });
+        fragmentTransaction = fragmentManager.beginTransaction();
 
-        btnFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+        fragmentTransaction.replace(R.id.fragmentContainer, new LoginFragment()).commit();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+}
+
+
+     /*   btnFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
 
@@ -169,32 +162,15 @@ public class ChooseLoginSignupActivity extends AppCompatActivity implements Goog
 
 
 
-    }
-
-    protected void addFragment(){
-        fragment = new LoginFragment();
-        fragmentManager = getSupportFragmentManager();
-        fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.fragmentContainer,fragment);
-        fragmentTransaction.commit();
-
-    }
-
-    protected void replaceFragment(){
-        fragment = new SignupFragment();
-        fragmentManager = getSupportFragmentManager();
-        fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.replace(R.id.fragmentContainer,fragment);
-        fragmentTransaction.commit();
-
-    }
+    }*/
 
 
 
 
 
-    @Override
+
+
+   /* @Override
     public void onStop() {
         super.onStop();
         if (mAuthListener != null) {
@@ -278,5 +254,5 @@ public class ChooseLoginSignupActivity extends AppCompatActivity implements Goog
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
-    }
-}
+    }*/
+
