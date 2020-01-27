@@ -1,4 +1,4 @@
-package com.example.loginapp;
+package com.example.billify;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+
+
 
 import java.util.Timer;
 import java.util.TimerTask;

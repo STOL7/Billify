@@ -1,4 +1,4 @@
-package com.example.loginapp;
+package com.example.billify;
 
 
 
@@ -22,9 +22,8 @@ import android.view.View;
 import android.widget.TextView;
 
 
+
 import com.facebook.AccessToken;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -35,10 +34,6 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity
@@ -58,9 +53,10 @@ public class MainActivity extends AppCompatActivity
     private SimpleFragmentPageAdapter sadapter;
     FirebaseAuth firebaseAuth;
     String email,fname;
-    TextView tx;
+    static TextView tx;
 
     View headerView;
+    Billify billify;
     FragmentManager mFragmentManager;
     Menu mn;
 
@@ -70,7 +66,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        billify=(Billify) getApplicationContext();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         mNavigationView = (NavigationView) findViewById(R.id.shitstuff) ;
         toolbar = findViewById(R.id.toolbar);
@@ -235,14 +231,8 @@ public class MainActivity extends AppCompatActivity
         if(accessToken != null)
         {
            final String[] username = new String[1];
-            GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
-                @Override
-                public void onCompleted(JSONObject object, GraphResponse response) {
-                     username[0] = object.optString("first_name");
-                    tx.setText(username[0]);
 
-                }
-            });
+            tx.setText(billify.fb_flag);
             mitem.setTitle("Logout");
         }
         else if(account!=null)

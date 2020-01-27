@@ -42,4 +42,37 @@
     <string name="google_button">google</string>
     <string name="no_birthday_data">No record available</string>
     <string name="no_birthday_found">No record found</string>
+    <string name="add_new">New Friend</string>
+
+    <string name="title">Title</string>
+    <string name="discription">Discription</string>
+    <string name="category">Category</string>
+    <string name="amount">Amount</string>
+    <string name="participates">Participates</string>
+
+    <string-array name="category_array">
+
+        <item>Category</item>
+        <item>Dinner</item>
+        <item>Clothes</item>
+        <item>Trip</item>
+
+    </string-array>
+
+    <string-array name="paid_array">
+
+        <item>Billed BY</item>
+        <item>Multiple</item>
+
+    </string-array>
+
+    <string-array name="split_array">
+
+        <item>Split</item>
+        <item>Eqally</item>
+        <item>Unequally</item>
+
+
+    </string-array>
+
 </resources>
