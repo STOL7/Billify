@@ -3,6 +3,9 @@ package com.example.loginapp;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -59,6 +62,10 @@ public class ChooseLoginSignupActivity extends AppCompatActivity implements Goog
     private GoogleSignInOptions gso;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+
+    Fragment fragment;
+    FragmentManager fragmentManager;
+    FragmentTransaction fragmentTransaction;
 
 
     @Override
@@ -117,10 +124,11 @@ public class ChooseLoginSignupActivity extends AppCompatActivity implements Goog
 
                                     ref.child("Name").setValue(name);
 
+                                    Toast.makeText(new ChooseLoginSignupActivity(),name,Toast.LENGTH_LONG).show();
+
                                     new MainActivity().tx.setText(me.optString("name"));
 
-                                    Toast.makeText(new ChooseLoginSignupActivity(),name,Toast.LENGTH_LONG).show();
-                                    
+
                                     startActivity(new Intent(ChooseLoginSignupActivity.this,MainActivity.class));
                                 }
                             }
@@ -160,6 +168,25 @@ public class ChooseLoginSignupActivity extends AppCompatActivity implements Goog
 
 
 
+
+    }
+
+    protected void addFragment(){
+        fragment = new LoginFragment();
+        fragmentManager = getSupportFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.fragmentContainer,fragment);
+        fragmentTransaction.commit();
+
+    }
+
+    protected void replaceFragment(){
+        fragment = new SignupFragment();
+        fragmentManager = getSupportFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.replace(R.id.fragmentContainer,fragment);
+        fragmentTransaction.commit();
 
     }
 

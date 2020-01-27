@@ -6,7 +6,9 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 
@@ -41,6 +43,8 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
 {
+
+
 
     Toolbar toolbar;
     MenuItem mitem;
@@ -206,6 +210,7 @@ public class MainActivity extends AppCompatActivity
 
         mDrawerToggle.syncState();
     }
+
 
 
     @Override
