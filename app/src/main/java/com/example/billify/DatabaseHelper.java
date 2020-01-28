@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.UUID;
 
 
 public class DatabaseHelper extends SQLiteOpenHelper
@@ -220,7 +221,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 friend.setEmail(cursor.getString(3));
 
                 friend.setContact(cursor.getString(2));
-                friend.setId(cursor.getLong(0));
+                friend.setId(cursor.getString(0));
 
                 friend.setBalance(cursor.getInt(4));
 
@@ -249,11 +250,10 @@ public class DatabaseHelper extends SQLiteOpenHelper
         Log.d("instered", "sadsadad");
         values.put("Name", name);
         values.put("Email", email);
-
+        String uuid = UUID.randomUUID().toString();
+        values.put("Id",uuid);
         values.put("Contact",contact);
 
-
-// Insert the new row, returning the primary key value of the new row
         try
         {
             long newRowId = db.insert("partner", null, values);
@@ -268,6 +268,99 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     }
 
+    public  boolean addExpense(String id, int amount,String date,String bill,int sync)
+    {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+// Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+
+        values.put("id",id);
+
+        values.put("amount",amount);
+
+        values.put("date",date);
+        values.put("billImage",bill);
+        values.put("sync",sync);
+
+
+
+        try
+        {
+            long newRowId = db.insert("History", null, values);
+            return  true;
+        }
+
+        catch (Exception ex)
+        {
+            return  false;
+        }
+
+
+    }
+
+    public  boolean addIndivisual(String id,String his_id, String mem_id,int paid,int borrow,int sync)
+    {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+
+        values.put("id",id);
+        values.put("history_id",his_id);
+        values.put("member_id",mem_id);
+        values.put("paid",paid);
+        values.put("borrow",borrow);
+
+        values.put("sync",sync);
+
+
+
+        try
+        {
+            long newRowId = db.insert("expand_history", null, values);
+            return  true;
+        }
+
+        catch (Exception ex)
+        {
+            return  false;
+        }
+
+
+    }
+    public boolean findByEmail(String email)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+
+        String query = "Select * FROM partner where Email = "+ "email";
+        Cursor cursor = db.rawQuery(query, null);
+
+        //db.close();
+        if(cursor.getCount() > 0)
+            return true;
+        else
+            return false;
+
+    }
+
+    public boolean findByContact(String contact)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+
+        String query = "Select * FROM partner where Contact = "+contact;
+        Cursor cursor = db.rawQuery(query, null);
+
+
+        if(cursor.getCount() > 0)
+            return true;
+        else
+            return false;
+
+    }
 
 
 

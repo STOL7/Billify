@@ -5,7 +5,7 @@ class Friend
     public String name;
     public String email;
     public String contact;
-    public long id;
+    public String id;
     public long balance;
 
     public String getProfile() {
@@ -18,7 +18,7 @@ class Friend
 
     public String profile;
 
-    public Friend(String name, String email, String contact, long id, long balance) {
+    public Friend(String name, String email, String contact, String id, long balance) {
         this.name = name;
         this.email = email;
         this.contact = contact;
@@ -54,11 +54,11 @@ class Friend
         this.contact = contact;
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

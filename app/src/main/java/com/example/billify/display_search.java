@@ -3,12 +3,10 @@ package com.example.billify;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -23,7 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-public class display_friends extends Fragment
+public class display_search extends Fragment
 {
     int i=0;
 
@@ -52,7 +50,7 @@ private TextView txt;
     FloatingActionButton f_action_btn;
 
     Context con;
-    public display_friends()
+    public display_search()
     {
 
     }
@@ -122,11 +120,10 @@ private TextView txt;
        }
 
         adapt=new MyAdapter(friends);
-        ContactAdapter cadpt = new ContactAdapter(friends);
         final Billify bf=(Billify) getActivity().getApplicationContext();
 
         bf.setAdpt(adapt);
-        bf.setCadpt(cadpt);
+
         recyclerview=(RecyclerView)getView().findViewById(R.id.recycler_view);
         recyclerview.setLayoutManager(layoutmanager);
         recyclerview.setHasFixedSize(true);

@@ -32,6 +32,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:id="@+id/shitstuff"
+
             app:itemTextColor="@color/colorPrimary"
             app:menu="@menu/menu"
 
