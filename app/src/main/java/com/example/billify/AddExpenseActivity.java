@@ -28,18 +28,30 @@ import android.widget.Toast;
 
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class AddExpenseActivity extends AppCompatActivity
 {
@@ -48,11 +60,14 @@ public class AddExpenseActivity extends AppCompatActivity
     EditText discription,title,participate,amount,f_name,f_email,f_contact;
     Spinner category,billed_by,split;
     Toolbar toolbar;
-    Button add_new;
+    Button add_new,add_exp;
     ImageView ln_image;
+    ArrayList<Friend> par_friends = new ArrayList<Friend>();
     String image="";
+    RecyclerView recyclerview;
     Uri imgUri;
     DatabaseHelper db;
+    private static Calendar calender;
     FloatingActionButton bill_image;
 
     @Override
@@ -61,9 +76,9 @@ public class AddExpenseActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_expense);
 
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+//        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
-        databaseReference= FirebaseDatabase.getInstance().getReference("User");
+        databaseReference= FirebaseDatabase.getInstance().getReference("Users");
         databaseReference.keepSynced(true);
 
 
@@ -77,50 +92,91 @@ public class AddExpenseActivity extends AppCompatActivity
         split = (Spinner)findViewById(R.id.split);
         db = new DatabaseHelper(this);
         add_new=(Button)findViewById(R.id.add_new);
+        add_exp=(Button)findViewById(R.id.add_exp);
 
+
+        participate.setText("");
         bill_image=(FloatingActionButton)findViewById(R.id.bill_image);
         ln_image=(ImageView)findViewById(R.id.ln_image);
         toolbar = findViewById(R.id.toolbar);
-
+        final Billify bf=(Billify)getApplicationContext();
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-               // type=position;
-                //Toast.makeText(getApplicationContext(),"Pl"+type,Toast.LENGTH_LONG).show();
-            }
 
+
+        participate.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onClick(View view)
+            {
+                LayoutInflater inflater = getLayoutInflater();
+                View alertLayout = inflater.inflate(R.layout.recyclerview, null);
+                recyclerview = (RecyclerView) alertLayout.findViewById(R.id.recycler_view);
+                recyclerview.setHasFixedSize(true);
+                recyclerview.setLayoutManager(new LinearLayoutManager(AddExpenseActivity.this));
+
+
+                recyclerview.setAdapter(bf.getCadpt());
+
+               // participate.setText(participate.getText() + bf.getSelected());
+                AlertDialog dialog = new AlertDialog.Builder(AddExpenseActivity.this)
+
+                        .setView(alertLayout)
+                        .setPositiveButton("Add", new DialogInterface.OnClickListener()
+                                {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+
+
+                                par_friends.addAll(bf.getSelected());
+                                for(int i=0;i<bf.getSelected().size();i++)
+                                {
+                                    participate.setText(participate.getText() + ", " + bf.getSelected().get(i).getName());
+                                }
+                                bf.setSelected(null);
+                            }
+                        }).setNegativeButton("cancle",null).create();
+
+                dialog.show();
+
+
+
 
             }
         });
-        billed_by.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        add_exp.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-               // type=position;
-                //Toast.makeText(getApplicationContext(),"Pl"+type,Toast.LENGTH_LONG).show();
-            }
+            public void onClick(View view)
+            {
+                String tt = String.valueOf(title.getText());
+                String categ = category.getSelectedItem().toString();
+                String dis = String.valueOf(discription.getText());
+                String amo = String.valueOf(amount.getText());
+                String by = billed_by.getSelectedItem().toString();
+                int total = Integer.parseInt(amo);
+                int devide= total / (par_friends.size()+1);
+                String uuid = UUID.randomUUID().toString();
+                String uuid1;
+                SimpleDateFormat currentDate = new SimpleDateFormat("dd/MM/yyyy");
+                Date todayDate = new Date();
+                String thisDate = currentDate.format(todayDate);
+                if(db.addExpense(uuid,total,thisDate,image,0))
+                {
+                    Toast.makeText(AddExpenseActivity.this,"Successfully inserted",Toast.LENGTH_LONG).show();
+                    for(int j=0;j<par_friends.size();j++)
+                    {
+                        uuid1 = UUID.randomUUID().toString();
+                        Friend gh=par_friends.get(j);
+                        if(db.addIndivisual(uuid1,uuid,gh.getId(),0,devide,0))
+                            continue;
+                    }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+                }
 
-            }
-        });
-
-        split.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                //type=position;
-                //Toast.makeText(getApplicationContext(),"Pl"+type,Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
@@ -143,56 +199,135 @@ public class AddExpenseActivity extends AppCompatActivity
                         .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                String name = String.valueOf(f_name.getText());
+                                final String name = String.valueOf(f_name.getText());
                                 String email = String.valueOf(f_email.getText());
                                 String contact = String.valueOf(f_contact.getText());
 
-                                if(name == null)
+                                if(name.length() == 0)
                                 {
                                     Toast.makeText(AddExpenseActivity.this,"Please enter name",Toast.LENGTH_LONG).show();
                                 }
-                                if(contact == null)
+                                else
                                 {
-                                    if(email == null)
+                                    if(contact.length() == 0)
                                     {
-
-                                        Toast.makeText(AddExpenseActivity.this,"Please enter contact no or email",Toast.LENGTH_LONG).show();
-                                    }
-                                    else
-                                    {
-                                        Pattern p = Pattern.compile("^([0-2][0-9]|(3)[0-1]|[0-9])(\\/)(((0)[0-9])|((1)[0-2]|[0-9]))(\\/)\\d{4}$");
-
-                                        Matcher m = p.matcher(email);
-                                        if(!m.find())
+                                        if(email.length() == 0)
                                         {
-                                            Toast.makeText(AddExpenseActivity.this,"Please enter valid email",Toast.LENGTH_LONG).show();
+
+                                            Toast.makeText(AddExpenseActivity.this,"Please enter contact no or email",Toast.LENGTH_LONG).show();
                                         }
                                         else
                                         {
-                                            contact="";
-                                            if(db.addNew(name,email,contact))
+                                            Pattern p = Pattern.compile("[a-zA-Z0-9._-]+@[a" +
+                                                    "-z]+\\.+[a-z]+");
+
+                                            Matcher m = p.matcher(email);
+                                            if(!m.find())
                                             {
-                                                Toast.makeText(AddExpenseActivity.this,"Success",Toast.LENGTH_LONG).show();
+                                                 Toast.makeText(AddExpenseActivity.this,"Please enter valid email",Toast.LENGTH_LONG).show();
+                                            }
+                                            else
+                                            {
+                                                final String nm=name;
+                                               final String em=email;
+
+                                               final String[][] uid = {new String[5]};
+
+                                               if(db.findByEmail(email))
+                                                   Toast.makeText(AddExpenseActivity.this,"All ready your friend",Toast.LENGTH_LONG).show();
+                                               else
+                                               {
+                                                   databaseReference.orderByChild("Email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                       @Override
+                                                       public void onDataChange(DataSnapshot dataSnapshot)
+                                                       {
+
+
+                                                           if(dataSnapshot.getValue() == null)
+                                                           {
+                                                               //send request for add new friend on server
+                                                               if(db.addNew(nm,em,""))
+                                                               {
+                                                                   Toast.makeText(AddExpenseActivity.this,"Success",Toast.LENGTH_LONG).show();
+                                                               }
+
+
+                                                           }
+                                                           else
+                                                           {
+                                                               String key = dataSnapshot.getValue().toString();
+                                                               uid[0] = key.split("\\{");
+                                                               Toast.makeText(AddExpenseActivity.this,"get data + " + uid[0][1],Toast.LENGTH_LONG).show();
+
+
+                                                           }
+
+
+                                                       }
+                                                       @Override
+                                                       public void onCancelled(DatabaseError databaseError)
+                                                       {
+
+
+                                                       }
+                                                   });
+
+                                               }
+
+
+
+
                                             }
                                         }
-                                    }
 
-                                }
-                                else
-                                {
-                                    email="";
-                                    if(db.addNew(name,"",contact))
+                                    }
+                                    else
                                     {
-                                        Toast.makeText(AddExpenseActivity.this,"Success",Toast.LENGTH_LONG).show();
+                                        if(db.findByContact(contact))
+                                            Toast.makeText(AddExpenseActivity.this,"All ready your friend",Toast.LENGTH_LONG).show();
+                                        else
+                                        {
+                                            final String nm=name;
+                                            final String cn=contact;
+
+                                            final String[][] uid = {new String[5]};
+                                            databaseReference.orderByChild("Contact").equalTo(contact).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot)
+                                                {
+
+                                                    if(dataSnapshot.getValue() == null)
+                                                    {
+                                                        if(db.addNew(nm,"",cn))
+                                                        {
+                                                            Toast.makeText(AddExpenseActivity.this,"Success contact",Toast.LENGTH_LONG).show();
+                                                        }
+
+                                                    }
+                                                    else
+                                                    {
+                                                        String key = dataSnapshot.getValue().toString();
+                                                        uid[0] = key.split("\\{");
+                                                        Toast.makeText(AddExpenseActivity.this,"get contact data + " + dataSnapshot.getValue(),Toast.LENGTH_LONG).show();
+
+
+                                                    }
+
+
+
+                                                }
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError)
+                                                {
+
+                                                }
+                                            });
+
+                                        }
+
                                     }
                                 }
 
-
-
-
-                                //db.saveNote(task,user.getId());
-                                //note.setText(task);
-                                //Toast.makeText(BirthdayDetails.this,task,Toast.LENGTH_LONG).show();
                             }
                         })
                         .setNegativeButton("Cancel", null)
@@ -232,6 +367,11 @@ public class AddExpenseActivity extends AppCompatActivity
 
 
     }
+
+
+
+
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)

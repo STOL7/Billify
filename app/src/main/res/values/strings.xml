@@ -48,7 +48,8 @@
     <string name="discription">Discription</string>
     <string name="category">Category</string>
     <string name="amount">Amount</string>
-    <string name="participates">Participates</string>
+    <string name="participates">You and </string>
+    <string name="add_exp">Add Expenses</string>
 
     <string-array name="category_array">
 

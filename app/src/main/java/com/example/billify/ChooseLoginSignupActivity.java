@@ -1,4 +1,4 @@
-package com.example.loginapp;
+package com.example.billify;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -172,21 +172,21 @@ public class ChooseLoginSignupActivity extends AppCompatActivity implements Goog
     }
 
     protected void addFragment(){
-        fragment = new LoginFragment();
+        /*fragment = new LoginFragment();
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.fragmentContainer,fragment);
-        fragmentTransaction.commit();
+        fragmentTransaction.commit();*/
 
     }
 
     protected void replaceFragment(){
-        fragment = new SignupFragment();
+        /*fragment = new SignupFragment();
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.replace(R.id.fragmentContainer,fragment);
-        fragmentTransaction.commit();
+        fragmentTransaction.commit();*/
 
     }
 
