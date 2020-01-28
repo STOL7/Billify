@@ -1,4 +1,4 @@
-package com.example.billify;
+    package com.example.billify;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -120,12 +120,16 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                             @Override
                             public void onCompleted(JSONObject me, GraphResponse response) {
                                 if (response.getError() != null) {
+                                    String a = "abc";
+                                    Log.d("Name:", a);
+
 
                                 } else {
                                     String email = response.getJSONObject().optString("email");
                                     String id = me.optString("id");
                                     String name = me.optString("name");
 
+                                    Log.d("Name:",name);
 
                                     new MainActivity().fname=name;
 
