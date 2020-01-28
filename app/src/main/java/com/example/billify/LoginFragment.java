@@ -2,8 +2,13 @@ package com.example.billify;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +49,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import org.json.JSONObject;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -79,12 +86,15 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
         auth = FirebaseAuth.getInstance();
 
+
+
         inputEmail = (EditText) view.findViewById(R.id.email);
         inputPassword = (EditText) view.findViewById(R.id.password);
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         btnLogin = (Button) view.findViewById(R.id.sign_in_button);
         btnSignup = (Button) view.findViewById(R.id.sign_up_button);
         btnReset = (Button) view.findViewById(R.id.btn_reset_password);
+
 
         fragmentManager =getActivity().getSupportFragmentManager();
 
@@ -273,6 +283,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
 
         if(requestCode==RC_SIGN_IN){
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
@@ -280,7 +292,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         }
 
         callbackManager.onActivityResult(requestCode,resultCode,data);
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void handleSignInResult(GoogleSignInResult result){

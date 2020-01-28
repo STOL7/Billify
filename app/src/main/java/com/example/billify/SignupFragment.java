@@ -30,6 +30,7 @@ import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -295,6 +296,47 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                         }
                     }
                 });
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+        if(requestCode==RC_SIGN_IN){
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInResult(result);
+        }
+
+        callbackManager.onActivityResult(requestCode,resultCode,data);
+    }
+
+    private void handleSignInResult(GoogleSignInResult result){
+        if(result.isSuccess()) {
+            GoogleSignInAccount account = result.getSignInAccount();
+            String userName = account.getDisplayName().toString();
+            String userEmail = account.getEmail().toString();
+            String userId = account.getId().toString();
+
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
+
+            ref.child("Email").setValue(userEmail);
+
+            ref.child("Name").setValue(userName);
+            Toast.makeText(getActivity(),"sign in successfull",Toast.LENGTH_SHORT).show();
+        }
+
+        else{
+            Toast.makeText(getActivity(),"sign in cancle",Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(getActivity(),ChooseLoginSignupActivity.class));
+        }
+
+        gotoMainActivity();
+
+    }
+
+    private void gotoMainActivity(){
+        Intent intent=new Intent(getActivity(),MainActivity.class);
+        startActivity(intent);
     }
 
 
