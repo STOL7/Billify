@@ -47,7 +47,7 @@ public class ChooseLoginSignupActivity extends AppCompatActivity implements Goog
     private static final int RC_SIGN_IN = 1001;
 
 
-    private Button btnSignIn,btnSignUp;
+    private Button btnSignIn,btnSignUp,fb,gb;
     private SignInButton btnGoogleSignIn;
     private LoginButton btnFacebook;
     private CallbackManager callbackManager;
@@ -70,6 +70,8 @@ public class ChooseLoginSignupActivity extends AppCompatActivity implements Goog
 
         btnFacebook = (LoginButton) findViewById(R.id.login_button);
         btnGoogleSignIn = (SignInButton) findViewById(R.id.google_button);
+        fb = (Button) findViewById(R.id.fb);
+        gb = (Button) findViewById(R.id.google);
 
 
 
@@ -91,6 +93,14 @@ public class ChooseLoginSignupActivity extends AppCompatActivity implements Goog
                 startActivity(new Intent(ChooseLoginSignupActivity.this,SignupActivity.class));
             }
         });
+
+        fb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnFacebook.performClick();
+            }
+        });
+
 
         btnFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -147,11 +157,20 @@ public class ChooseLoginSignupActivity extends AppCompatActivity implements Goog
                 .addApi(Auth.GOOGLE_SIGN_IN_API,gso)
                 .build();
 
+
+
         btnGoogleSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
                 startActivityForResult(intent,RC_SIGN_IN);
+            }
+        });
+
+        gb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                googlesignin();
             }
         });
 
@@ -213,6 +232,11 @@ public class ChooseLoginSignupActivity extends AppCompatActivity implements Goog
             }
         }
 
+    }
+
+    private void googlesignin(){
+        Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+        startActivityForResult(intent,RC_SIGN_IN);
     }
 
     private void handleSignInResult(GoogleSignInResult result){

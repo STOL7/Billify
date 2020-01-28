@@ -18,11 +18,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="-222dp">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_editor_absoluteX="-16dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/relativeLayout2"
@@ -30,25 +33,27 @@
             android:layout_height="match_parent"
             android:layout_gravity="center">
 
-
             <ImageView
                 android:layout_width="219dp"
                 android:layout_height="144dp"
+                android:layout_marginTop="100dp"
                 android:scaleType="centerCrop"
-                android:src="@mipmap/logo"
 
+                android:src="@mipmap/logo"
                 app:layout_constraintBottom_toTopOf="@+id/email"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"></ImageView>
+
 
             <EditText
                 android:id="@+id/email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                android:layout_marginStart="25dp"
-                android:layout_marginEnd="25dp"
+                android:layout_marginStart="60dp"
+                android:layout_marginTop="250dp"
+                android:layout_marginEnd="60dp"
                 android:autofillHints=""
                 android:background="@drawable/et_ui"
                 android:hint="@string/hint_email"
@@ -60,10 +65,8 @@
                 android:textColorHint="@android:color/white"
                 app:layout_constraintBottom_toTopOf="@+id/password"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
 
-                app:layout_constraintTop_toBottomOf="@+id/logo"
                 tools:targetApi="o" />
 
             <EditText
@@ -71,9 +74,9 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
 
-                android:layout_marginStart="25dp"
+                android:layout_marginStart="60dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="25dp"
+                android:layout_marginEnd="60dp"
                 android:autofillHints=""
                 android:background="@drawable/et_ui"
 
@@ -103,7 +106,7 @@
 
             <Button
                 android:id="@+id/btn_reset_password"
-                android:layout_width="fill_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="10dp"
@@ -116,11 +119,11 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/sign_in_button" />
 
-        <!-- Link to Login Screen -->
+            <!-- Link to Login Screen -->
 
             <Button
                 android:id="@+id/sign_up_button"
-                android:layout_width="fill_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:background="@null"
@@ -128,21 +131,19 @@
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="15sp"
-                app:layout_constraintBottom_toBottomOf="parent"
+
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btn_reset_password" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline4"
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.5" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center|bottom"
+        android:layout_marginBottom="20dp"
+        android:visibility="gone"
+        tools:ignore="MissingConstraints" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity
         headerView = mNavigationView.getHeaderView(0);
 
 
+
         mn = mNavigationView.getMenu();
         mitem=mn.findItem(R.id.nav_item_login);
         tx = (TextView)headerView.findViewById(R.id.useremail);
