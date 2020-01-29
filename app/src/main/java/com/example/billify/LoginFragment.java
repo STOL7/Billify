@@ -120,28 +120,21 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                             @Override
                             public void onCompleted(JSONObject me, GraphResponse response) {
                                 if (response.getError() != null) {
-                                    String a = "abc";
-                                    Log.d("Name:", a);
-
 
                                 } else {
                                     String email = response.getJSONObject().optString("email");
                                     String id = me.optString("id");
                                     String name = me.optString("name");
 
-                                    Log.d("Name:",name);
 
                                     new MainActivity().fname=name;
+                                    //FirebaseUser currentperson = FirebaseAuth.getInstance().getCurrentUser();
 
                                     DatabaseReference ref= FirebaseDatabase.getInstance().getReference().child("Users").child(id);
 
                                     ref.child("Email").setValue(email);
 
                                     ref.child("Name").setValue(name);
-
-                                    Toast.makeText(new ChooseLoginSignupActivity(),name,Toast.LENGTH_LONG).show();
-
-                                    new MainActivity().tx.setText(me.optString("name"));
 
 
                                     startActivity(new Intent(getActivity(),MainActivity.class));
@@ -161,6 +154,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
             }
         });
+
+
+
+        //new MainActivity().fname=name;
+
+        //new MainActivity().tx.setText(me.optString("name"));
+
+
 
         gso =  new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
