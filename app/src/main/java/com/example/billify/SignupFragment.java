@@ -287,8 +287,11 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             FirebaseAuth.getInstance().signOut();
-                            startActivity(new Intent(getActivity(), LoginActivity.class));
-
+                            fragmentManager
+                                    .beginTransaction()
+                                    .replace(R.id.fragmentContainer,
+                                            new LoginFragment(),
+                                            "Login_Fragment").commit();
                         }
                         else
                         {
