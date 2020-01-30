@@ -36,6 +36,7 @@
     <string name="prompt_password">I don`t know</string>
     <string name="facebook_app_id">1494372374060300</string>
     <string name="fb_login_protocol_scheme">fb1494372374060300</string>
+
     <string name="login_button">facebook</string>
     <string name="username">Username</string>
     <string name="phone">Phone</string>
