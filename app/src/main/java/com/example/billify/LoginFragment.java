@@ -254,12 +254,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             return;
         }
 
-        progressBar.setVisibility(View.VISIBLE);
 
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener((Activity) getActivity(), new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                progressBar.setVisibility(View.GONE);
                 if (!task.isSuccessful()) {
                     if (password.length() < 6) {
                         inputPassword.setError(getString(R.string.minimum_password));
@@ -273,7 +271,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     if (user.isEmailVerified()) {
                         Toast.makeText(getActivity(), "Successfully login", Toast.LENGTH_SHORT).show();
 
-                        startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                        startActivity(new Intent(getActivity(),MainActivity.class));
 
                     } else {
                         Toast.makeText(getActivity(), "Not verified", Toast.LENGTH_SHORT).show();
@@ -326,6 +324,15 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private void gotoMainActivity(){
         Intent intent=new Intent(getActivity(),MainActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (googleApiClient != null && googleApiClient.isConnected()) {
+            googleApiClient.stopAutoManage(getActivity());
+            googleApiClient.disconnect();
+        }
     }
 
 }

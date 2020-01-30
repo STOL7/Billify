@@ -77,7 +77,6 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         btnSignUp = (Button) view.findViewById(R.id.sign_up_button);
         inputEmail = (EditText) view.findViewById(R.id.email);
         inputPassword = (EditText) view.findViewById(R.id.password);
-        progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         btnResetPassword = (Button) view.findViewById(R.id.btn_reset_password);
         inputUserName = (EditText) view.findViewById(R.id.username);
         inputPhone = (EditText) view.findViewById(R.id.phone);
@@ -337,6 +336,15 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     private void gotoMainActivity(){
         Intent intent=new Intent(getActivity(),MainActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (googleApiClient != null && googleApiClient.isConnected()) {
+            googleApiClient.stopAutoManage(getActivity());
+            googleApiClient.disconnect();
+        }
     }
 
 

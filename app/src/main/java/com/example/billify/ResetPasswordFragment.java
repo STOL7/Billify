@@ -1,5 +1,6 @@
 package com.example.billify;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -23,6 +25,8 @@ public class ResetPasswordFragment extends Fragment {
     private Button btnReset, btnBack;
     private FirebaseAuth auth;
     private ProgressBar progressBar;
+    private static FragmentManager fragmentManager;
+
 
     @Nullable
     @Override
@@ -32,7 +36,20 @@ public class ResetPasswordFragment extends Fragment {
         btnReset = (Button) view.findViewById(R.id.btn_reset_password);
         btnBack = (Button) view.findViewById(R.id.btn_back);
 
+        fragmentManager =getActivity().getSupportFragmentManager();
+
+
         auth = FirebaseAuth.getInstance();
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentManager
+                        .beginTransaction()
+                        .replace(R.id.fragmentContainer,
+                                new LoginFragment(),
+                                "Login_Fragment").commit();            }
+        });
 
         btnReset.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,18 +62,21 @@ public class ResetPasswordFragment extends Fragment {
                     return;
                 }
 
-                progressBar.setVisibility(View.VISIBLE);
                 auth.sendPasswordResetEmail(email)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
                                     Toast.makeText(getActivity(), "We have sent you instructions to reset your password!", Toast.LENGTH_SHORT).show();
+                                    fragmentManager
+                                            .beginTransaction()
+                                            .replace(R.id.fragmentContainer,
+                                                    new LoginFragment(),
+                                                    "Login_Fragment").commit();
                                 } else {
                                     Toast.makeText(getActivity(), "Failed to send reset email!", Toast.LENGTH_SHORT).show();
                                 }
 
-                                progressBar.setVisibility(View.GONE);
                             }
                         });
             }

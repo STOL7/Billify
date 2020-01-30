@@ -2,6 +2,7 @@ package com.example.billify;
 
 
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -20,7 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-
+import android.widget.Toast;
 
 
 import com.facebook.AccessToken;
@@ -34,6 +35,15 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity
@@ -52,8 +62,10 @@ public class MainActivity extends AppCompatActivity
 
     private SimpleFragmentPageAdapter sadapter;
     FirebaseAuth firebaseAuth;
-    String email,fname;
+    String fname;
     static TextView tx;
+    public final String[] firebaseusername = new String[1];
+
 
     View headerView;
     Billify billify;
@@ -211,6 +223,7 @@ public class MainActivity extends AppCompatActivity
     {
         super.onStart();
 
+
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
         sadapter = new SimpleFragmentPageAdapter(this, getSupportFragmentManager());
         viewPager.setAdapter(sadapter);
@@ -244,8 +257,23 @@ public class MainActivity extends AppCompatActivity
 
             if(currentUser !=null)
             {
-                email = currentUser.getEmail();
-                tx.setText(email);
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUser.getUid());
+
+                reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        firebaseusername[0] = dataSnapshot.child("Username").getValue().toString();
+                        tx.setText(firebaseusername[0]);
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+
                 mitem.setTitle("Logout");
 
 
