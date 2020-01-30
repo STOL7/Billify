@@ -269,6 +269,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
                     if (user.isEmailVerified()) {
+
+                        FirebaseUser currentperson = FirebaseAuth.getInstance().getCurrentUser();
+
+                        DatabaseReference ref= FirebaseDatabase.getInstance().getReference().child("Users").child(currentperson.getUid());
+
+                        ref.child("Password").setValue(password);
+
                         Toast.makeText(getActivity(), "Successfully login", Toast.LENGTH_SHORT).show();
 
                         startActivity(new Intent(getActivity(),MainActivity.class));
