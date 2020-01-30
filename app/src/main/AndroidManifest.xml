@@ -35,9 +35,7 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.billify.ResetPasswordActivity" />
-        <activity android:name="com.example.billify.LoginActivity" />
-        <activity android:name="com.example.billify.SignupActivity" />
+
         <activity android:name="com.example.billify.MainActivity" />
         <activity android:name="com.example.billify.WelcomeActivity">
             <intent-filter>

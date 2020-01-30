@@ -115,6 +115,19 @@ private TextView txt;
         db.openDataBase();
         friends = db.geFriend();
 
+        Friend fd = friends.get(0);
+        friends.remove(0);
+
+
+        fd.setId(fd.getId());
+        fd.setBalance(fd.getBalance());
+        fd.setProfile(fd.getProfile());
+        fd.setContact(fd.getContact());
+        fd.setName(fd.getName());
+        fd.setEmail(fd.getEmail());
+
+
+
 
         if(friends.size() > 0)
        {
@@ -126,6 +139,7 @@ private TextView txt;
         final Billify bf=(Billify) getActivity().getApplicationContext();
 
         bf.setAdpt(adapt);
+        bf.setYou(fd);
         bf.setCadpt(cadpt);
         recyclerview=(RecyclerView)getView().findViewById(R.id.recycler_view);
         recyclerview.setLayoutManager(layoutmanager);

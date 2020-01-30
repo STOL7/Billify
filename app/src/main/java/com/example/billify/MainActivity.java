@@ -242,6 +242,7 @@ public class MainActivity extends AppCompatActivity
             auth = FirebaseAuth.getInstance();
             FirebaseUser currentUser = auth.getCurrentUser();
 
+
             if(currentUser !=null)
             {
                 email = currentUser.getEmail();

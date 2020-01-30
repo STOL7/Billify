@@ -63,6 +63,7 @@
     <string-array name="paid_array">
 
         <item>Billed BY</item>
+        <item>You</item>
         <item>Multiple</item>
 
     </string-array>
