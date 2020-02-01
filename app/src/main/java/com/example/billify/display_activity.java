@@ -3,12 +3,10 @@ package com.example.billify;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -23,11 +21,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-public class display_friends extends Fragment
+public class display_activity extends Fragment
 {
     int i=0;
-
-    //DatabaseReference databaseReference;
 
     private Toolbar toolbar;
 
@@ -38,12 +34,9 @@ public class display_friends extends Fragment
 private TextView txt;
 
 
-    MyAdapter adapt = new MyAdapter();
-    List<String> items= new ArrayList<>();
-    private ArrayList<String> profile = new ArrayList<String>();
-    public ArrayList<String> name = new ArrayList<String>();
-    private ArrayList<String> bdate = new ArrayList<String>();
-  private ArrayList<Friend> friends = new ArrayList<>();
+    activityAdapter adapt = new activityAdapter();
+
+    ArrayList<History> histories = new ArrayList<History>();
     //MyAdapter adapt = new MyAdapter();
 
 
@@ -52,7 +45,7 @@ private TextView txt;
     FloatingActionButton f_action_btn;
 
     Context con;
-    public display_friends()
+    public display_activity()
     {
 
     }
@@ -92,63 +85,14 @@ private TextView txt;
         recyclerview.setLayoutManager(layoutmanager);
 
         recyclerview.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
-        f_action_btn = (FloatingActionButton)getView().findViewById(R.id.fab);
-
-        f_action_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-
-                Intent myIntent = new Intent(getActivity(), AddExpenseActivity.class);
-                getActivity().startActivity(myIntent);
-
-
-            }
-        });
-
-
-
-
-
-        DatabaseHelper db = new DatabaseHelper(con);
+      DatabaseHelper db = new DatabaseHelper(con);
         db.createDataBase();
         db.openDataBase();
 
-        final Billify bf=(Billify) getActivity().getApplicationContext();
-        friends = db.geFriend();
 
-        if(friends.size() > 0)
-        {
-            Friend fd = friends.get(0);
-            friends.remove(0);
-            fd.setId(fd.getId());
-            fd.setBalance(fd.getBalance());
-            fd.setProfile(fd.getProfile());
-            fd.setContact(fd.getContact());
-            fd.setName(fd.getName());
-            fd.setEmail(fd.getEmail());
-            bf.setYou(fd);
-        }
+        histories = db.geHistory();
 
-
-
-
-
-
-
-
-        if(friends.size() > 0)
-       {
-           txt.setVisibility(View.INVISIBLE);
-       }
-
-        adapt=new MyAdapter(friends);
-        ContactAdapter cadpt = new ContactAdapter(friends);
-
-
-        bf.setAdpt(adapt);
-
-        bf.setCadpt(cadpt);
+        adapt = new activityAdapter(histories);
         recyclerview=(RecyclerView)getView().findViewById(R.id.recycler_view);
         recyclerview.setLayoutManager(layoutmanager);
         recyclerview.setHasFixedSize(true);

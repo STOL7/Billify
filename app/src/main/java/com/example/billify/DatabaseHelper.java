@@ -33,10 +33,12 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public ArrayList<String> email=new ArrayList<>();
     public ArrayList<String> b_date=new ArrayList<>();
     public ArrayList<Friend> friends=new ArrayList<>();
+    public ArrayList<History> histories=new ArrayList<>();
 
 
     private static Calendar startDate, endDate;
     public Friend friend;
+    public  History history;
     public void createDataBase(){
 
         boolean dbExist = checkDataBase();
@@ -187,18 +189,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
     {
 
         File dbFile = new File(DATABASE_PATH + DATABASE_NAME);
-        if (dbFile.exists())
-        {
-            Log.d("Database", "Exists");
 
-        }
-        else
-            {
-            Log.d("Database", " Not Exists");
-        }
-
-
-        try
+     try
         {
 
 
@@ -241,6 +233,59 @@ public class DatabaseHelper extends SQLiteOpenHelper
         }
 
         return  friends;
+    }
+
+
+    public ArrayList<History> geHistory()
+    {
+
+        File dbFile = new File(DATABASE_PATH + DATABASE_NAME);
+
+        try
+        {
+
+
+            SQLiteDatabase databases = this.getReadableDatabase();
+
+
+            String tb="History";
+            Cursor cursor = databases.rawQuery("SELECT * FROM "+tb, null);
+
+            Log.d("branch", "Friends retrived succefully");
+
+            cursor.moveToFirst();
+
+
+
+            while (!cursor.isAfterLast())
+            {
+                //list.add(cursor.getString(1));
+                history = new History();
+                history.setAmount(cursor.getLong(1));
+                history.setBillIMage(cursor.getString(3));
+                history.setDate(cursor.getString(2));
+
+                history.setDescription(cursor.getString(5));
+                friend.setId(cursor.getString(0));
+
+                history.setTitle(cursor.getString(6));
+                history.setCategory(cursor.getString(7));
+
+                history.setSync(cursor.getInt(4));
+                histories.add(history);
+
+                Log.d("branch", "history retrived succefully ");
+                cursor.moveToNext();
+            }
+            databases.close();
+            cursor.close();
+        }
+        catch (SQLException se)
+        {
+            Log.d("Exception", se.getMessage());
+        }
+
+        return  histories;
     }
 
     public  boolean addNew(String id, String name,String email,String contact,int balance,String profile)
@@ -319,7 +364,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     }
 
-    public  boolean addIndivisual(String id,String his_id, String mem_id,String opp_id, int paid,int borrow,int sync)
+    public  boolean addIndivisual(String id,String his_id, String mem_id,String opp_id, int paid,int sync)
     {
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -330,7 +375,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         values.put("history_id",his_id);
         values.put("member_id",mem_id);
         values.put("paid",paid);
-        values.put("borrow",borrow);
+
         values.put("opposite_id",opp_id);
         values.put("sync",sync);
 
@@ -349,21 +394,74 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
 
     }
+
+    public  boolean history_details(String id,String his_id, String mem_id, int paid,int expense)
+    {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+
+        values.put("id",id);
+        values.put("history_id",his_id);
+        values.put("member_id",mem_id);
+        values.put("paid",paid);
+
+        values.put("expense",expense);
+
+
+
+        try
+        {
+            long newRowId = db.insert("history_details", null, values);
+            return  true;
+        }
+
+        catch (Exception ex)
+        {
+            return  false;
+        }
+
+
+    }
+
+    public boolean updateExpense(String uid, long expenses)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+// Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put("Balance", expenses);
+        try
+        {
+            long newRowId = db.update("partner",values, "Id=?",new String[]{String.valueOf(uid)});
+            return  true;
+        }
+
+        catch (Exception ex)
+        {
+            return  false;
+        }
+    }
+
+
     public boolean findByEmail(String email)
     {
         SQLiteDatabase db = this.getReadableDatabase();
 
+        email = "'"+email+"'";
 
         String query = "Select * FROM partner";
 
         Cursor cursor = db.rawQuery(query, null);
 cursor.moveToFirst();
         //db.close();
-        while (!cursor.isAfterLast())
-        {
-            if((cursor.getString(3).equals(email)))
+        if(!cursor.isAfterLast()) {
+            Log.d(cursor.getString(3),email);
+            if ((cursor.getString(3).equals(email)))
                 return true;
-            cursor.moveToNext();
+            else
+                return false;
         }
 
 

@@ -306,6 +306,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
 
 
+
+
                                             DatabaseHelper hp =new DatabaseHelper(getActivity());
                                             if(hp.findByEmail(em))
                                             {

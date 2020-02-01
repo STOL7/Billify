@@ -45,10 +45,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONObject;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -64,6 +67,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     private CallbackManager callbackManager;
     private SignInButton btnGoogleSignIn;
     private LoginButton btnFacebook;
+    FirebaseFirestore firestore;
     private CallbackManager callbackManager1;
     private static Animation shakeAnimation;
     private static FragmentManager fragmentManager;
@@ -80,7 +84,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.activity_signup,container,false);
 
         auth = FirebaseAuth.getInstance();
-
+        firestore = FirebaseFirestore.getInstance();
         btnSignIn = (Button) view.findViewById(R.id.sign_in_button);
         btnSignUp = (Button) view.findViewById(R.id.sign_up_button);
         inputEmail = (EditText) view.findViewById(R.id.email);
@@ -265,7 +269,9 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
 
                                             //ref.child("Password").setValue(getPassword);
 
-
+                                            Map<String, Object> user = new HashMap<>();
+                                            user.put("Balance", 0);
+                                            firestore.collection("Users").document(currentperson.getUid()).set(user);
                                             FirebaseAuth.getInstance().signOut();
                                             Toast.makeText(getActivity(), "Registered Successfully.Please check your email for verification", Toast.LENGTH_SHORT)
                                                     .show();

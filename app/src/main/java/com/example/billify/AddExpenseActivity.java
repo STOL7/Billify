@@ -31,23 +31,30 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -73,13 +80,18 @@ public class AddExpenseActivity extends AppCompatActivity
     String image="";
     RecyclerView recyclerview;
     Uri imgUri;
+    long balance_fire=0;
     DatabaseHelper db;
+    FirebaseFirestore firestore;
     private static Calendar calender;
     FloatingActionButton bill_image;
     int uneqflag=0;
     HashMap<String,Integer> paid_hash;
+    HashMap<String,Long> give_hash;
     HashMap<String,Integer> boorow_hash;
     int sz;
+    Friend you;
+    String youid;
     int[] split_arr;
     int[] paid_arr;
     @Override
@@ -92,7 +104,7 @@ public class AddExpenseActivity extends AppCompatActivity
 
         databaseReference= FirebaseDatabase.getInstance().getReference("Users");
         databaseReference.keepSynced(true);
-
+        firestore =FirebaseFirestore.getInstance();
 
         discription = (EditText)findViewById(R.id.discription);
         title = (EditText)findViewById(R.id.title);
@@ -109,6 +121,8 @@ public class AddExpenseActivity extends AppCompatActivity
 
         paid_hash = new HashMap<String, Integer>();
         boorow_hash = new HashMap<String, Integer>();
+        give_hash = new HashMap<String, Long>();
+
         sz= par_friends.size();
         participate.setText("");
         bill_image=(FloatingActionButton)findViewById(R.id.bill_image);
@@ -119,7 +133,9 @@ public class AddExpenseActivity extends AppCompatActivity
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        par_friends.add(bf.getYou());
+        you = bf.getYou();
+        youid=you.getId();
+        par_friends.add(you);
 
         split.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -213,117 +229,160 @@ public class AddExpenseActivity extends AppCompatActivity
                 String dis = String.valueOf(discription.getText());
 
                 String amo = String.valueOf(amount.getText());
-                String by = billed_by.getSelectedItem().toString();
                 int total = Integer.parseInt(amo);
-                int devide=0;
+                int devide=0,lst;
                 String uuid = UUID.randomUUID().toString();
-                String uuid1;
+                String uuid1,details_id;
                 SimpleDateFormat currentDate = new SimpleDateFormat("dd/MM/yyyy");
                 Date todayDate = new Date();
                 String thisDate = currentDate.format(todayDate);
 
                 int size_jk = par_friends.size();
 
-                if(billed_by.getSelectedItemPosition() == 1)
+                if(amo.length() == 0)
                 {
-                    paid_arr = new int[size_jk];
-                    paid_arr[0] = Integer.parseInt(amo);
-                    for(int i=1;i<size_jk;i++)
-                    {
-                        paid_arr[i]=0;
-                    }
+                    Toast.makeText(AddExpenseActivity.this,"Please enter amount",Toast.LENGTH_LONG).show();
                 }
 
-
-                if(split.getSelectedItemPosition() == 1)
+                else
                 {
-                   split_arr = new int[size_jk];
-                    devide = Integer.parseInt(amo)/size_jk;
-                    for(int i=0;i<size_jk;i++)
+                    if(billed_by.getSelectedItemPosition() == 1)
                     {
-                        split_arr[i]=devide;
-                    }
-                }
-
-                if(implementHashing(split_arr,paid_arr,size_jk))
-                {
-                    if(db.addExpense(uuid,dis,tt,categ,total,thisDate,image,0))
-                    {
-                        Toast.makeText(AddExpenseActivity.this,"Successfully inserted",Toast.LENGTH_LONG).show();
-                       /* Iterator myVeryOwnIterator = meMap.keySet().iterator();
-                        while(myVeryOwnIterator.hasNext()) {
-                            String key=(String)myVeryOwnIterator.next();
-                            String value=(String)meMap.get(key);
-                            Toast.makeText(ctx, "Key: "+key+" Value: "+value, Toast.LENGTH_LONG).show();
-                        }*/
-                        Iterator myVeryOwnIterator = paid_hash.keySet().iterator();
-                        Iterator borro_itr = boorow_hash.keySet().iterator();
-
-                        String key=(String)myVeryOwnIterator.next();
-                        int value=(int)paid_hash.get(key);
-
-                       String key1 =(String)borro_itr.next();
-                       int value1=(int)boorow_hash.get(key1);
-                        int net=0;
-                        while(true)
+                        paid_arr = new int[size_jk];
+                        paid_arr[0] = Integer.parseInt(amo);
+                        for(int i=1;i<size_jk;i++)
                         {
-
-
-
-                            uuid1 = UUID.randomUUID().toString();
-                            net = value - value1;
-
-                            Log.d("hasing", "Key: "+value+" Value: "+value1);
-                            if(net < 0)
-                            {
-                                db.addIndivisual(uuid1,uuid,key,key1,value,value1,0);
-                            }
-                            else
-                            {
-                                db.addIndivisual(uuid1,uuid,key,key1,value1,value1,0);
-                            }
-
-
-                            if(net < 0 )
-                            {
-                                value1 = value1 -value;
-                                paid_hash.put(key1,value1);
-                            }
-                            else if(borro_itr.hasNext())
-                            {
-                               key1 =(String)borro_itr.next();
-                               Log.d("dsd",key1);
-                               value1=(int)boorow_hash.get(key1);
-                            }
-                            else
-                            {
-                                key1="";
-                                value1=0;
-                            }
-
-
-
-                            if(net > 0 && value1 != 0)
-                            {
-                                value = net;
-                                paid_hash.put(key,net);
-                            }
-                            else if(myVeryOwnIterator.hasNext())
-                            {
-                                key =(String)myVeryOwnIterator.next();
-                                Log.d("dsd",key);
-                                value=(int)paid_hash.get(key);
-
-                            }
-                            else
-                                break;
-                        //  ;
-
-                            Log.d("hasing12", "Key: "+value+" Value: "+value1);
-                           // Toast.makeText(this, "Key: "+key+" Value: "+value, Toast.LENGTH_LONG).show();
+                            paid_arr[i]=0;
                         }
-
                     }
+
+
+                    if(split.getSelectedItemPosition() == 1)
+                    {
+                        split_arr = new int[size_jk];
+                        devide = Integer.parseInt(amo)/size_jk;
+                        for(int i=0;i<size_jk;i++)
+                        {
+                            split_arr[i]=devide;
+                        }
+                    }
+
+                    if(implementHashing(split_arr,paid_arr,size_jk))
+                    {
+                        if(db.addExpense(uuid,dis,tt,categ,total,thisDate,image,0))
+                        {
+                            addExpenseToFirestore(uuid,dis,tt,categ,total,image,0);
+
+                            for(int i=0;i<size_jk;i++)
+                            {
+                                details_id =  UUID.randomUUID().toString();
+
+                                db.history_details(details_id,uuid,par_friends.get(i).getId(),paid_arr[i],split_arr[i]);
+                                addDetailsToFirestore(uuid,par_friends.get(i).getId(),paid_arr[i],split_arr[i]);
+                            }
+
+                            Toast.makeText(AddExpenseActivity.this,"Successfully inserted",Toast.LENGTH_LONG).show();
+
+                            Iterator myVeryOwnIterator = paid_hash.keySet().iterator();
+                            Iterator borro_itr = boorow_hash.keySet().iterator();
+                            Iterator give_itr = give_hash.keySet().iterator();
+
+
+                            String key=(String)myVeryOwnIterator.next();
+                            int value=(int)paid_hash.get(key);
+
+                            String key1 =(String)borro_itr.next();
+                            int value1=(int)boorow_hash.get(key1);
+                            int net=0;
+
+
+
+                            while(true)
+                            {
+
+                                uuid1 = UUID.randomUUID().toString();
+                                net = value - value1;
+
+                                if(net <= 0)
+                                {
+
+                                    db.addIndivisual(uuid1,uuid,key,key1,value,0);
+
+
+                                    db.updateExpense(key1,give_hash.get(key1)+value);
+                                    if(getForNetUpdate(key,key1))
+                                    {
+                                        balance_fire = balance_fire+value;
+                                        addToFirestore(key,key1,balance_fire);
+                                        balance_fire=0;
+                                        if(getForNetUpdate(key1,key))
+                                        {
+                                            balance_fire = balance_fire-value;
+                                            addToFirestore(key1,key,balance_fire);
+                                            balance_fire=0;
+                                        }
+                                    }
+
+
+                                }
+                                else
+                                {
+                                    db.addIndivisual(uuid1,uuid,key,key1,value1,0);
+                                    db.updateExpense(key1,give_hash.get(key1)+value1);
+
+                                    if(getForNetUpdate(key,key1))
+                                    {
+                                        balance_fire = balance_fire + value;
+                                        addToFirestore(key,key1,balance_fire);
+                                        balance_fire=0;
+                                        if(getForNetUpdate(key1,key))
+                                        {
+                                            balance_fire = balance_fire-value1;
+                                            addToFirestore(key1,key,balance_fire);
+                                            balance_fire=0;
+                                        }
+                                    }
+
+
+                                }
+
+                                if(net < 0 )
+                                {
+                                    value1 = value1 -value;
+                                    boorow_hash.put(key1,value1);
+                                }
+                                else if(borro_itr.hasNext())
+                                {
+                                    key1 =(String)borro_itr.next();
+                                    Log.d("dsd",key1);
+                                    value1=(int)boorow_hash.get(key1);
+                                }
+                                else
+                                {
+                                    key1="";
+                                    value1=0;
+                                }
+                                if(net > 0 && value1 != 0)
+                                {
+                                    value = net;
+                                    paid_hash.put(key,net);
+                                }
+                                else if(myVeryOwnIterator.hasNext())
+                                {
+                                    key =(String)myVeryOwnIterator.next();
+                                    //Log.d("dsd",key);
+                                    value=(int)paid_hash.get(key);
+
+
+                                }
+                                else
+                                    break;
+
+                            }
+
+                        }
+                    }
+
                 }
 
 
@@ -351,8 +410,8 @@ public class AddExpenseActivity extends AppCompatActivity
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 final String name = String.valueOf(f_name.getText());
-                                String email = String.valueOf(f_email.getText());
-                                String contact = String.valueOf(f_contact.getText());
+                                final String email = String.valueOf(f_email.getText());
+                                final String contact = String.valueOf(f_contact.getText());
 
                                 if(name.length() == 0)
                                 {
@@ -394,21 +453,46 @@ public class AddExpenseActivity extends AppCompatActivity
                                                        {
 
 
+
                                                            if(dataSnapshot.getValue() == null)
                                                            {
                                                                //send request for add new friend on server
                                                                if(db.addNew(null,nm,em,"",0,""))
                                                                {
-                                                                   Toast.makeText(AddExpenseActivity.this,"Success",Toast.LENGTH_LONG).show();
+
+                                                                   Toast.makeText(AddExpenseActivity.this,"Send request to friend",Toast.LENGTH_LONG).show();
                                                                }
 
 
                                                            }
                                                            else
                                                            {
-                                                               String key = dataSnapshot.getValue().toString();
-                                                               uid[0] = key.split("\\{");
-                                                               Toast.makeText(AddExpenseActivity.this,"get data + " + uid[0][1],Toast.LENGTH_LONG).show();
+                                                               for(DataSnapshot data:dataSnapshot.getChildren())
+                                                               {
+                                                                   Log.i("result",data.toString());
+
+                                                                   String key = data.getKey().toString();
+                                                                    String  cn = data.child("Contact").getValue().toString();
+                                                                    String profile = data.child("Profile").getValue().toString();
+                                                                   //String Name = data.child("Name").getValue().toString();
+                                                                    if(cn == null)
+                                                                        cn="";
+                                                                    if(profile == null)
+                                                                        profile="";
+                                                                   if(db.addNew(key,name,email,cn,0,profile))
+                                                                   {
+
+                                                                       addToFirestore(youid,key,0);
+                                                                       addToFirestore(key,youid,0);
+
+
+
+                                                                   }
+
+
+                                                               }
+
+
 
 
                                                            }
@@ -444,28 +528,38 @@ public class AddExpenseActivity extends AppCompatActivity
                                             final String[][] uid = {new String[5]};
                                             databaseReference.orderByChild("Contact").equalTo(contact).addListenerForSingleValueEvent(new ValueEventListener() {
                                                 @Override
-                                                public void onDataChange(DataSnapshot dataSnapshot)
-                                                {
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                                    if(dataSnapshot.getValue() == null)
+                                                    if (dataSnapshot.getValue() == null)
                                                     {
-                                                        if(db.addNew(null,nm,"",cn,0,""))
+                                                        if (db.addNew(null, nm, "", cn, 0, ""))
                                                         {
-                                                            Toast.makeText(AddExpenseActivity.this,"Success contact",Toast.LENGTH_LONG).show();
+                                                            Toast.makeText(AddExpenseActivity.this, "Send request by  contact", Toast.LENGTH_LONG).show();
+                                                        }
+
+                                                    } else {
+                                                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                                            Log.i("result", data.toString());
+
+                                                            String key = data.getKey().toString();
+                                                            String em = data.child("Email").getValue().toString();
+                                                            String profile = data.child("Profile").getValue().toString();
+                                                            //String Name = data.child("Name").getValue().toString();
+                                                            if (em == null)
+                                                                em = "";
+                                                            if (profile == null)
+                                                                profile = "";
+                                                            if (db.addNew(key, name, em, contact, 0, profile)) {
+
+                                                                addToFirestore(youid, key,0);
+                                                                addToFirestore(key, youid,0);
+
+
+                                                            }
+
                                                         }
 
                                                     }
-                                                    else
-                                                    {
-                                                        String key = dataSnapshot.getValue().toString();
-                                                        uid[0] = key.split("\\{");
-                                                        Toast.makeText(AddExpenseActivity.this,"get contact data + " + dataSnapshot.getValue(),Toast.LENGTH_LONG).show();
-
-
-                                                    }
-
-
-
                                                 }
                                                 @Override
                                                 public void onCancelled(DatabaseError databaseError)
@@ -512,10 +606,118 @@ public class AddExpenseActivity extends AppCompatActivity
             }
         });
 
+    }
+
+    private boolean getForNetUpdate(String key, String key1)
+    {
+
+        firestore.collection("Users").document(key)
+                .collection("Friends").document(key1)
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful())
+                    {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists())
+                        {
+                            Map<String, Object> forms = document.getData();
+                            balance_fire =Long.parseLong(forms.get("Balance").toString());
+                            Log.d("get data", "DocumentSnapshot data: " + forms.toString());
+                        }
+                        else
+                            {
+                            Log.d("no data", "No such document");
+                        }
+                    } else {
+                        Log.d("error", "get failed with ", task.getException());
+                    }
+                }
+            });
+
+        return true;
+    }
+
+    private void addDetailsToFirestore( String uuid, String id, int i, int i1)
+    {
+        Map<String, Object> transaction = new HashMap<>();
+
+        transaction.put("paid", i);
+        transaction.put("expense", i1);
+
+
+        firestore.collection("Users").document(youid).
+                collection("Transactions").document(uuid).
+                collection("Participates").document(id).
+                set(transaction).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("success details", "DocumentSnapshot successfully written!");
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("fail", "Error writing document", e);
+                    }
+                });
+    }
 
 
 
 
+    private void addExpenseToFirestore(String uuid, String dis,
+                                       String tt, String categ, int total, String image, int i)
+    {
+        Map<String, Object> transaction = new HashMap<>();
+        transaction.put("amount", total);
+
+        transaction.put("date",new Date());
+        transaction.put("billImage", image);
+        transaction.put("sync", i);
+        transaction.put("description", dis);
+        transaction.put("title", tt);
+        transaction.put("category", categ);
+
+
+
+        firestore.collection("Users").document(youid).
+                collection("Transactions").document(uuid).
+                set(transaction).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("success", "Transaction done successfully");
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("fail", "Error writing document", e);
+                    }
+                });
+
+
+    }
+
+    private void addToFirestore(String keyz, String youidz,long balance)
+    {
+        Map<String, Object> user = new HashMap<>();
+        user.put("Balance", balance);
+
+        firestore.collection("Users").document(keyz).
+                collection("Friends").document(youidz).
+                set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("success ", "DocumentSnapshot successfully written!");
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("fail", "Error writing document", e);
+                    }
+                });
 
     }
 
@@ -525,15 +727,18 @@ public class AddExpenseActivity extends AppCompatActivity
         {
             int net = paid_arr[i] - split_arr[i];
 
+            give_hash.put(par_friends.get(i).getId(),par_friends.get(i).getBalance());
             if(net > 0)
             {
                 paid_hash.put(par_friends.get(i).getId(),net);
-                Log.d(net+" hj"+i,par_friends.get(i).getId()+"fgdg"+paid_hash.get(par_friends.get(i).getId())+"");
+
+
+                //Log.d(net+" hj"+i,par_friends.get(i).getId()+"fgdg"+paid_hash.get(par_friends.get(i).getId())+"");
             }
             else {
                 net=   split_arr[i] - paid_arr[i];
                 boorow_hash.put(par_friends.get(i).getId(), net);
-                Log.d(net+" hj12"+i,"hhjf "+par_friends.get(i).getId()+" jk" +boorow_hash.get(par_friends.get(i).getId())+"");
+               // Log.d(net+" hj12"+i,"hhjf "+par_friends.get(i).getId()+" jk" +boorow_hash.get(par_friends.get(i).getId())+"");
             }
 
 
@@ -596,9 +801,13 @@ public class AddExpenseActivity extends AppCompatActivity
 
 
                         int sum=0;
+                        int c;
                         for(int i=0;i<sz;i++)
                         {
-                            int c = Integer.parseInt(String.valueOf(ex[i].getText()));
+                            if(ex[i].getText().length() > 0)
+                             c = Integer.parseInt(String.valueOf(ex[i].getText()));
+                            else
+                                c=0;
                             arr[i] =c;
                             sum =sum+c;
                             //Log.d("msg",arr[i]+"");

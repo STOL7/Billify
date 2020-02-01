@@ -233,7 +233,8 @@ public class MainActivity extends AppCompatActivity
         tabLayout.setupWithViewPager(viewPager);
 
         tabLayout.getTabAt(0).setText("All");
-        tabLayout.getTabAt(1).setText("Group ");
+        tabLayout.getTabAt(1).setText("Group");
+//        tabLayout.getTabAt(2).setText("History");
 
          account = GoogleSignIn.getLastSignedInAccount(this);
         accessToken = AccessToken.getCurrentAccessToken();
