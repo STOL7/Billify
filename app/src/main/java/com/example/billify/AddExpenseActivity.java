@@ -310,18 +310,10 @@ public class AddExpenseActivity extends AppCompatActivity
 
 
                                     db.updateExpense(key1,give_hash.get(key1)+value);
-                                    if(getForNetUpdate(key,key1))
-                                    {
-                                        balance_fire = balance_fire+value;
-                                        addToFirestore(key,key1,balance_fire);
-                                        balance_fire=0;
-                                        if(getForNetUpdate(key1,key))
-                                        {
-                                            balance_fire = balance_fire-value;
-                                            addToFirestore(key1,key,balance_fire);
-                                            balance_fire=0;
-                                        }
-                                    }
+                                   getForNetUpdate(key,key1,value);
+
+                                    getForNetUpdate(key1,key,-value);
+
 
 
                                 }
@@ -330,18 +322,11 @@ public class AddExpenseActivity extends AppCompatActivity
                                     db.addIndivisual(uuid1,uuid,key,key1,value1,0);
                                     db.updateExpense(key1,give_hash.get(key1)+value1);
 
-                                    if(getForNetUpdate(key,key1))
-                                    {
-                                        balance_fire = balance_fire + value;
-                                        addToFirestore(key,key1,balance_fire);
-                                        balance_fire=0;
-                                        if(getForNetUpdate(key1,key))
-                                        {
-                                            balance_fire = balance_fire-value1;
-                                            addToFirestore(key1,key,balance_fire);
-                                            balance_fire=0;
-                                        }
-                                    }
+
+                                    getForNetUpdate(key,key1,value1);
+                                    getForNetUpdate(key1,key,-value1);
+
+
 
 
                                 }
@@ -608,7 +593,9 @@ public class AddExpenseActivity extends AppCompatActivity
 
     }
 
-    private boolean getForNetUpdate(String key, String key1)
+
+
+    private long getForNetUpdate(final String key, final String key1, final long value)
     {
 
         firestore.collection("Users").document(key)
@@ -623,7 +610,8 @@ public class AddExpenseActivity extends AppCompatActivity
                         {
                             Map<String, Object> forms = document.getData();
                             balance_fire =Long.parseLong(forms.get("Balance").toString());
-                            Log.d("get data", "DocumentSnapshot data: " + forms.toString());
+                            Log.d("get data", "DocumentSnapshot data: " + balance_fire);
+                            addToFirestore(key,key1,balance_fire+value);
                         }
                         else
                             {
@@ -635,7 +623,7 @@ public class AddExpenseActivity extends AppCompatActivity
                 }
             });
 
-        return true;
+        return balance_fire;
     }
 
     private void addDetailsToFirestore( String uuid, String id, int i, int i1)

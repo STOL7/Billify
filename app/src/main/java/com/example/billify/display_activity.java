@@ -42,6 +42,7 @@ private TextView txt;
 
 
     Intent intent;
+
     FloatingActionButton f_action_btn;
 
     Context con;
@@ -83,6 +84,8 @@ private TextView txt;
         txt.setText(getString(R.string.no_birthday_found));
         recyclerview.setHasFixedSize(true);
         recyclerview.setLayoutManager(layoutmanager);
+        //f_action_btn = (FloatingActionButton)getView().findViewById(R.id.fab);
+        getView().findViewById(R.id.fab).setVisibility(View.INVISIBLE);
 
         recyclerview.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
       DatabaseHelper db = new DatabaseHelper(con);
@@ -91,6 +94,10 @@ private TextView txt;
 
 
         histories = db.geHistory();
+        if(histories.size() >0)
+        {
+            txt.setVisibility(View.INVISIBLE);
+        }
 
         adapt = new activityAdapter(histories);
         recyclerview=(RecyclerView)getView().findViewById(R.id.recycler_view);

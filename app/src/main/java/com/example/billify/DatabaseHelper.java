@@ -266,7 +266,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 history.setDate(cursor.getString(2));
 
                 history.setDescription(cursor.getString(5));
-                friend.setId(cursor.getString(0));
+                history.setId(cursor.getString(0));
 
                 history.setTitle(cursor.getString(6));
                 history.setCategory(cursor.getString(7));

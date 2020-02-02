@@ -30,6 +30,8 @@ public class SimpleFragmentPageAdapter extends FragmentPagerAdapter {
                 return new display_friends();
             case 1:
                 return new display_friends();
+            case 2:
+                return new display_activity();
 
 
             default:
@@ -44,7 +46,7 @@ public class SimpleFragmentPageAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 2;
+        return 3;
     }
 
     @Override

@@ -63,6 +63,7 @@ public class activityAdapter extends RecyclerView.Adapter<activityAdapter.MyView
 //        String em=emails.get(i);
 
         String img=histories.get(i).getBillIMage();
+        long exp = histories.get(i).getAmount();
         final String dd=histories.get(i).getDate();
 
         final Context context=myViewHolder.img.getContext();
@@ -83,11 +84,12 @@ public class activityAdapter extends RecyclerView.Adapter<activityAdapter.MyView
         }
 
         //startAppAd= new StartAppAd(context);
-        /*myViewHolder.bdate.setText(bd);
-        myViewHolder.names.setText(nm);
+        myViewHolder.date.setText(dd);
+        myViewHolder.expense.setText(exp+"");
+        myViewHolder.title.setText(tt);
 
 
-        myViewHolder.rlt.setOnClickListener(new View.OnClickListener() {
+       /* myViewHolder.rlt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
             {
@@ -116,6 +118,7 @@ public class activityAdapter extends RecyclerView.Adapter<activityAdapter.MyView
         //TextView email;
         TextView title;
         TextView date;
+        TextView expense;
 
         RelativeLayout rlt;
         public MyViewHolder(View itemView)
@@ -123,10 +126,11 @@ public class activityAdapter extends RecyclerView.Adapter<activityAdapter.MyView
             super(itemView);
 
 
-            img=(ImageView)itemView.findViewById(R.id.bill_image);
+            img=(ImageView)itemView.findViewById(R.id.bill);
             // email=(TextView)itemView.findViewById(R.id.em);
             date=(TextView)itemView.findViewById(R.id.date);
             title=(TextView)itemView.findViewById(R.id.titl);
+            expense=(TextView)itemView.findViewById(R.id.expense);
             rlt=(RelativeLayout)itemView.findViewById(R.id.rlt);
 
 

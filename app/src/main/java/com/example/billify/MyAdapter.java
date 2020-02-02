@@ -2,6 +2,9 @@ package com.example.billify;
 
 import android.content.Context;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +14,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
-
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -61,15 +65,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
 //        String em=emails.get(i);
 
         String img=friends.get(i).getProfile();
+        long net_expense=friends.get(i).getBalance();
         final String bd=friends.get(i).getContact();
 
         final Context context=myViewHolder.img.getContext();
-
-       // if(img.equals(""))
-       // {
+        if(img.equals(""))
+        {
             myViewHolder.img.setImageResource(R.drawable.profile);
-       // }
-        /*else
+        }
+        else
         {
             String imageDataBytes = img.substring(img.indexOf(",")+1);
 
@@ -78,11 +82,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
             Bitmap bitmap = BitmapFactory.decodeStream(stream);
 
             myViewHolder.img.setImageBitmap(bitmap);
-        }*/
+        }
 
         //startAppAd= new StartAppAd(context);
         myViewHolder.bdate.setText(bd);
         myViewHolder.names.setText(nm);
+        myViewHolder.net.setText(net_expense+"");
 
 
 
@@ -107,6 +112,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
         //TextView email;
         TextView names;
         TextView bdate;
+        TextView net;
 
         RelativeLayout rlt;
         public MyViewHolder(View itemView)
@@ -117,6 +123,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
 
             bdate=(TextView)itemView.findViewById(R.id.bdate);
             names=(TextView)itemView.findViewById(R.id.name);
+            net = (TextView) itemView.findViewById(R.id.net_expense);
             rlt=(RelativeLayout)itemView.findViewById(R.id.rlt);
 
 
