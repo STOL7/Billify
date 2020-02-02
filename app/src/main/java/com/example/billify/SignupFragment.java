@@ -45,13 +45,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONObject;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -61,13 +58,12 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
 
     ProgressDialog progressDialog;
     private EditText inputUserName,inputPhone,inputEmail,inputPassword;
-    private Button btnSignIn,btnSignUp,btnResetPassword;
+    private Button btnSignIn,btnSignUp,btnResetPassword,btnGoogle;
     private ProgressBar progressBar;
     private FirebaseAuth auth;
     private CallbackManager callbackManager;
     private SignInButton btnGoogleSignIn;
     private LoginButton btnFacebook;
-    FirebaseFirestore firestore;
     private CallbackManager callbackManager1;
     private static Animation shakeAnimation;
     private static FragmentManager fragmentManager;
@@ -84,7 +80,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.activity_signup,container,false);
 
         auth = FirebaseAuth.getInstance();
-        firestore = FirebaseFirestore.getInstance();
+
         btnSignIn = (Button) view.findViewById(R.id.sign_in_button);
         btnSignUp = (Button) view.findViewById(R.id.sign_up_button);
         inputEmail = (EditText) view.findViewById(R.id.email);
@@ -98,6 +94,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
 
         btnFacebook = (LoginButton) view.findViewById(R.id.login_button);
         btnGoogleSignIn = (SignInButton) view.findViewById(R.id.google_button);
+        btnGoogle = (Button) view.findViewById(R.id.google);
 
 
 
@@ -106,7 +103,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
 
 
         btnSignUp.setOnClickListener(this);
-        btnResetPassword.setOnClickListener(this);
+        // btnResetPassword.setOnClickListener(this);
         btnSignIn.setOnClickListener(this);
 
 
@@ -116,16 +113,15 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 .build();
 
         googleApiClient=new GoogleApiClient.Builder(getActivity())
-                .enableAutoManage(getActivity(),1, (GoogleApiClient.OnConnectionFailedListener) getActivity())
+                .enableAutoManage(getActivity(),2, (GoogleApiClient.OnConnectionFailedListener) getActivity())
                 .addApi(Auth.GOOGLE_SIGN_IN_API,gso)
                 .build();
 
-        btnGoogleSignIn.setOnClickListener(new View.OnClickListener() {
+        btnGoogle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-                startActivityForResult(intent,RC_SIGN_IN);
-            }
+                startActivityForResult(intent,RC_SIGN_IN);      }
         });
 
 
@@ -146,14 +142,14 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                                 "Login_Fragment").commit();
                 break;
 
-            case R.id.btn_reset_password:
+           /* case R.id.btn_reset_password:
 
                 fragmentManager
                         .beginTransaction()
                         .replace(R.id.fragmentContainer,
                                 new ResetPasswordFragment(),
                                 "ForgotPassword_Fragment").commit();
-                break;
+                break;*/
             case R.id.sign_up_button:
 
                 checkValidation();
@@ -163,15 +159,17 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
 
 
 
+
+
     private void checkValidation()
     {
         ConnectivityManager conMgr = (ConnectivityManager)getActivity().getSystemService (Context.CONNECTIVITY_SERVICE);
         // Get all edittext texts
-        final String getFullName = inputUserName.getText().toString();
-        final String getEmailId = inputEmail.getText().toString();
-        final String getMobileNumber = inputPhone.getText().toString();
+        final String getFullName = inputUserName.getText().toString().trim();
+        final String getEmailId = inputEmail.getText().toString().trim();
+        final String getMobileNumber = inputPhone.getText().toString().trim();
         NetworkInfo activeNetworkInfo = conMgr.getActiveNetworkInfo();
-        final String getPassword = inputPassword.getText().toString();
+        final String getPassword = inputPassword.getText().toString().trim();
         //String getConfirmPassword = confirmPassword.getText().toString();
 
         // Pattern match for email id
@@ -186,21 +184,16 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
 
         // Check if all strings are null or not
         if (getFullName.equals("") || getFullName.length() == 0
-                || getEmailId.equals("") || getEmailId.length() == 0
-                || getMobileNumber.equals("") || getMobileNumber.length() == 0
-
                 || getPassword.equals("") || getPassword.length() == 0)
-                //|| getConfirmPassword.equals("")
-                //|| getConfirmPassword.length() == 0)
+            //|| getConfirmPassword.equals("")
+            //|| getConfirmPassword.length() == 0)
 
             Toast.makeText(getActivity(), "All fields are required.", Toast.LENGTH_SHORT)
                     .show();
 
 
             // Check if email id valid or not
-        else if (!m.find())
-            Toast.makeText(getActivity(), "Your Email Id is Invalid.", Toast.LENGTH_SHORT)
-                    .show();
+
         else if (!m1.find())
         {
             AlertDialog dialog = new AlertDialog.Builder(getActivity())
@@ -215,7 +208,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
        /* else if (!getConfirmPassword.equals(getPassword))
             Toast.makeText(getActivity(), "Both password doesn't match.", Toast.LENGTH_SHORT)
                     .show();*/
-            // Else do signup or do your stuff
+        // Else do signup or do your stuff
         else if (conMgr == null || activeNetworkInfo == null)
         {
 
@@ -228,7 +221,9 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
             dialog.show();
 
         }
-        else
+        else if( ((!getEmailId.equals("") || getEmailId.length() != 0)
+                && (!getMobileNumber.equals("") || getMobileNumber.length() != 0)) || ((!getEmailId.equals("") || getEmailId.length() != 0)
+                && (getMobileNumber.equals("") || getMobileNumber.length() == 0)))
         {
 
             progressDialog = new ProgressDialog(getActivity());
@@ -269,10 +264,13 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
 
                                             //ref.child("Password").setValue(getPassword);
 
-                                            Map<String, Object> user = new HashMap<>();
-                                            user.put("Balance", 0);
-                                            firestore.collection("Users").document(currentperson.getUid()).set(user);
+
                                             FirebaseAuth.getInstance().signOut();
+                                            fragmentManager
+                                                    .beginTransaction()
+                                                    .replace(R.id.fragmentContainer,
+                                                            new LoginFragment(),
+                                                            "Login_Fragment").commit();
                                             Toast.makeText(getActivity(), "Registered Successfully.Please check your email for verification", Toast.LENGTH_SHORT)
                                                     .show();
                                             progressDialog.dismiss();
@@ -310,6 +308,20 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
 
 
                     });
+        }
+        else if((getEmailId.equals("") || getEmailId.length() == 0)
+                && (!getMobileNumber.equals("") || getMobileNumber.length() != 0))
+        {
+            Bundle bundle = new Bundle();
+            bundle.putString("phone",getMobileNumber); // Put anything what you want
+            bundle.putString("username",getFullName);
+            VerifyPhoneFragment fragment2 = new VerifyPhoneFragment();
+            fragment2.setArguments(bundle);
+
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragmentContainer, fragment2)
+                    .commit();
         }
 
     }
@@ -373,7 +385,14 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         Intent intent=new Intent(getActivity(),MainActivity.class);
         startActivity(intent);
     }
-
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (googleApiClient != null && googleApiClient.isConnected()) {
+            googleApiClient.stopAutoManage(getActivity());
+            googleApiClient.disconnect();
+        }
+    }
 
 
 }

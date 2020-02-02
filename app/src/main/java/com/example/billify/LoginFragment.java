@@ -77,7 +77,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private EditText inputEmail, inputPassword;
     private FirebaseAuth auth;
     private ProgressBar progressBar;
-    private Button btnSignup, btnLogin, btnReset;
+    private Button btnSignup, btnLogin, btnReset,btnGoogle;
     private SignInButton btnGoogleSignIn;
     private LoginButton btnFacebook;
     private CallbackManager callbackManager;
@@ -111,7 +111,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         btnLogin = (Button) view.findViewById(R.id.sign_in_button);
         btnSignup = (Button) view.findViewById(R.id.sign_up_button);
         btnReset = (Button) view.findViewById(R.id.btn_reset_password);
-
+        btnGoogle = (Button) view.findViewById(R.id.google);
         databaseReference= FirebaseDatabase.getInstance().getReference("Users");
         fragmentManager =getActivity().getSupportFragmentManager();
 
@@ -133,24 +133,27 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 .build();
 
         googleApiClient=new GoogleApiClient.Builder(getActivity())
-                .enableAutoManage(getActivity(),0, (GoogleApiClient.OnConnectionFailedListener) getActivity())
+                .enableAutoManage(getActivity(),1, (GoogleApiClient.OnConnectionFailedListener) getActivity())
                 .addApi(Auth.GOOGLE_SIGN_IN_API,gso)
                 .build();
 
-        btnGoogleSignIn.setOnClickListener(new View.OnClickListener() {
+
+        btnGoogle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-                startActivityForResult(intent,RC_SIGN_IN);
-            }
+                startActivityForResult(intent,RC_SIGN_IN);      }
         });
+
+
+
 
 
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getActivity());
 
         accessToken = AccessToken.getCurrentAccessToken();
 
-             return view;
+        return view;
     }
 
 
@@ -159,6 +162,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         btnLogin.setOnClickListener(this);
         btnReset.setOnClickListener(this);
         btnSignup.setOnClickListener(this);
+
+
 
         // Set check listener over checkbox for showing and hiding password
         /*show_hide_password
@@ -306,8 +311,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
 
 
-
-
                                             DatabaseHelper hp =new DatabaseHelper(getActivity());
                                             if(hp.findByEmail(em))
                                             {
@@ -318,8 +321,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                                 Toast.makeText(getApplicationContext(), "contact exist" , Toast.LENGTH_LONG).show();
                                             }
                                             else
-                                                {
-                                                if(hp.addNew(user.getUid(), nm, em, cn, Integer.parseInt(bl), pr))
+                                            {
+                                                // if(hp.addNew(user.getUid(), nm, em, cn, Integer.parseInt(bl), pr))
                                                 Toast.makeText(getApplicationContext(), "added profile" , Toast.LENGTH_LONG).show();
                                             }
 
@@ -432,7 +435,16 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
     private void gotoMainActivity(){
-       getActivity().finish();
+        getActivity().finish();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (googleApiClient != null && googleApiClient.isConnected()) {
+            googleApiClient.stopAutoManage(getActivity());
+            googleApiClient.disconnect();
+        }
     }
 
 }
