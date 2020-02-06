@@ -442,9 +442,11 @@ public class AddExpenseActivity extends AppCompatActivity
                                                            if(dataSnapshot.getValue() == null)
                                                            {
                                                                //send request for add new friend on server
-                                                               if(db.addNew(null,nm,em,"",0,""))
+                                                               if(db.addNew(email,nm,em,"",0,""))
                                                                {
 
+                                                                   addToFirestore(youid,email,0);
+                                                                   addToFirestore(email,youid,0);
                                                                    Toast.makeText(AddExpenseActivity.this,"Send request to friend",Toast.LENGTH_LONG).show();
                                                                }
 
@@ -517,12 +519,16 @@ public class AddExpenseActivity extends AppCompatActivity
 
                                                     if (dataSnapshot.getValue() == null)
                                                     {
-                                                        if (db.addNew(null, nm, "", cn, 0, ""))
+                                                        if (db.addNew(contact, nm, "", cn, 0, ""))
                                                         {
+                                                            addToFirestore(youid,contact,0);
+                                                            addToFirestore(contact,youid,0);
                                                             Toast.makeText(AddExpenseActivity.this, "Send request by  contact", Toast.LENGTH_LONG).show();
                                                         }
 
-                                                    } else {
+                                                    }
+                                                    else
+                                                        {
                                                         for (DataSnapshot data : dataSnapshot.getChildren()) {
                                                             Log.i("result", data.toString());
 

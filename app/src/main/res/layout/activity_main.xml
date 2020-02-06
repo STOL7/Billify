@@ -33,6 +33,7 @@
             android:layout_gravity="start"
             android:id="@+id/shitstuff"
 
+            android:background="@drawable/gradient"
             app:itemTextColor="@color/colorPrimary"
             app:menu="@menu/menu"
 

@@ -23,36 +23,35 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class WelcomeActivity extends AppCompatActivity
 {
-    ImageView splash;
-    Animation animation;
-    Timer timer;
+    ImageView top,bot;
+    Animation topanim,botanim;
+    Timer timer,timer2;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
 
-       splash = findViewById(R.id.imageView);
-        animation = AnimationUtils.loadAnimation(this,R.anim.splash_animation);
+        top = findViewById(R.id.splashb);
+        bot = findViewById(R.id.splasht);
+        topanim = AnimationUtils.loadAnimation(this, R.anim.splash_top);
+        botanim = AnimationUtils.loadAnimation(this, R.anim.splash_bottom);
 
-       splash.setAnimation(animation);
-
+        top.setAnimation(topanim);
+        bot.setAnimation(botanim);
         timer = new Timer();
-        timer.schedule(new TimerTask()
-        {
+        timer.schedule(new TimerTask() {
             @Override
-            public void run()
-            {
+            public void run() {
 
-                Intent intent  = new Intent(WelcomeActivity.this,MainActivity.class);
+                Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
             }
-        },3000);
+        }, 5000);
+
 
         printHashKey();
-
     }
 
     private void printHashKey() {

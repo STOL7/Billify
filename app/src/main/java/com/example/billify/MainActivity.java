@@ -309,9 +309,4 @@ public class MainActivity extends AppCompatActivity
         //startNotification();
     }
 
-
-
-
-
-
 }
