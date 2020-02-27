@@ -120,7 +120,8 @@ private TextView txt;
         if(friends.size() > 0)
         {
             Friend fd = friends.get(0);
-            friends.remove(0);
+
+
             fd.setId(fd.getId());
             fd.setBalance(fd.getBalance());
             fd.setProfile(fd.getProfile());
@@ -128,6 +129,7 @@ private TextView txt;
             fd.setName(fd.getName());
             fd.setEmail(fd.getEmail());
             bf.setYou(fd);
+            friends.remove(0);
         }
 
 

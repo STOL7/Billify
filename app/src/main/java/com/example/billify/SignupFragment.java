@@ -194,6 +194,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
 
             // Check if email id valid or not
 
+
         else if (!m1.find())
         {
             AlertDialog dialog = new AlertDialog.Builder(getActivity())
