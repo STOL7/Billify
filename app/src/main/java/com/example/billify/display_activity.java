@@ -125,7 +125,6 @@ private TextView txt;
                                 history.setTitle(documentSnapshot.getString("description"));
                                 history.setDate(String.valueOf(documentSnapshot.getDate("date")));
                                 addHistory(history);
-                                Toast.makeText(getActivity(),"inside",Toast.LENGTH_LONG).show();
 
                             }
                         });
@@ -160,25 +159,14 @@ private TextView txt;
         {
             txt.setVisibility(View.INVISIBLE);
         }*/
-
-
-        Toast.makeText(getActivity(),"outside",Toast.LENGTH_LONG).show();
-
-        adapt = new activityAdapter(histories);
-        recyclerview.setLayoutManager(layoutmanager);
-        recyclerview.setHasFixedSize(true);
-
-        recyclerview.setAdapter(adapt);
-
-
-
-
-
-
     }
     public ArrayList<History> addHistory(History history)
     {
         histories.add(history);
+        adapt = new activityAdapter(histories);
+        recyclerview.setLayoutManager(layoutmanager);
+        recyclerview.setHasFixedSize(true);
+        recyclerview.setAdapter(adapt);
         return histories;
     }
 
