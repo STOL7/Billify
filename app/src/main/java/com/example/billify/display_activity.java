@@ -52,7 +52,7 @@ private TextView txt;
     FirebaseFirestore fStore;
     String userId;
     History history;
-   
+
 
 
     activityAdapter adapt = new activityAdapter();
@@ -125,6 +125,7 @@ private TextView txt;
                                 history.setTitle(documentSnapshot.getString("description"));
                                 history.setDate(String.valueOf(documentSnapshot.getDate("date")));
                                 addHistory(history);
+                                Toast.makeText(getActivity(),"inside",Toast.LENGTH_LONG).show();
 
                             }
                         });
@@ -160,12 +161,8 @@ private TextView txt;
             txt.setVisibility(View.INVISIBLE);
         }*/
 
-       /* history = new History();
-        history.setTitle("1");
-        history.setDate("12");
-        history.setAmount(200);
-        history.setBillIMage("123");
-        histories.add(history);*/
+
+        Toast.makeText(getActivity(),"outside",Toast.LENGTH_LONG).show();
 
         adapt = new activityAdapter(histories);
         recyclerview.setLayoutManager(layoutmanager);
@@ -181,7 +178,6 @@ private TextView txt;
     }
     public ArrayList<History> addHistory(History history)
     {
-        Toast.makeText(getActivity(),history.getTitle(),Toast.LENGTH_LONG).show();
         histories.add(history);
         return histories;
     }
