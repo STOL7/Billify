@@ -52,7 +52,9 @@ private TextView txt;
     FirebaseFirestore fStore;
     String userId;
     History history;
-
+    private static final String title[] = new String[100];
+    public int a=0;
+    SharedPreferences sharedPreferences;
 
 
     activityAdapter adapt = new activityAdapter();
@@ -110,10 +112,11 @@ private TextView txt;
 
         recyclerview = (RecyclerView) getView().findViewById(R.id.recycler_view);
 
-        fStore.collection("Users").document(userId).collection("Transactions").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+       /* fStore.collection("Users").document(userId).collection("Transactions").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
+                    Toast.makeText(getActivity(),"History",Toast.LENGTH_LONG).show();
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         DocumentReference documentReference = fStore.collection("Users").document(userId).collection("Transactions").document(document.getId());
                         documentReference.addSnapshotListener(getActivity(), new EventListener<DocumentSnapshot>() {
@@ -124,7 +127,7 @@ private TextView txt;
                                 history.setAmount(documentSnapshot.getLong("amount"));
                                 history.setTitle(documentSnapshot.getString("description"));
                                 history.setDate(String.valueOf(documentSnapshot.getDate("date")));
-                                addHistory(history);
+
 
                             }
                         });
@@ -133,7 +136,7 @@ private TextView txt;
                         Toast.makeText(getActivity(),"Error is:"+task.getException(),Toast.LENGTH_LONG).show();
                 }
             }
-        });
+        });*/
 
 
 
@@ -141,7 +144,7 @@ private TextView txt;
 
 
 
-       /*txt=(TextView)getView().findViewById(R.id.no_birthday);
+       txt=(TextView)getView().findViewById(R.id.no_birthday);
         txt.setText(getString(R.string.no_birthday_found));
         recyclerview.setHasFixedSize(true);
         recyclerview.setLayoutManager(layoutmanager);
@@ -158,17 +161,24 @@ private TextView txt;
         if(histories.size() >0)
         {
             txt.setVisibility(View.INVISIBLE);
-        }*/
-    }
-    public ArrayList<History> addHistory(History history)
-    {
-        histories.add(history);
+        }
+
+
+
         adapt = new activityAdapter(histories);
+        Toast.makeText(getActivity(),String.valueOf(adapt.getItemCount()),Toast.LENGTH_LONG).show();
         recyclerview.setLayoutManager(layoutmanager);
         recyclerview.setHasFixedSize(true);
+
         recyclerview.setAdapter(adapt);
-        return histories;
+
+
+
+
+
+
     }
+
 
     }
 
