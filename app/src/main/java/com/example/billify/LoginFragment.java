@@ -49,21 +49,28 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONObject;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -77,7 +84,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private EditText inputEmail, inputPassword;
     private FirebaseAuth auth;
     private ProgressBar progressBar;
-    private Button btnSignup, btnLogin, btnReset;
+    private Button btnSignup, btnLogin, btnReset,btnGoogle;
     private SignInButton btnGoogleSignIn;
     private LoginButton btnFacebook;
     private CallbackManager callbackManager;
@@ -87,6 +94,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private GoogleApiClient googleApiClient;
     private DatabaseReference databaseReference;
     private GoogleSignInOptions gso;
+    FirebaseFirestore firestore;
     private FirebaseAuth.AuthStateListener mAuthListener;
     Billify bf;
     ProgressDialog progressDialog;
@@ -105,13 +113,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
         bf = (Billify) getApplicationContext();
 
+        firestore = FirebaseFirestore.getInstance();
         inputEmail = (EditText) view.findViewById(R.id.email);
         inputPassword = (EditText) view.findViewById(R.id.password);
 
         btnLogin = (Button) view.findViewById(R.id.sign_in_button);
         btnSignup = (Button) view.findViewById(R.id.sign_up_button);
         btnReset = (Button) view.findViewById(R.id.btn_reset_password);
-
+        btnGoogle = (Button) view.findViewById(R.id.google);
         databaseReference= FirebaseDatabase.getInstance().getReference("Users");
         fragmentManager =getActivity().getSupportFragmentManager();
 
@@ -133,24 +142,27 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 .build();
 
         googleApiClient=new GoogleApiClient.Builder(getActivity())
-                .enableAutoManage(getActivity(),0, (GoogleApiClient.OnConnectionFailedListener) getActivity())
+                .enableAutoManage(getActivity(),1, (GoogleApiClient.OnConnectionFailedListener) getActivity())
                 .addApi(Auth.GOOGLE_SIGN_IN_API,gso)
                 .build();
 
-        btnGoogleSignIn.setOnClickListener(new View.OnClickListener() {
+
+        btnGoogle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-                startActivityForResult(intent,RC_SIGN_IN);
-            }
+                startActivityForResult(intent,RC_SIGN_IN);      }
         });
+
+
+
 
 
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getActivity());
 
         accessToken = AccessToken.getCurrentAccessToken();
 
-             return view;
+        return view;
     }
 
 
@@ -159,6 +171,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         btnLogin.setOnClickListener(this);
         btnReset.setOnClickListener(this);
         btnSignup.setOnClickListener(this);
+
+
 
         // Set check listener over checkbox for showing and hiding password
         /*show_hide_password
@@ -293,6 +307,41 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                 //Toast.makeText(getApplicationContext(), "Provide +"+user.getUid() , Toast.LENGTH_LONG).show();
                                 if(user.isEmailVerified())
                                 {
+
+                                    final String token = FirebaseInstanceId.getInstance().getToken();
+                                    user.getIdToken(true).addOnSuccessListener(new OnSuccessListener<GetTokenResult>() {
+                                        @Override
+                                        public void onSuccess(GetTokenResult getTokenResult)
+                                        {
+
+                                            final String token_id = getTokenResult.getToken();
+                                            Map<String,String>  mp = new HashMap();
+                                            mp.put("token",token);
+
+                                            firestore.collection("Users").document(user.getUid()).set(mp).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid)
+                                                {
+                                                    Toast.makeText(getApplicationContext(), token , Toast.LENGTH_LONG).show();
+                                                }
+
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                                }
+                                            });
+
+
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                        }
+                                    });;
+
+
                                     databaseReference.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot)
@@ -306,20 +355,18 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
 
 
-
-
                                             DatabaseHelper hp =new DatabaseHelper(getActivity());
                                             if(hp.findByEmail(em))
                                             {
                                                 Toast.makeText(getApplicationContext(), "email exist" , Toast.LENGTH_LONG).show();
                                             }
-                                            else if(hp.findByContact(cn))
+                                            /*else if(cn!= null && hp.findByContact(cn))
                                             {
                                                 Toast.makeText(getApplicationContext(), "contact exist" , Toast.LENGTH_LONG).show();
-                                            }
+                                            }*/
                                             else
-                                                {
-                                                if(hp.addNew(user.getUid(), nm, em, cn, Integer.parseInt(bl), pr))
+                                            {
+                                                 if(hp.addNew(user.getUid(), nm, em, cn, Integer.parseInt(bl), pr))
                                                 Toast.makeText(getApplicationContext(), "added profile" , Toast.LENGTH_LONG).show();
                                             }
 
@@ -432,7 +479,16 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
     private void gotoMainActivity(){
-       getActivity().finish();
+        getActivity().finish();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (googleApiClient != null && googleApiClient.isConnected()) {
+            googleApiClient.stopAutoManage(getActivity());
+            googleApiClient.disconnect();
+        }
     }
 
 }

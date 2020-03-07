@@ -11,34 +11,158 @@
         android:layout_marginRight="50dp"
         android:layout_height="match_parent">
 
-        <EditText
+        <FrameLayout
             android:layout_width="match_parent"
-            android:hint="Name"
-            android:id="@+id/f_name"
+            android:layout_height="wrap_content"
+            android:id="@+id/af1"
 
-            android:layout_height="wrap_content">
+            android:layout_marginTop="20dp">
 
-        </EditText>
+            <EditText
+                android:layout_width="match_parent"
 
-        <EditText
+                android:id="@+id/f_name"
+
+                android:autofillHints=""
+                android:background="@drawable/bt_ui"
+                android:paddingTop="7dp"
+                android:paddingBottom="7dp"
+                android:paddingLeft="97dp"
+                android:textCursorDrawable="@null"
+
+                android:layout_height="wrap_content">
+
+
+            </EditText>
+            <TextView
+                android:layout_width="91dp"
+                android:textAlignment="center"
+                android:layout_height="match_parent"
+                android:background="@drawable/title_bl"
+
+                android:paddingTop="10dp"
+                android:text="Name"
+                android:textColor="@color/white"></TextView>
+        </FrameLayout>
+
+<!--        <EditText-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:hint="Name"-->
+<!--            android:id="@+id/f_name"-->
+
+<!--            android:layout_height="wrap_content">-->
+
+<!--        </EditText>-->
+        <FrameLayout
+            android:id="@+id/af2"
             android:layout_width="match_parent"
-            android:hint="Contact"
-            android:id="@+id/f_contact"
-            android:layout_marginTop="50dp"
-            android:layout_below="@+id/f_name"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_below="@id/af1"
+            android:layout_marginTop="20dp">
+            <EditText
+                android:layout_width="match_parent"
+                android:id="@+id/f_contact"
+                android:background="@drawable/bt_ui"
+                android:paddingLeft="97dp"
+                android:paddingTop="7dp"
+                android:paddingBottom="7dp"
+                android:autofillHints=""
+                android:textCursorDrawable="@null"
 
-        </EditText>
 
-        <EditText
+
+
+
+
+                android:layout_height="wrap_content">
+
+            </EditText>
+
+            <TextView
+                android:layout_width="91dp"
+
+                android:layout_height="match_parent"
+                android:background="@drawable/title_bl"
+                android:textAlignment="center"
+                android:paddingTop="10dp"
+                android:text="Contect"
+                android:textColor="@color/white"></TextView>
+
+        </FrameLayout>
+
+<!--        <EditText-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:hint="Contact"-->
+<!--            android:id="@+id/f_contact"-->
+<!--            android:layout_marginTop="50dp"-->
+<!--            android:layout_below="@+id/af1"-->
+<!--            android:layout_height="wrap_content">-->
+
+<!--        </EditText>-->
+
+        <TextView
+            android:id="@+id/opid"
+            android:layout_width="23dp"
+            android:layout_height="23dp"
+            android:layout_below="@+id/af2"
+            android:layout_alignParentStart="true"
+
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="145dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="145dp"
+            android:paddingTop="1dp"
+            android:text="OR"
+            android:textAlignment="center">
+
+        </TextView>
+
+        <FrameLayout
+            android:id="@+id/af3"
             android:layout_width="match_parent"
-            android:hint="Email"
-            android:layout_below="@+id/f_contact"
-            android:id="@+id/f_email"
-            android:layout_marginTop="50dp"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_below="@id/opid"
+            android:layout_marginTop="20dp">
+            <EditText
+                android:layout_width="match_parent"
+                android:id="@+id/f_email"
+                android:background="@drawable/bt_ui"
+                android:paddingLeft="97dp"
+                android:paddingTop="7dp"
+                android:paddingBottom="7dp"
+                android:autofillHints=""
+                android:textCursorDrawable="@null"
 
-        </EditText>
+
+
+
+
+
+                android:layout_height="wrap_content">
+
+            </EditText>
+
+            <TextView
+                android:layout_width="91dp"
+
+                android:layout_height="match_parent"
+                android:background="@drawable/title_bl"
+                android:textAlignment="center"
+                android:paddingTop="10dp"
+                android:text="Email"
+                android:textColor="@color/white"></TextView>
+
+        </FrameLayout>
+
+<!--        <EditText-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:hint="Email"-->
+<!--            android:layout_below="@+id/f_contact"-->
+<!--            android:id="@+id/f_email"-->
+<!--            android:layout_marginTop="50dp"-->
+<!--            android:layout_height="match_parent">-->
+
+<!--        </EditText>-->
 
 
 

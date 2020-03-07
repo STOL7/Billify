@@ -17,6 +17,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,19 +32,27 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity
@@ -88,9 +97,10 @@ public class MainActivity extends AppCompatActivity
         headerView = mNavigationView.getHeaderView(0);
 
 
+
         mn = mNavigationView.getMenu();
         mitem=mn.findItem(R.id.nav_item_login);
-        tx = (TextView)headerView.findViewById(R.id.useremail);
+      //  tx = (TextView)headerView.findViewById(R.id.useremail);
 
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener()
         {
@@ -234,7 +244,7 @@ public class MainActivity extends AppCompatActivity
 
         tabLayout.getTabAt(0).setText("All");
         tabLayout.getTabAt(1).setText("Group");
-//        tabLayout.getTabAt(2).setText("History");
+        tabLayout.getTabAt(2).setText("History");
 
          account = GoogleSignIn.getLastSignedInAccount(this);
         accessToken = AccessToken.getCurrentAccessToken();
@@ -256,13 +266,31 @@ public class MainActivity extends AppCompatActivity
             auth = FirebaseAuth.getInstance();
             FirebaseUser currentUser = auth.getCurrentUser();
 
-
+            FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(MainActivity.this, new OnSuccessListener<InstanceIdResult>() {
+                @Override
+                public void onSuccess(InstanceIdResult instanceIdResult) {
+                   // Toast.makeText(MainActivity.this,instanceIdResult.getToken(),Toast.LENGTH_LONG).show();
+                }
+            });
             if(currentUser !=null)
             {
 
 
-                        tx.setText(currentUser.getEmail());
 
+
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(currentUser.getUid());
+                reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        tx.setText(dataSnapshot.child("Name").getValue().toString());
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
 
 
 
@@ -297,10 +325,5 @@ public class MainActivity extends AppCompatActivity
 
         //startNotification();
     }
-
-
-
-
-
 
 }

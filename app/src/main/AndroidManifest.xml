@@ -5,19 +5,31 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name="com.example.billify.Billify"
+        android:name=".Billify"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.example.billify.AddExpenseActivity"></activity>
-        <activity android:name="com.example.billify.ChooseLoginSignupActivity" />
+        <activity android:name=".addInGroup"></activity>
+        <activity android:name=".AddExpenseActivity" />
+        <activity android:name=".ChooseLoginSignupActivity" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/default_notification_channel_id" />
+
+        <service
+            android:name=".MessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
         <activity
             android:name="com.facebook.FacebookActivity"
@@ -35,9 +47,8 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-
-        <activity android:name="com.example.billify.MainActivity" />
-        <activity android:name="com.example.billify.WelcomeActivity">
+        <activity android:name=".MainActivity" />
+        <activity android:name=".WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.SEARCH" />

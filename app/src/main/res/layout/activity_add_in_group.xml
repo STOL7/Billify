@@ -25,18 +25,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
 
-    <GridView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/grid"
-        android:background="@drawable/bt_ui"
-        android:layout_below="@+id/appbar"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.04" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_below="@+id/appbar"
@@ -52,42 +41,42 @@
 
 
 
-<FrameLayout
-                 android:id="@+id/ef1"
+            <FrameLayout
+                android:id="@+id/ef1"
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
 
-    <EditText
-        android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="97dp"
-        android:paddingTop="7dp"
-        android:paddingBottom="7dp"
-        android:autofillHints=""
-        android:textCursorDrawable="@null"
+                <EditText
+                    android:id="@+id/title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="97dp"
+                    android:paddingTop="7dp"
+                    android:paddingBottom="7dp"
+                    android:autofillHints=""
+                    android:textCursorDrawable="@null"
 
 
 
 
 
-        android:background="@drawable/bt_ui">
+                    android:background="@drawable/bt_ui">
 
-    </EditText>
+                </EditText>
 
-    <TextView
-        android:layout_width="91dp"
+                <TextView
+                    android:layout_width="91dp"
 
-        android:layout_height="match_parent"
-        android:background="@drawable/title_bl"
-        android:textAlignment="center"
-        android:paddingTop="10dp"
-        android:text="@string/title"
-        android:textColor="@color/white"></TextView>
+                    android:layout_height="match_parent"
+                    android:background="@drawable/title_bl"
+                    android:textAlignment="center"
+                    android:paddingTop="10dp"
+                    android:text="@string/title"
+                    android:textColor="@color/white"></TextView>
 
-</FrameLayout>
+            </FrameLayout>
 
 
 
@@ -104,50 +93,26 @@
                 android:layout_height="wrap_content">
 
             </Spinner>
-     <FrameLayout
-         android:id="@+id/ef2"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:layout_below="@id/category"
-         android:layout_marginTop="20dp">
-            <EditText
-                android:layout_width="match_parent"
-                android:id="@+id/participate"
-                android:background="@drawable/bt_ui"
-                android:paddingLeft="97dp"
-                android:paddingTop="7dp"
-                android:paddingBottom="7dp"
-                android:autofillHints=""
-                android:textCursorDrawable="@null"
+            <Spinner
+                android:layout_width="wrap_content"
+                android:id="@+id/groups"
+                android:hint="Category"
+                android:layout_below="@id/ef1"
 
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="150dp"
+                android:defaultFocusHighlightEnabled="true"
 
-
-
-
-
+                android:entries="@array/group_array"
                 android:layout_height="wrap_content">
 
+            </Spinner>
 
-            </EditText>
-
-
-
-         <TextView
-             android:layout_width="91dp"
-
-             android:layout_height="match_parent"
-             android:background="@drawable/title_bl"
-             android:textAlignment="center"
-             android:paddingTop="10dp"
-             android:text="@string/participates"
-             android:textColor="@color/white"></TextView>
-
-     </FrameLayout>
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/ef3"
-                android:layout_below="@id/ef2"
+                android:layout_below="@id/groups"
                 android:layout_marginTop="20dp">
 
                 <EditText
@@ -174,39 +139,39 @@
                     android:textColor="@color/white"></TextView>
             </FrameLayout>
 
-           <FrameLayout
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:id="@+id/ef4"
-               android:layout_below="@id/ef3"
-               android:layout_marginTop="20dp">
-
-            <EditText
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:id="@+id/amount"
+                android:layout_height="wrap_content"
+                android:id="@+id/ef4"
+                android:layout_below="@id/ef3"
+                android:layout_marginTop="20dp">
 
-                android:inputType="number"
-                android:autofillHints=""
-                android:background="@drawable/bt_ui"
-                android:paddingTop="7dp"
-                android:paddingBottom="7dp"
-                android:paddingLeft="97dp"
-                android:textCursorDrawable="@null"
+                <EditText
+                    android:layout_width="match_parent"
+                    android:id="@+id/amount"
 
-                android:layout_height="wrap_content">
+                    android:inputType="number"
+                    android:autofillHints=""
+                    android:background="@drawable/bt_ui"
+                    android:paddingTop="7dp"
+                    android:paddingBottom="7dp"
+                    android:paddingLeft="97dp"
+                    android:textCursorDrawable="@null"
+
+                    android:layout_height="wrap_content">
 
 
-            </EditText>
-               <TextView
-                   android:layout_width="91dp"
-                   android:textAlignment="center"
-                   android:layout_height="match_parent"
-                   android:background="@drawable/title_bl"
+                </EditText>
+                <TextView
+                    android:layout_width="91dp"
+                    android:textAlignment="center"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/title_bl"
 
-                   android:paddingTop="10dp"
-                   android:text="@string/amount"
-                   android:textColor="@color/white"></TextView>
-           </FrameLayout>
+                    android:paddingTop="10dp"
+                    android:text="@string/amount"
+                    android:textColor="@color/white"></TextView>
+            </FrameLayout>
 
             <Spinner
                 android:layout_width="wrap_content"
@@ -262,7 +227,7 @@
                     android:layout_width="wrap_content"
                     android:id="@+id/bill_image"
 
-                   android:layout_centerInParent="true"
+                    android:layout_centerInParent="true"
 
                     android:background="@color/colorPrimary"
                     android:src="@android:drawable/ic_menu_camera"
@@ -283,7 +248,7 @@
                 android:textColor="@color/white"
                 android:background="@drawable/button1_ly"
                 android:text="@string/add_exp"
-               >
+                >
 
             </Button>
 

@@ -96,9 +96,19 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
                ArrayList<Friend> av = bf.getSelected();
                if(av == null)
                    av = new ArrayList<Friend>();
-               av.add(friends.get(i));
-               bf.setSelected(av);
-               myViewHolder.rlt.setBackgroundColor(getApplicationContext().getColor(R.color.colorPrimary));
+
+               if(myViewHolder.rlt.getAlpha() == 0.5)
+               {
+                   av.remove(friends.get(i));
+                   bf.setSelected(av);
+                   myViewHolder.rlt.setAlpha((float)1);
+               }
+               else
+               {
+                   av.add(friends.get(i));
+                   bf.setSelected(av);
+                   myViewHolder.rlt.setAlpha((float)0.5);
+               }
             }
         });
 

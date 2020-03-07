@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Size;
 import android.view.Gravity;
@@ -24,6 +25,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -54,6 +56,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -62,6 +65,7 @@ import java.util.regex.Pattern;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -82,6 +86,13 @@ public class AddExpenseActivity extends AppCompatActivity
     Uri imgUri;
     long balance_fire=0;
     DatabaseHelper db;
+    int count=0;
+    int width;
+    int dpwidth;
+    int height;
+    int dpi;
+    GridView grid;
+
     FirebaseFirestore firestore;
     private static Calendar calender;
     FloatingActionButton bill_image;
@@ -101,6 +112,14 @@ public class AddExpenseActivity extends AppCompatActivity
         setContentView(R.layout.activity_add_expense);
 
 //        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        width = dm.widthPixels;
+        height = dm.heightPixels;
+        dpi=dm.densityDpi;
+        dpwidth=(width*160)/dpi;
+        int num=dpwidth/120;
 
         databaseReference= FirebaseDatabase.getInstance().getReference("Users");
         databaseReference.keepSynced(true);
@@ -124,7 +143,7 @@ public class AddExpenseActivity extends AppCompatActivity
         give_hash = new HashMap<String, Long>();
 
         sz= par_friends.size();
-        participate.setText("");
+       participate.setText("");
         bill_image=(FloatingActionButton)findViewById(R.id.bill_image);
         ln_image=(ImageView)findViewById(R.id.ln_image);
         toolbar = findViewById(R.id.toolbar);
@@ -136,6 +155,22 @@ public class AddExpenseActivity extends AppCompatActivity
         you = bf.getYou();
         youid=you.getId();
         par_friends.add(you);
+
+        grid = findViewById(R.id.grid);
+        grid.setNumColumns(num);
+        final List<String> name = new ArrayList<>();
+
+        final expenceadapter expenceadapter= new expenceadapter(this,name);
+
+        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                name.remove(position);
+                grid.setAdapter(expenceadapter);
+
+            }
+        });
+
 
         split.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -178,6 +213,7 @@ public class AddExpenseActivity extends AppCompatActivity
 
 
 
+
         participate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view)
@@ -188,7 +224,7 @@ public class AddExpenseActivity extends AppCompatActivity
                 recyclerview.setHasFixedSize(true);
                 recyclerview.setLayoutManager(new LinearLayoutManager(AddExpenseActivity.this));
 
-
+                recyclerview.addItemDecoration(new DividerItemDecoration(AddExpenseActivity.this, LinearLayoutManager.VERTICAL));
                 recyclerview.setAdapter(bf.getCadpt());
 
                // participate.setText(participate.getText() + bf.getSelected());
@@ -206,6 +242,8 @@ public class AddExpenseActivity extends AppCompatActivity
                                 for(int i=0;i<bf.getSelected().size();i++)
                                 {
 
+                                    name.add(bf.getSelected().get(i).getName());
+                                    //grid.setAdapter(expenceadapter);
                                     participate.setText(participate.getText() + ", " + bf.getSelected().get(i).getName());
                                 }
                                 bf.setSelected(null);
@@ -229,7 +267,7 @@ public class AddExpenseActivity extends AppCompatActivity
                 String dis = String.valueOf(discription.getText());
 
                 String amo = String.valueOf(amount.getText());
-                int total = Integer.parseInt(amo);
+
                 int devide=0,lst;
                 String uuid = UUID.randomUUID().toString();
                 String uuid1,details_id;
@@ -244,8 +282,10 @@ public class AddExpenseActivity extends AppCompatActivity
                     Toast.makeText(AddExpenseActivity.this,"Please enter amount",Toast.LENGTH_LONG).show();
                 }
 
+
                 else
                 {
+                    int total = Integer.parseInt(amo);
                     if(billed_by.getSelectedItemPosition() == 1)
                     {
                         paid_arr = new int[size_jk];
@@ -307,41 +347,27 @@ public class AddExpenseActivity extends AppCompatActivity
                                 {
 
                                     db.addIndivisual(uuid1,uuid,key,key1,value,0);
-
+                                    addOwesToFirestore(uuid,key,key1,value);
 
                                     db.updateExpense(key1,give_hash.get(key1)+value);
-                                    if(getForNetUpdate(key,key1))
-                                    {
-                                        balance_fire = balance_fire+value;
-                                        addToFirestore(key,key1,balance_fire);
-                                        balance_fire=0;
-                                        if(getForNetUpdate(key1,key))
-                                        {
-                                            balance_fire = balance_fire-value;
-                                            addToFirestore(key1,key,balance_fire);
-                                            balance_fire=0;
-                                        }
-                                    }
+                                   getForNetUpdate(key,key1,value);
+
+                                    getForNetUpdate(key1,key,-value);
+
 
 
                                 }
                                 else
                                 {
                                     db.addIndivisual(uuid1,uuid,key,key1,value1,0);
+                                    addOwesToFirestore(uuid,key,key1,value1);
                                     db.updateExpense(key1,give_hash.get(key1)+value1);
 
-                                    if(getForNetUpdate(key,key1))
-                                    {
-                                        balance_fire = balance_fire + value;
-                                        addToFirestore(key,key1,balance_fire);
-                                        balance_fire=0;
-                                        if(getForNetUpdate(key1,key))
-                                        {
-                                            balance_fire = balance_fire-value1;
-                                            addToFirestore(key1,key,balance_fire);
-                                            balance_fire=0;
-                                        }
-                                    }
+
+                                    getForNetUpdate(key,key1,value1);
+                                    getForNetUpdate(key1,key,-value1);
+
+
 
 
                                 }
@@ -444,7 +470,7 @@ public class AddExpenseActivity extends AppCompatActivity
                                                final String[][] uid = {new String[5]};
 
                                                if(db.findByEmail(email))
-                                                   Toast.makeText(AddExpenseActivity.this,"All ready your friend",Toast.LENGTH_LONG).show();
+                                                   Toast.makeText(AddExpenseActivity.this,"Already available your friend list",Toast.LENGTH_LONG).show();
                                                else
                                                {
                                                    databaseReference.orderByChild("Email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -457,9 +483,11 @@ public class AddExpenseActivity extends AppCompatActivity
                                                            if(dataSnapshot.getValue() == null)
                                                            {
                                                                //send request for add new friend on server
-                                                               if(db.addNew(null,nm,em,"",0,""))
+                                                               if(db.addNew(email,nm,em,"",0,""))
                                                                {
 
+                                                                   addToFirestore(youid,email,0);
+                                                                   addToFirestore(email,youid,0);
                                                                    Toast.makeText(AddExpenseActivity.this,"Send request to friend",Toast.LENGTH_LONG).show();
                                                                }
 
@@ -483,6 +511,7 @@ public class AddExpenseActivity extends AppCompatActivity
                                                                    {
 
                                                                        addToFirestore(youid,key,0);
+
                                                                        addToFirestore(key,youid,0);
 
 
@@ -532,12 +561,16 @@ public class AddExpenseActivity extends AppCompatActivity
 
                                                     if (dataSnapshot.getValue() == null)
                                                     {
-                                                        if (db.addNew(null, nm, "", cn, 0, ""))
+                                                        if (db.addNew(contact, nm, "", cn, 0, ""))
                                                         {
+                                                            addToFirestore(youid,contact,0);
+                                                            addToFirestore(contact,youid,0);
                                                             Toast.makeText(AddExpenseActivity.this, "Send request by  contact", Toast.LENGTH_LONG).show();
                                                         }
 
-                                                    } else {
+                                                    }
+                                                    else
+                                                        {
                                                         for (DataSnapshot data : dataSnapshot.getChildren()) {
                                                             Log.i("result", data.toString());
 
@@ -608,7 +641,9 @@ public class AddExpenseActivity extends AppCompatActivity
 
     }
 
-    private boolean getForNetUpdate(String key, String key1)
+
+
+    private long getForNetUpdate(final String key, final String key1, final long value)
     {
 
         firestore.collection("Users").document(key)
@@ -623,7 +658,8 @@ public class AddExpenseActivity extends AppCompatActivity
                         {
                             Map<String, Object> forms = document.getData();
                             balance_fire =Long.parseLong(forms.get("Balance").toString());
-                            Log.d("get data", "DocumentSnapshot data: " + forms.toString());
+                            Log.d("get data", "DocumentSnapshot data: " + balance_fire);
+                            addToFirestore(key,key1,balance_fire+value);
                         }
                         else
                             {
@@ -635,7 +671,7 @@ public class AddExpenseActivity extends AppCompatActivity
                 }
             });
 
-        return true;
+        return balance_fire;
     }
 
     private void addDetailsToFirestore( String uuid, String id, int i, int i1)
@@ -664,6 +700,31 @@ public class AddExpenseActivity extends AppCompatActivity
     }
 
 
+    private void addOwesToFirestore( String uuid, String id,String opposite, int i)
+    {
+        Map<String, Object> transaction = new HashMap<>();
+
+        transaction.put("paid", i);
+
+
+
+        firestore.collection("Users").document(youid).
+                collection("Transactions").document(uuid).
+                collection("Participates").document(id).
+                collection("Owe").document(opposite).
+                set(transaction).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("success details", "DocumentSnapshot successfully written!");
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("fail", "Error writing document", e);
+                    }
+                });
+    }
 
 
     private void addExpenseToFirestore(String uuid, String dis,
@@ -845,7 +906,11 @@ public class AddExpenseActivity extends AppCompatActivity
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 SelectImage();
             else
-                Toast.makeText(this, "Please provide permission to choose image", Toast.LENGTH_LONG).show();
+            {
+                SelectImage();
+                //Toast.makeText(this, "Please provide permission to choose image", Toast.LENGTH_LONG).show();
+            }
+
 
         } else if (requestCode == 70 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             // SelectContact();

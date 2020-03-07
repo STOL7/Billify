@@ -1,7 +1,6 @@
 package com.example.billify;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
@@ -20,23 +19,24 @@ import java.util.ArrayList;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-public class activityAdapter extends RecyclerView.Adapter<activityAdapter.MyViewHolder> implements Serializable
+public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.MyViewHolder> implements Serializable
 {
 
 
-    public ArrayList<History> fiter;
+
+    public ArrayList<Friend> fiter;
 
 
-    public ArrayList<History> histories;
+    public ArrayList<Friend> friends;
 
-
-    public activityAdapter(ArrayList<History> his)
+    public GroupAdapter(ArrayList<Friend> friends)
     {
-        this.fiter=his;
-        this.histories=his;
+        this.friends=friends;
+        this.fiter=friends;
+
     }
 
-    public activityAdapter()
+    public GroupAdapter()
     {
 
     }
@@ -44,9 +44,9 @@ public class activityAdapter extends RecyclerView.Adapter<activityAdapter.MyView
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int i)
     {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.history_fragment, parent, false);
+                .inflate(R.layout.birthday_view, parent, false);
 
-        Log.d("ActivityViewHolder",itemView.toString());
+        Log.d("onCreateViewHolder",itemView.toString());
 
         //notifyDataSetChanged();
         return new MyViewHolder(itemView);
@@ -57,17 +57,16 @@ public class activityAdapter extends RecyclerView.Adapter<activityAdapter.MyView
     @Override
     public void onBindViewHolder(MyViewHolder myViewHolder, final int i)
     {
-
+        //String im=img.get(i);
         final int j=i;
-        final String tt=histories.get(i).getTitle();
+        final String nm=friends.get(i).getName();
 //        String em=emails.get(i);
 
-        String img=histories.get(i).getBillIMage();
-        long exp = histories.get(i).getAmount();
-        final String dd=histories.get(i).getDate();
+        String img=friends.get(i).getProfile();
+        long net_expense=friends.get(i).getBalance();
+        final String bd=friends.get(i).getContact();
 
         final Context context=myViewHolder.img.getContext();
-
         if(img.equals(""))
         {
             myViewHolder.img.setImageResource(R.drawable.profile);
@@ -84,22 +83,16 @@ public class activityAdapter extends RecyclerView.Adapter<activityAdapter.MyView
         }
 
         //startAppAd= new StartAppAd(context);
-        myViewHolder.date.setText(dd);
-        myViewHolder.expense.setText(exp+"");
-        myViewHolder.title.setText(tt);
+        myViewHolder.bdate.setText(bd);
+        myViewHolder.names.setText(nm);
+        myViewHolder.net.setText(net_expense+"");
 
 
-       /* myViewHolder.rlt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
-                Intent itn =  new Intent(context,BirthdayDetails.class);
-                itn.putExtra("user",  birdays.get(i));
 
-                context.startActivity(itn);
 
-            }
-        });*/
+
+
+
 
 
     }
@@ -107,30 +100,28 @@ public class activityAdapter extends RecyclerView.Adapter<activityAdapter.MyView
     @Override
     public int getItemCount()
     {
-        return histories.size();
+        return friends.size();
     }
 
 
     public static class MyViewHolder extends RecyclerView.ViewHolder
     {
-
         ImageView img;
         //TextView email;
-        TextView title;
-        TextView date;
-        TextView expense;
+        TextView names;
+        TextView bdate;
+        TextView net;
 
         RelativeLayout rlt;
         public MyViewHolder(View itemView)
         {
             super(itemView);
 
+            img=(ImageView)itemView.findViewById(R.id.profile);
 
-            img=(ImageView)itemView.findViewById(R.id.bill);
-            // email=(TextView)itemView.findViewById(R.id.em);
-            date=(TextView)itemView.findViewById(R.id.date);
-            title=(TextView)itemView.findViewById(R.id.titl);
-            expense=(TextView)itemView.findViewById(R.id.expense);
+            bdate=(TextView)itemView.findViewById(R.id.bdate);
+            names=(TextView)itemView.findViewById(R.id.name);
+            net = (TextView) itemView.findViewById(R.id.net_expense);
             rlt=(RelativeLayout)itemView.findViewById(R.id.rlt);
 
 

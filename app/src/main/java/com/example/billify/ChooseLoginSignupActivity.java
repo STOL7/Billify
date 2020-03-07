@@ -33,13 +33,34 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
+import org.json.JSONObject;
+
+import java.util.Arrays;
 
 public class ChooseLoginSignupActivity extends AppCompatActivity  implements GoogleApiClient.OnConnectionFailedListener
 {
 
     private static final int RC_SIGN_IN = 1001;
 
+
+    private Button btnSignIn, btnSignUp;
+    private SignInButton btnGoogleSignIn;
+    private LoginButton btnFacebook;
+    private CallbackManager callbackManager;
+
+    private FirebaseAuth auth;
+    private AccessToken accessToken;
+    private GoogleApiClient googleApiClient;
+
+    private GoogleSignInOptions gso;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
+    Fragment fragment;
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
 
@@ -54,6 +75,8 @@ public class ChooseLoginSignupActivity extends AppCompatActivity  implements Goo
         fragmentTransaction = fragmentManager.beginTransaction();
 
         fragmentTransaction.replace(R.id.fragmentContainer, new LoginFragment()).commit();
+
+
 
 
     }
