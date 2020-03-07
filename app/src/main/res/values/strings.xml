@@ -68,7 +68,13 @@
         <item>Multiple</item>
 
     </string-array>
+    <string-array name="group_array">
 
+        <item>Group</item>
+
+
+
+    </string-array>
     <string-array name="split_array">
 
         <item>Split</item>

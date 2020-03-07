@@ -65,6 +65,7 @@ import java.util.regex.Pattern;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -223,7 +224,7 @@ public class AddExpenseActivity extends AppCompatActivity
                 recyclerview.setHasFixedSize(true);
                 recyclerview.setLayoutManager(new LinearLayoutManager(AddExpenseActivity.this));
 
-
+                recyclerview.addItemDecoration(new DividerItemDecoration(AddExpenseActivity.this, LinearLayoutManager.VERTICAL));
                 recyclerview.setAdapter(bf.getCadpt());
 
                // participate.setText(participate.getText() + bf.getSelected());
@@ -242,7 +243,7 @@ public class AddExpenseActivity extends AppCompatActivity
                                 {
 
                                     name.add(bf.getSelected().get(i).getName());
-                                    grid.setAdapter(expenceadapter);
+                                    //grid.setAdapter(expenceadapter);
                                     participate.setText(participate.getText() + ", " + bf.getSelected().get(i).getName());
                                 }
                                 bf.setSelected(null);
@@ -469,7 +470,7 @@ public class AddExpenseActivity extends AppCompatActivity
                                                final String[][] uid = {new String[5]};
 
                                                if(db.findByEmail(email))
-                                                   Toast.makeText(AddExpenseActivity.this,"All ready your friend",Toast.LENGTH_LONG).show();
+                                                   Toast.makeText(AddExpenseActivity.this,"Already available your friend list",Toast.LENGTH_LONG).show();
                                                else
                                                {
                                                    databaseReference.orderByChild("Email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {

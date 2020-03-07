@@ -1,7 +1,9 @@
 package com.example.billify;
 
 import android.content.Context;
-import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,14 +12,14 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
-
-public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHolder> implements Serializable
+public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.MyViewHolder> implements Serializable
 {
 
 
@@ -27,14 +29,14 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
 
     public ArrayList<Friend> friends;
 
-    public ContactAdapter(ArrayList<Friend> friends)
+    public GroupAdapter(ArrayList<Friend> friends)
     {
         this.friends=friends;
         this.fiter=friends;
 
     }
 
-    public ContactAdapter()
+    public GroupAdapter()
     {
 
     }
@@ -53,7 +55,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
     }
 
     @Override
-    public void onBindViewHolder(final MyViewHolder myViewHolder, final int i)
+    public void onBindViewHolder(MyViewHolder myViewHolder, final int i)
     {
         //String im=img.get(i);
         final int j=i;
@@ -61,16 +63,15 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
 //        String em=emails.get(i);
 
         String img=friends.get(i).getProfile();
+        long net_expense=friends.get(i).getBalance();
         final String bd=friends.get(i).getContact();
 
-        final String id =friends.get(i).getId();
         final Context context=myViewHolder.img.getContext();
-
-       // if(img.equals(""))
-       // {
+        if(img.equals(""))
+        {
             myViewHolder.img.setImageResource(R.drawable.profile);
-       // }
-        /*else
+        }
+        else
         {
             String imageDataBytes = img.substring(img.indexOf(",")+1);
 
@@ -79,38 +80,14 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
             Bitmap bitmap = BitmapFactory.decodeStream(stream);
 
             myViewHolder.img.setImageBitmap(bitmap);
-        }*/
+        }
 
+        //startAppAd= new StartAppAd(context);
         myViewHolder.bdate.setText(bd);
         myViewHolder.names.setText(nm);
-
-        myViewHolder.rlt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
+        myViewHolder.net.setText(net_expense+"");
 
 
-                //View alertLayout = inflater.inflate(R.layout.recyclerview, null);
-                final Billify bf=(Billify) getApplicationContext();
-
-               ArrayList<Friend> av = bf.getSelected();
-               if(av == null)
-                   av = new ArrayList<Friend>();
-
-               if(myViewHolder.rlt.getAlpha() == 0.5)
-               {
-                   av.remove(friends.get(i));
-                   bf.setSelected(av);
-                   myViewHolder.rlt.setAlpha((float)1);
-               }
-               else
-               {
-                   av.add(friends.get(i));
-                   bf.setSelected(av);
-                   myViewHolder.rlt.setAlpha((float)0.5);
-               }
-            }
-        });
 
 
 
@@ -133,6 +110,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
         //TextView email;
         TextView names;
         TextView bdate;
+        TextView net;
 
         RelativeLayout rlt;
         public MyViewHolder(View itemView)
@@ -143,6 +121,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
 
             bdate=(TextView)itemView.findViewById(R.id.bdate);
             names=(TextView)itemView.findViewById(R.id.name);
+            net = (TextView) itemView.findViewById(R.id.net_expense);
             rlt=(RelativeLayout)itemView.findViewById(R.id.rlt);
 
 

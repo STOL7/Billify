@@ -67,6 +67,46 @@ public class MessagingService extends FirebaseMessagingService
 
         if(!you.getId().equals(Message.get("user_id")))
         {
+
+
+
+
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+                    .setVibrate(new long[]{0, 100, 100, 100, 100, 100})
+                    .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                    .setSmallIcon(R.drawable.baseline_cake_24)
+                    .setContentTitle("Today's birthday")
+                    .setColor(this.getResources().getColor(R.color.colorPrimary))
+                    .setAutoCancel(true)
+
+                    .setContentText("New update");
+
+
+            Intent todayBirthdayIntent = new Intent(this, WelcomeActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, todayBirthdayIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            builder.setContentIntent(pendingIntent);
+
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            {
+                NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "My Notifications", NotificationManager.IMPORTANCE_DEFAULT);
+
+
+                notificationChannel.setDescription("Channel description");
+                notificationChannel.enableLights(true);
+
+                notificationChannel.setLightColor(Color.RED);
+                notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
+                notificationChannel.enableVibration(true);
+                notificationManager.createNotificationChannel(notificationChannel);
+            }
+
+
+            notificationManager.notify(1, builder.build());
+
+
             db.addExpense(hid,Message.get("description"),Message.get("title"),
                     Message.get("category"),Integer.parseInt(Message.get("amount")),
                     Message.get("date"),Message.get("billImage"),Integer.parseInt(Message.get("sync")));
@@ -141,41 +181,6 @@ public class MessagingService extends FirebaseMessagingService
 
         }
 
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, getString(R.string.default_notification_channel_id))
-                .setVibrate(new long[]{0, 100, 100, 100, 100, 100})
-                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                .setSmallIcon(R.drawable.baseline_cake_24)
-                .setContentTitle(title)
-                .setContentText(Message.get("title"))
-                .setColor(this.getResources().getColor(R.color.colorPrimary))
-                .setAutoCancel(true);
-
-
-
-
-        Intent todayBirthdayIntent = new Intent(this, WelcomeActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, todayBirthdayIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        builder.setContentIntent(pendingIntent);
-
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-        {
-            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "My Notifications", NotificationManager.IMPORTANCE_DEFAULT);
-
-
-            notificationChannel.setDescription("Channel description");
-            notificationChannel.enableLights(true);
-
-            notificationChannel.setLightColor(Color.RED);
-            notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
-            notificationChannel.enableVibration(true);
-            notificationManager.createNotificationChannel(notificationChannel);
-        }
-
-
-        notificationManager.notify(1, builder.build());
 
     }
 

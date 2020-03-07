@@ -35,7 +35,7 @@ public class display_friends extends Fragment
     private RecyclerView.Adapter adapter;
 
     private RecyclerView.LayoutManager layoutmanager;
-private TextView txt;
+    private TextView txt;
 
 
     MyAdapter adapt = new MyAdapter();
@@ -151,9 +151,9 @@ private TextView txt;
         bf.setAdpt(adapt);
 
         bf.setCadpt(cadpt);
-        recyclerview=(RecyclerView)getView().findViewById(R.id.recycler_view);
-        recyclerview.setLayoutManager(layoutmanager);
-        recyclerview.setHasFixedSize(true);
+       // recyclerview=(RecyclerView)getView().findViewById(R.id.recycler_view);
+       // recyclerview.setLayoutManager(layoutmanager);
+      //  recyclerview.setHasFixedSize(true);
 
         recyclerview.setAdapter(adapt);
 
