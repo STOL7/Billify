@@ -2,17 +2,32 @@ package com.example.billify;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -32,6 +47,14 @@ public class display_activity extends Fragment
 
     private RecyclerView.LayoutManager layoutmanager;
 private TextView txt;
+
+    FirebaseAuth fAuth;
+    FirebaseFirestore fStore;
+    String userId;
+    History history;
+    private static final String title[] = new String[100];
+    public int a=0;
+    SharedPreferences sharedPreferences;
 
 
     activityAdapter adapt = new activityAdapter();
@@ -60,6 +83,13 @@ private TextView txt;
 
         layoutmanager=new LinearLayoutManager(con);
 
+        fAuth = FirebaseAuth.getInstance();
+        fStore = FirebaseFirestore.getInstance();
+
+        userId = fAuth.getCurrentUser().getUid();
+
+
+
         return inflater.inflate(R.layout.recyclerview, container, false);
 
     }
@@ -79,8 +109,42 @@ private TextView txt;
         super.onActivityCreated(savedInstanceState);
 
 
+
         recyclerview = (RecyclerView) getView().findViewById(R.id.recycler_view);
-        txt=(TextView)getView().findViewById(R.id.no_birthday);
+
+       /* fStore.collection("Users").document(userId).collection("Transactions").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(getActivity(),"History",Toast.LENGTH_LONG).show();
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        DocumentReference documentReference = fStore.collection("Users").document(userId).collection("Transactions").document(document.getId());
+                        documentReference.addSnapshotListener(getActivity(), new EventListener<DocumentSnapshot>() {
+                            @Override
+                            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                                history = new History();
+                                history.setBillIMage(documentSnapshot.getString("billImage"));
+                                history.setAmount(documentSnapshot.getLong("amount"));
+                                history.setTitle(documentSnapshot.getString("description"));
+                                history.setDate(String.valueOf(documentSnapshot.getDate("date")));
+
+
+                            }
+                        });
+                    }
+                } else {
+                        Toast.makeText(getActivity(),"Error is:"+task.getException(),Toast.LENGTH_LONG).show();
+                }
+            }
+        });*/
+
+
+
+
+
+
+
+       txt=(TextView)getView().findViewById(R.id.no_birthday);
         txt.setText(getString(R.string.no_birthday_found));
         recyclerview.setHasFixedSize(true);
         recyclerview.setLayoutManager(layoutmanager);
@@ -99,8 +163,10 @@ private TextView txt;
             txt.setVisibility(View.INVISIBLE);
         }
 
+
+
         adapt = new activityAdapter(histories);
-        recyclerview=(RecyclerView)getView().findViewById(R.id.recycler_view);
+        Toast.makeText(getActivity(),String.valueOf(adapt.getItemCount()),Toast.LENGTH_LONG).show();
         recyclerview.setLayoutManager(layoutmanager);
         recyclerview.setHasFixedSize(true);
 
@@ -112,6 +178,7 @@ private TextView txt;
 
 
     }
+
 
     }
 

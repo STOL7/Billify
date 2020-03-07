@@ -288,6 +288,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return  histories;
     }
 
+
+
     public  boolean addNew(String id, String name,String email,String contact,int balance,String profile)
     {
         SQLiteDatabase db = this.getWritableDatabase();
