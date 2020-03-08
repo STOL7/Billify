@@ -21,6 +21,8 @@ import android.util.Log;
 import android.util.Size;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -63,6 +65,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -78,7 +81,7 @@ public class AddExpenseActivity extends AppCompatActivity
     DatabaseReference databaseReference;
     EditText discription,title,participate,amount,f_name,f_email,f_contact;
     Spinner category,billed_by,split;
-    Toolbar toolbar;
+    Toolbar toolbar,toolbar1;;
     Button add_new,add_exp;
     ImageView ln_image;
     ArrayList<Friend> par_friends = new ArrayList<Friend>();
@@ -166,18 +169,18 @@ public class AddExpenseActivity extends AppCompatActivity
         ly = (LinearLayout) findViewById(R.id.f1);
         grid = findViewById(R.id.grid1);
         grid.setNumColumns(num);
-        final List<String> name = new ArrayList<>();
 
-        final expenceadapter expenceadapter= new expenceadapter(this,name);
 
-        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                name.remove(position);
-                grid.setAdapter(expenceadapter);
+        final expenceadapter[] expenceadapter = {new expenceadapter(this, par_friends)};
 
-            }
-        });
+//        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+//                name.remove(position);
+//                grid.setAdapter(expenceadapter);
+//
+//            }
+//        });
 
 
         split.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -223,9 +226,10 @@ public class AddExpenseActivity extends AppCompatActivity
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                name.remove(position);
-                grid.setAdapter(expenceadapter);
-                total = name.size();
+                par_friends.remove(position);
+                expenceadapter[0] = new expenceadapter(AddExpenseActivity.this,par_friends);
+                grid.setAdapter(expenceadapter[0]);
+                total = par_friends.size();
                 pcount = total/num;
                 pcount = Math.ceil(pcount);
                 ly.setMinimumHeight(90*(int)pcount);
@@ -240,7 +244,12 @@ public class AddExpenseActivity extends AppCompatActivity
             public void onClick(View view)
             {
                 LayoutInflater inflater = getLayoutInflater();
-                View alertLayout = inflater.inflate(R.layout.recyclerview, null);
+                View alertLayout = inflater.inflate(R.layout.showcontact, null);
+                toolbar1 = alertLayout.findViewById(R.id.toolbar1);
+                setSupportActionBar(toolbar1);
+
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setDisplayShowHomeEnabled(true);
                 recyclerview = (RecyclerView) alertLayout.findViewById(R.id.recycler_view);
                 recyclerview.setHasFixedSize(true);
                 recyclerview.setLayoutManager(new LinearLayoutManager(AddExpenseActivity.this));
@@ -259,23 +268,18 @@ public class AddExpenseActivity extends AppCompatActivity
                             {
 
 
-                                par_friends.addAll(bf.getSelected());
-                                for(int i=0;i<bf.getSelected().size();i++)
-                                {
+                                expenceadapter[0] = new expenceadapter(AddExpenseActivity.this,par_friends);
+                                par_friends = bf.getSelected();
 
-                                    name.add(bf.getSelected().get(i).getName());
-                                    total = name.size();
+                                participate.setText("");
+                                total = par_friends.size();
 
-                                    pcount = total/num;
+                                pcount = total/num;
 
-                                    pcount = Math.ceil(pcount);
-                                    ly.setMinimumHeight(90*(int)pcount);
+                                pcount = Math.ceil(pcount);
+                                ly.setMinimumHeight(90*(int)pcount);
+                                grid.setAdapter(expenceadapter[0]);
 
-                                    grid.setAdapter(expenceadapter);
-
-                                    //participate.setText(participate.getText() + ", " + bf.getSelected().get(i).getName());
-                                }
-                                bf.setSelected(null);
                             }
                         }).setNegativeButton("cancle",null).create();
 
@@ -1066,8 +1070,59 @@ public class AddExpenseActivity extends AppCompatActivity
 
 
 
-    public void UploadData() {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
 
+        getMenuInflater().inflate(R.menu.search,menu);
+
+        //SearchView sv = (SearchView)menu.findItem(R.id.search).getActionView();
+
+
+        return super.onCreateOptionsMenu(menu);
+
+
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+
+
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+
+        if (id == R.id.search)
+        {
+
+
+            SearchView sv = (SearchView)item.getActionView();
+
+            sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String s)
+                {
+
+                    return  false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String s)
+                {
+                    final Billify bd=(Billify) getApplicationContext();
+                    bd.getCadpt().getFilter().filter(s);
+
+                    return true;
+                }
+            });
+
+
+        }
+
+//        else if (id == R.id.action_refresh)
+//        {
+//            checkDevice();
+//        }
+        return super.onOptionsItemSelected(item);
     }
 }
 
