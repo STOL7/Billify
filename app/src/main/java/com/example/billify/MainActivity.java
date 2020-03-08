@@ -25,6 +25,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.example.billify.Billify;
+import com.example.billify.SimpleFragmentPageAdapter;
+
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 
@@ -72,7 +75,7 @@ public class MainActivity extends AppCompatActivity
     private SimpleFragmentPageAdapter sadapter;
     FirebaseAuth firebaseAuth;
     String fname;
-    static TextView tx;
+   static TextView tx;
     public final String[] firebaseusername = new String[1];
 
 
@@ -86,21 +89,21 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        billify=(Billify) getApplicationContext();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         mNavigationView = (NavigationView) findViewById(R.id.shitstuff) ;
+        headerView = mNavigationView.getHeaderView(0);
+        tx = (TextView)headerView.findViewById(R.id.usermail);
+        billify=(Billify) getApplicationContext();
+
         toolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
         mFragmentManager = getSupportFragmentManager();
-        headerView = mNavigationView.getHeaderView(0);
 
 
 
         mn = mNavigationView.getMenu();
         mitem=mn.findItem(R.id.nav_item_login);
-      //  tx = (TextView)headerView.findViewById(R.id.useremail);
 
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener()
         {

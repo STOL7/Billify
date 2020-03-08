@@ -25,18 +25,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
 
-    <GridView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/grid"
-        android:background="@drawable/bt_ui"
-        android:layout_below="@+id/appbar"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.04" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_below="@+id/appbar"
@@ -119,13 +108,7 @@
                 android:paddingBottom="7dp"
                 android:autofillHints=""
                 android:textCursorDrawable="@null"
-
-
-
-
-
-
-                android:layout_height="wrap_content">
+                 android:layout_height="wrap_content">
 
 
             </EditText>
@@ -141,6 +124,22 @@
              android:paddingTop="10dp"
              android:text="@string/participates"
              android:textColor="@color/white"></TextView>
+
+
+         <LinearLayout
+             android:id="@+id/f1"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_below="@+id/participate"
+
+
+             >
+
+             <GridView
+                 android:id="@+id/grid1"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent" />
+         </LinearLayout>
 
      </FrameLayout>
             <FrameLayout

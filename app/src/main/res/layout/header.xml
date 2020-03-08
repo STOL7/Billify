@@ -30,7 +30,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/useremail"
+        android:id="@+id/usermail"
         android:layout_below="@+id/profile"
         android:layout_centerHorizontal="true"
         android:gravity="center"

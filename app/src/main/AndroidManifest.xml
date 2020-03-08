@@ -13,6 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".addInGroup"></activity>
+        <activity android:name=".billDetail"></activity>
         <activity android:name=".AddExpenseActivity" />
         <activity android:name=".ChooseLoginSignupActivity" />
 

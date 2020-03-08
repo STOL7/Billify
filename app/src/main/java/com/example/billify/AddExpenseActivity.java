@@ -156,20 +156,20 @@ public class AddExpenseActivity extends AppCompatActivity
         youid=you.getId();
         par_friends.add(you);
 
-        grid = findViewById(R.id.grid);
+       // grid = findViewById(R.id.grid);
         grid.setNumColumns(num);
         final List<String> name = new ArrayList<>();
 
         final expenceadapter expenceadapter= new expenceadapter(this,name);
 
-        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /*grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 name.remove(position);
                 grid.setAdapter(expenceadapter);
 
             }
-        });
+        });*/
 
 
         split.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

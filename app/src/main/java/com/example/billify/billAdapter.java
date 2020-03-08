@@ -18,25 +18,26 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class activityAdapter extends RecyclerView.Adapter<activityAdapter.MyViewHolder> implements Serializable
+public class billAdapter extends RecyclerView.Adapter<billAdapter.MyViewHolder> implements Serializable
 {
 
 
-    public ArrayList<History> fiter;
+    public ArrayList<history_membor> fiter;
 
 
-    public ArrayList<History> histories;
+    public ArrayList<history_membor> histories;
 
 
-    public activityAdapter(ArrayList<History> his)
+    public billAdapter(ArrayList<history_membor> his)
     {
         this.fiter=his;
         this.histories=his;
     }
 
-    public activityAdapter()
+    public billAdapter()
     {
 
     }
@@ -44,7 +45,7 @@ public class activityAdapter extends RecyclerView.Adapter<activityAdapter.MyView
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int i)
     {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.history_fragment, parent, false);
+                .inflate(R.layout.history_details, parent, false);
 
         Log.d("ActivityViewHolder",itemView.toString());
 
@@ -54,17 +55,22 @@ public class activityAdapter extends RecyclerView.Adapter<activityAdapter.MyView
 
     }
 
+
+
     @Override
     public void onBindViewHolder(MyViewHolder myViewHolder, final int i)
     {
 
         final int j=i;
-        final String tt=histories.get(i).getTitle();
+        final String tt=histories.get(i).getName();
 //        String em=emails.get(i);
 
-        String img=histories.get(i).getBillIMage();
-        long exp = histories.get(i).getAmount();
-        final String dd=histories.get(i).getDate();
+        String img="";
+        //long exp = histories.get(i).getAmount();
+        long exp = Long.parseLong(histories.get(i).getExpense());
+        final String dd= histories.get(i).getPaid();
+        //final String dd=histories.get(i).getDate();
+
 
         final Context context=myViewHolder.img.getContext();
 
@@ -90,12 +96,13 @@ public class activityAdapter extends RecyclerView.Adapter<activityAdapter.MyView
 
 
         myViewHolder.rlt.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v)
             {
-                Intent itn =  new Intent(context,billDetail.class);
-                itn.putExtra("user",  histories.get(i));
+             //   Intent itn =  new Intent(context,billDetail.class);
+              //  itn.putExtra("user", (Serializable) histories.get(i));
 
-                context.startActivity(itn);
+               // context.startActivity(itn);
 
             }
         });

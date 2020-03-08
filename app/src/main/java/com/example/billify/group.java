@@ -15,7 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
+import com.example.billify.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class group extends Fragment {
 
     private RecyclerView recyclerview;
     private RecyclerView.Adapter adapter;
-    GroupAdapter adapt = new GroupAdapter();
+    GroupAdapter adapt;
     private RecyclerView.LayoutManager layoutmanager;
     private TextView txt;
 
