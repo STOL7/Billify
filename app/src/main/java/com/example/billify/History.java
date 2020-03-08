@@ -1,6 +1,8 @@
 package com.example.billify;
 
-public class History
+import java.io.Serializable;
+
+public class History implements Serializable
 {
     String id;
     long amount;

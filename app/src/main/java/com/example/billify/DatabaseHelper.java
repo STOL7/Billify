@@ -10,6 +10,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 
+
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -288,7 +290,84 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return  histories;
     }
 
+    public ArrayList<history_membor> geHistoryMember(String id)
+    {
 
+        File dbFile = new File(DATABASE_PATH + DATABASE_NAME);
+        ArrayList<history_membor> f = new ArrayList<>();
+        try
+        {
+
+
+            SQLiteDatabase databases = this.getReadableDatabase();
+
+
+            String tb="history_details";
+            Cursor cursor = databases.rawQuery("SELECT * FROM "+tb+" where history_id = \""+id+"\"" , null);
+
+            Log.d("branch", "Friends retrived succefully");
+
+            cursor.moveToFirst();
+
+
+
+
+
+            while (!cursor.isAfterLast())
+            {
+             history_membor hs = new history_membor();
+                hs.setExpense(cursor.getString(4));
+                hs.setId(cursor.getString(2));
+                hs.setPaid(cursor.getString(3));
+
+
+                f.add(hs);
+
+                Log.d("branch", "history retrived succefully ");
+                cursor.moveToNext();
+            }
+
+            databases.close();
+            cursor.close();
+        }
+        catch (SQLException se)
+        {
+            Log.d("Exception", se.getMessage());
+        }
+
+        return  f;
+    }
+
+    public String getMemberName(String id)
+    {
+
+        String str="";
+        try
+        {
+
+            SQLiteDatabase databases = this.getReadableDatabase();
+
+
+            String tb="partner";
+            Cursor cursor = databases.rawQuery("SELECT * FROM "+tb+" where Id = \""+id+"\"" , null);
+            Log.d("branch", id);
+           cursor.moveToFirst();
+            while (!cursor.isAfterLast())
+            {
+                str = cursor.getString(1);
+                cursor.moveToNext();
+            }
+
+            databases.close();
+            cursor.close();
+        }
+        catch (SQLException se)
+        {
+            Log.d("Exception", se.getMessage());
+        }
+
+        return  str;
+    }
 
     public  boolean addNew(String id, String name,String email,String contact,int balance,String profile)
     {

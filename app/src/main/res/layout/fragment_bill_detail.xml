@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="#EBEBEB"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/txttitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="#title"
+        android:textSize="25dp" />
+
+    <TextView
+        android:id="@+id/txtmoney"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="#money"
+        android:textSize="35dp"/>
+
+    <TextView
+        android:id="@+id/txtdate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="#date"
+        android:textSize="20dp"
+        android:gravity="right"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/recycler_view"
+
+
+        />
+
+    <com.github.mikephil.charting.charts.PieChart
+        android:id = "@+id/pieChart"
+        android:layout_width = "fill_parent"
+        android:layout_height = "fill_parent"
+        tools:ignore="MissingConstraints" />
+
+
+
+</LinearLayout>

@@ -112,31 +112,6 @@ private TextView txt;
 
         recyclerview = (RecyclerView) getView().findViewById(R.id.recycler_view);
 
-       /* fStore.collection("Users").document(userId).collection("Transactions").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    Toast.makeText(getActivity(),"History",Toast.LENGTH_LONG).show();
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        DocumentReference documentReference = fStore.collection("Users").document(userId).collection("Transactions").document(document.getId());
-                        documentReference.addSnapshotListener(getActivity(), new EventListener<DocumentSnapshot>() {
-                            @Override
-                            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                                history = new History();
-                                history.setBillIMage(documentSnapshot.getString("billImage"));
-                                history.setAmount(documentSnapshot.getLong("amount"));
-                                history.setTitle(documentSnapshot.getString("description"));
-                                history.setDate(String.valueOf(documentSnapshot.getDate("date")));
-
-
-                            }
-                        });
-                    }
-                } else {
-                        Toast.makeText(getActivity(),"Error is:"+task.getException(),Toast.LENGTH_LONG).show();
-                }
-            }
-        });*/
 
 
 

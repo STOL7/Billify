@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -36,10 +37,6 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.MyViewHolder
 
     }
 
-    public GroupAdapter()
-    {
-
-    }
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int i)
     {

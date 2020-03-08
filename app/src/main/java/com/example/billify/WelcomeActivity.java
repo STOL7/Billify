@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 
+import com.example.billify.R;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Timer;
@@ -54,7 +56,9 @@ public class WelcomeActivity extends AppCompatActivity
         printHashKey();
     }
 
-    private void printHashKey() {
+    private void printHashKey()
+    {
+
 
         try {
             PackageInfo info = getPackageManager().getPackageInfo(

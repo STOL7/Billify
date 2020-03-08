@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -83,7 +84,11 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
 
         myViewHolder.bdate.setText(bd);
         myViewHolder.names.setText(nm);
-
+        final Billify bf=(Billify) getApplicationContext();
+        if(bf.getSelected()!=null && bf.getSelected().contains(friends.get(i)))
+        {
+            myViewHolder.rlt.setAlpha((float)0.5);
+        }
         myViewHolder.rlt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
@@ -91,7 +96,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
 
 
                 //View alertLayout = inflater.inflate(R.layout.recyclerview, null);
-                final Billify bf=(Billify) getApplicationContext();
+
 
                ArrayList<Friend> av = bf.getSelected();
                if(av == null)
@@ -100,13 +105,19 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
                if(myViewHolder.rlt.getAlpha() == 0.5)
                {
                    av.remove(friends.get(i));
-                   bf.setSelected(av);
+                   bf.getSelected().remove(friends.get(i));
                    myViewHolder.rlt.setAlpha((float)1);
                }
                else
                {
-                   av.add(friends.get(i));
-                   bf.setSelected(av);
+
+
+                   if(!av.contains(friends.get(i)))
+                   {
+                       av.add(friends.get(i));
+                       bf.setSelected(av);
+                   }
+
                    myViewHolder.rlt.setAlpha((float)0.5);
                }
             }
@@ -124,6 +135,47 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
     public int getItemCount()
     {
         return friends.size();
+    }
+
+    public Filter getFilter()
+    {
+        return new Filter()
+        {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                String str = constraint.toString();
+                if (str.isEmpty())
+                {
+                    friends = fiter;
+
+                } else {
+                    ArrayList<Friend> filteredList = new ArrayList<>();
+                    for (Friend birth : fiter) {
+
+                        if ((birth.getBalance()+"").toLowerCase().contains(str) || birth.getName().toLowerCase().contains(str) ||
+                                birth.getEmail().toLowerCase().contains(str) || birth.getContact().toLowerCase().contains(str)) {
+
+                            filteredList.add(birth);
+                        }
+                        friends = filteredList;
+                    }
+
+
+
+                }
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = friends;
+
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results)
+            {
+                friends = (ArrayList<Friend>) results.values;
+                notifyDataSetChanged();
+            }
+        };
     }
 
 
