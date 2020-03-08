@@ -83,7 +83,7 @@ public class display_friends extends Fragment
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        final Billify bf=(Billify) getActivity().getApplicationContext();
 
         recyclerview = (RecyclerView) getView().findViewById(R.id.recycler_view);
         txt=(TextView)getView().findViewById(R.id.no_birthday);
@@ -98,6 +98,8 @@ public class display_friends extends Fragment
             @Override
             public void onClick(View view) {
 
+
+                bf.setSelected(null);
 
                 Intent myIntent = new Intent(getActivity(), AddExpenseActivity.class);
                 getActivity().startActivity(myIntent);
@@ -114,7 +116,7 @@ public class display_friends extends Fragment
         db.createDataBase();
         db.openDataBase();
 
-        final Billify bf=(Billify) getActivity().getApplicationContext();
+
         friends = db.geFriend();
 
         if(friends.size() > 0)

@@ -1,6 +1,7 @@
 package com.example.billify;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -19,6 +20,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 
@@ -26,14 +32,20 @@ import java.util.ArrayList;
 public class billDetail extends AppCompatActivity
 {
     private Toolbar toolbar;
+    PieChart pieChart;
+    PieData pieData;
+    PieDataSet pieDataSet;
 
+    ArrayList pieEntries;
+    ArrayList PieEntryName;
     private History history;
+    private history_membor member;
     private RecyclerView recyclerview;
     private RecyclerView.Adapter adapter;
     public ArrayList<history_membor> histories;
     private RecyclerView.LayoutManager layoutmanager;
     private TextView title,amount,date;
-
+    String nm;
     private billAdapter adapt;
 
 
@@ -46,7 +58,9 @@ public class billDetail extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_bill_detail);
 
-
+        pieChart = findViewById(R.id.pieChart);
+        PieEntryName = new ArrayList();
+        pieEntries = new ArrayList<>();
         layoutmanager=new LinearLayoutManager(this);
 
         title = (TextView) findViewById(R.id.txttitle);
@@ -74,7 +88,12 @@ public class billDetail extends AppCompatActivity
 
         for(int i=0;i<histories.size();i++)
         {
-            histories.get(i).setName(db.getMemberName(histories.get(i).getId()));
+            member = histories.get(i);
+            pieEntries.add(new PieEntry(Float.parseFloat(member.getExpense()), 0));
+
+            nm = db.getMemberName(member.getId());
+            member.setName(nm);
+            PieEntryName.add(nm);
         }
 
 
@@ -82,6 +101,14 @@ public class billDetail extends AppCompatActivity
 
 
         recyclerview.setAdapter(adapt);
+
+        pieDataSet = new PieDataSet(pieEntries, "No of Members");
+        pieData = new PieData(pieDataSet);
+        pieChart.setData(pieData);
+        pieDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+        pieDataSet.setSliceSpace(2f);
+        pieDataSet.setValueTextColor(Color.WHITE);
+        pieDataSet.setValueTextSize(10f);
     }
     public void onStart()
     {

@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -134,6 +135,47 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
     public int getItemCount()
     {
         return friends.size();
+    }
+
+    public Filter getFilter()
+    {
+        return new Filter()
+        {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                String str = constraint.toString();
+                if (str.isEmpty())
+                {
+                    friends = fiter;
+
+                } else {
+                    ArrayList<Friend> filteredList = new ArrayList<>();
+                    for (Friend birth : fiter) {
+
+                        if ((birth.getBalance()+"").toLowerCase().contains(str) || birth.getName().toLowerCase().contains(str) ||
+                                birth.getEmail().toLowerCase().contains(str) || birth.getContact().toLowerCase().contains(str)) {
+
+                            filteredList.add(birth);
+                        }
+                        friends = filteredList;
+                    }
+
+
+
+                }
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = friends;
+
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results)
+            {
+                friends = (ArrayList<Friend>) results.values;
+                notifyDataSetChanged();
+            }
+        };
     }
 
 

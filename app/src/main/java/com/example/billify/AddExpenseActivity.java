@@ -21,6 +21,8 @@ import android.util.Log;
 import android.util.Size;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -62,6 +64,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -77,7 +80,7 @@ public class AddExpenseActivity extends AppCompatActivity
     DatabaseReference databaseReference;
     EditText discription,title,participate,amount,f_name,f_email,f_contact;
     Spinner category,billed_by,split;
-    Toolbar toolbar;
+    Toolbar toolbar,toolbar1;
     Button add_new,add_exp;
     ImageView ln_image;
     ArrayList<Friend> par_friends = new ArrayList<Friend>();
@@ -211,7 +214,12 @@ public class AddExpenseActivity extends AppCompatActivity
             public void onClick(View view)
             {
                 LayoutInflater inflater = getLayoutInflater();
-                View alertLayout = inflater.inflate(R.layout.recyclerview, null);
+                View alertLayout = inflater.inflate(R.layout.showcontact, null);
+                toolbar1 = alertLayout.findViewById(R.id.toolbar1);
+                setSupportActionBar(toolbar1);
+
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setDisplayShowHomeEnabled(true);
                 recyclerview = (RecyclerView) alertLayout.findViewById(R.id.recycler_view);
                 recyclerview.setHasFixedSize(true);
                 recyclerview.setLayoutManager(new LinearLayoutManager(AddExpenseActivity.this));
@@ -230,7 +238,7 @@ public class AddExpenseActivity extends AppCompatActivity
                             {
 
 
-                           
+
                                 par_friends = bf.getSelected();
                                 participate.setText("");
                                 for(int i=0;i<bf.getSelected().size();i++)
@@ -1029,9 +1037,60 @@ public class AddExpenseActivity extends AppCompatActivity
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.search,menu);
+
+        //SearchView sv = (SearchView)menu.findItem(R.id.search).getActionView();
 
 
-    public void UploadData() {
+        return super.onCreateOptionsMenu(menu);
+
 
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+
+
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+
+        if (id == R.id.search)
+        {
+
+
+            SearchView sv = (SearchView)item.getActionView();
+
+            sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String s)
+                {
+
+                    return  false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String s)
+                {
+                    final Billify bd=(Billify) getApplicationContext();
+                    bd.getCadpt().getFilter().filter(s);
+
+                    return true;
+                }
+            });
+
+
+        }
+
+//        else if (id == R.id.action_refresh)
+//        {
+//            checkDevice();
+//        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
 }
