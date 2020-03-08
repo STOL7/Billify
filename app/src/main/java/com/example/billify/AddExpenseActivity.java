@@ -151,7 +151,7 @@ public class AddExpenseActivity extends AppCompatActivity
         give_hash = new HashMap<String, Long>();
 
         sz= par_friends.size();
-       participate.setText("");
+        participate.setText("");
         bill_image=(FloatingActionButton)findViewById(R.id.bill_image);
         ln_image=(ImageView)findViewById(R.id.ln_image);
         toolbar = findViewById(R.id.toolbar);
@@ -248,12 +248,12 @@ public class AddExpenseActivity extends AppCompatActivity
                 recyclerview.addItemDecoration(new DividerItemDecoration(AddExpenseActivity.this, LinearLayoutManager.VERTICAL));
                 recyclerview.setAdapter(bf.getCadpt());
 
-               // participate.setText(participate.getText() + bf.getSelected());
+                // participate.setText(participate.getText() + bf.getSelected());
                 AlertDialog dialog = new AlertDialog.Builder(AddExpenseActivity.this)
 
                         .setView(alertLayout)
                         .setPositiveButton("Add", new DialogInterface.OnClickListener()
-                                {
+                        {
                             @Override
                             public void onClick(DialogInterface dialog, int which)
                             {
@@ -379,7 +379,7 @@ public class AddExpenseActivity extends AppCompatActivity
                                     addOwesToFirestore(uuid,key,key1,value);
 
                                     db.updateExpense(key1,give_hash.get(key1)+value);
-                                   getForNetUpdate(key,key1,value);
+                                    getForNetUpdate(key,key1,value);
 
                                     getForNetUpdate(key1,key,-value);
 
@@ -489,83 +489,83 @@ public class AddExpenseActivity extends AppCompatActivity
                                             Matcher m = p.matcher(email);
                                             if(!m.find())
                                             {
-                                                 Toast.makeText(AddExpenseActivity.this,"Please enter valid email",Toast.LENGTH_LONG).show();
+                                                Toast.makeText(AddExpenseActivity.this,"Please enter valid email",Toast.LENGTH_LONG).show();
                                             }
                                             else
                                             {
                                                 final String nm=name;
-                                               final String em=email;
+                                                final String em=email;
 
-                                               final String[][] uid = {new String[5]};
+                                                final String[][] uid = {new String[5]};
 
-                                               if(db.findByEmail(email))
-                                                   Toast.makeText(AddExpenseActivity.this,"Already available your friend list",Toast.LENGTH_LONG).show();
-                                               else
-                                               {
-                                                   databaseReference.orderByChild("Email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
-                                                       @Override
-                                                       public void onDataChange(DataSnapshot dataSnapshot)
-                                                       {
-
-
-
-                                                           if(dataSnapshot.getValue() == null)
-                                                           {
-                                                               //send request for add new friend on server
-                                                               if(db.addNew(email,nm,em,"",0,""))
-                                                               {
-
-                                                                   addToFirestore(youid,email,0);
-                                                                   addToFirestore(email,youid,0);
-                                                                   Toast.makeText(AddExpenseActivity.this,"Send request to friend",Toast.LENGTH_LONG).show();
-                                                               }
+                                                if(db.findByEmail(email))
+                                                    Toast.makeText(AddExpenseActivity.this,"Already available your friend list",Toast.LENGTH_LONG).show();
+                                                else
+                                                {
+                                                    databaseReference.orderByChild("Email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(DataSnapshot dataSnapshot)
+                                                        {
 
 
-                                                           }
-                                                           else
-                                                           {
-                                                               for(DataSnapshot data:dataSnapshot.getChildren())
-                                                               {
-                                                                   Log.i("result",data.toString());
 
-                                                                   String key = data.getKey().toString();
+                                                            if(dataSnapshot.getValue() == null)
+                                                            {
+                                                                //send request for add new friend on server
+                                                                if(db.addNew(email,nm,em,"",0,""))
+                                                                {
+
+                                                                    addToFirestore(youid,email,0);
+                                                                    addToFirestore(email,youid,0);
+                                                                    Toast.makeText(AddExpenseActivity.this,"Send request to friend",Toast.LENGTH_LONG).show();
+                                                                }
+
+
+                                                            }
+                                                            else
+                                                            {
+                                                                for(DataSnapshot data:dataSnapshot.getChildren())
+                                                                {
+                                                                    Log.i("result",data.toString());
+
+                                                                    String key = data.getKey().toString();
                                                                     String  cn = data.child("Contact").getValue().toString();
                                                                     String profile = data.child("Profile").getValue().toString();
-                                                                   //String Name = data.child("Name").getValue().toString();
+                                                                    //String Name = data.child("Name").getValue().toString();
                                                                     if(cn == null)
                                                                         cn="";
                                                                     if(profile == null)
                                                                         profile="";
-                                                                   if(db.addNew(key,name,email,cn,0,profile))
-                                                                   {
+                                                                    if(db.addNew(key,name,email,cn,0,profile))
+                                                                    {
 
-                                                                       addToFirestore(youid,key,0);
+                                                                        addToFirestore(youid,key,0);
 
-                                                                       addToFirestore(key,youid,0);
-
-
-
-                                                                   }
-
-
-                                                               }
+                                                                        addToFirestore(key,youid,0);
 
 
 
-
-                                                           }
-
-
-                                                       }
-                                                       @Override
-                                                       public void onCancelled(DatabaseError databaseError)
-                                                       {
+                                                                    }
 
 
-                                                       }
-                                                   });
+                                                                }
 
-                                               }
+
+
+
+                                                            }
+
+
+                                                        }
+                                                        @Override
+                                                        public void onCancelled(DatabaseError databaseError)
+                                                        {
+
+
+                                                        }
+                                                    });
+
+                                                }
 
 
 
@@ -599,7 +599,7 @@ public class AddExpenseActivity extends AppCompatActivity
 
                                                     }
                                                     else
-                                                        {
+                                                    {
                                                         for (DataSnapshot data : dataSnapshot.getChildren()) {
                                                             Log.i("result", data.toString());
 
@@ -678,27 +678,27 @@ public class AddExpenseActivity extends AppCompatActivity
         firestore.collection("Users").document(key)
                 .collection("Friends").document(key1)
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful())
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful())
+                {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists())
                     {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists())
-                        {
-                            Map<String, Object> forms = document.getData();
-                            balance_fire =Long.parseLong(forms.get("Balance").toString());
-                            Log.d("get data", "DocumentSnapshot data: " + balance_fire);
-                            addToFirestore(key,key1,balance_fire+value);
-                        }
-                        else
-                            {
-                            Log.d("no data", "No such document");
-                        }
-                    } else {
-                        Log.d("error", "get failed with ", task.getException());
+                        Map<String, Object> forms = document.getData();
+                        balance_fire =Long.parseLong(forms.get("Balance").toString());
+                        Log.d("get data", "DocumentSnapshot data: " + balance_fire);
+                        addToFirestore(key,key1,balance_fire+value);
                     }
+                    else
+                    {
+                        Log.d("no data", "No such document");
+                    }
+                } else {
+                    Log.d("error", "get failed with ", task.getException());
                 }
-            });
+            }
+        });
 
         return balance_fire;
     }
@@ -828,7 +828,7 @@ public class AddExpenseActivity extends AppCompatActivity
             else {
                 net=   split_arr[i] - paid_arr[i];
                 boorow_hash.put(par_friends.get(i).getId(), net);
-               // Log.d(net+" hj12"+i,"hhjf "+par_friends.get(i).getId()+" jk" +boorow_hash.get(par_friends.get(i).getId())+"");
+                // Log.d(net+" hj12"+i,"hhjf "+par_friends.get(i).getId()+" jk" +boorow_hash.get(par_friends.get(i).getId())+"");
             }
 
 
@@ -895,7 +895,7 @@ public class AddExpenseActivity extends AppCompatActivity
                         for(int i=0;i<sz;i++)
                         {
                             if(ex[i].getText().length() > 0)
-                             c = Integer.parseInt(String.valueOf(ex[i].getText()));
+                                c = Integer.parseInt(String.valueOf(ex[i].getText()));
                             else
                                 c=0;
                             arr[i] =c;
@@ -948,14 +948,14 @@ public class AddExpenseActivity extends AppCompatActivity
             Toast.makeText(this, "Please provide permission to access contacts", Toast.LENGTH_LONG).show();
     }
 
-        public void SelectImage()
-        {
-            Intent intent = new Intent();
+    public void SelectImage()
+    {
+        Intent intent = new Intent();
 
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            intent.setType("image/*");
-            startActivityForResult(intent, 86);
-        }
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        startActivityForResult(intent, 86);
+    }
 
     public void SelectContact()
     {
@@ -970,41 +970,41 @@ public class AddExpenseActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
 
 
-            if(requestCode == 86 && data!= null )
+        if(requestCode == 86 && data!= null )
+        {
+            imgUri = data.getData();
+
+            try
             {
-                imgUri = data.getData();
 
-                try
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),imgUri);
+
+
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                // In case you want to compress your image, here it's at 40%
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 40, byteArrayOutputStream);
+                byte[] byteArray = byteArrayOutputStream.toByteArray();
+
+
+                long lengthbmp = byteArray.length;
+
+
+
+
+                if(lengthbmp > 200000)
                 {
+                    AlertDialog dialog = new AlertDialog.Builder(AddExpenseActivity.this)
 
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),imgUri);
-
-
-                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                    // In case you want to compress your image, here it's at 40%
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 40, byteArrayOutputStream);
-                    byte[] byteArray = byteArrayOutputStream.toByteArray();
+                            .setMessage("Image size should be less than 500KB")
+                            .create();
+                    dialog.show();
+                    imgUri=null;
 
 
-                    long lengthbmp = byteArray.length;
-
-
-
-
-                    if(lengthbmp > 200000)
-                    {
-                        AlertDialog dialog = new AlertDialog.Builder(AddExpenseActivity.this)
-
-                                .setMessage("Image size should be less than 500KB")
-                                .create();
-                        dialog.show();
-                        imgUri=null;
-
-
-                    }
-                    else
-                    {
-                        image = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                }
+                else
+                {
+                    image = Base64.encodeToString(byteArray, Base64.DEFAULT);
 
 
 
@@ -1017,16 +1017,16 @@ public class AddExpenseActivity extends AppCompatActivity
 
 
 
-                        ln_image.setImageBitmap(bitmap1);
-                    }
+                    ln_image.setImageBitmap(bitmap1);
+                }
 
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-                //name.setText(data.getData().getPath()+"");
             }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+            //name.setText(data.getData().getPath()+"");
+        }
 
        /* else if(requestCode == 70 && data!= null )
         {
@@ -1056,10 +1056,10 @@ public class AddExpenseActivity extends AppCompatActivity
                 }
             }
         }*/
-            else
-            {
+        else
+        {
 
-            }
+        }
 
 
     }
@@ -1070,3 +1070,4 @@ public class AddExpenseActivity extends AppCompatActivity
 
     }
 }
+
