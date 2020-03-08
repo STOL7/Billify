@@ -83,7 +83,11 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
 
         myViewHolder.bdate.setText(bd);
         myViewHolder.names.setText(nm);
-
+        final Billify bf=(Billify) getApplicationContext();
+        if(bf.getSelected()!=null && bf.getSelected().contains(friends.get(i)))
+        {
+            myViewHolder.rlt.setAlpha((float)0.5);
+        }
         myViewHolder.rlt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
@@ -91,7 +95,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
 
 
                 //View alertLayout = inflater.inflate(R.layout.recyclerview, null);
-                final Billify bf=(Billify) getApplicationContext();
+
 
                ArrayList<Friend> av = bf.getSelected();
                if(av == null)
@@ -100,13 +104,19 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyViewHo
                if(myViewHolder.rlt.getAlpha() == 0.5)
                {
                    av.remove(friends.get(i));
-                   bf.setSelected(av);
+                   bf.getSelected().remove(friends.get(i));
                    myViewHolder.rlt.setAlpha((float)1);
                }
                else
                {
-                   av.add(friends.get(i));
-                   bf.setSelected(av);
+
+
+                   if(!av.contains(friends.get(i)))
+                   {
+                       av.add(friends.get(i));
+                       bf.setSelected(av);
+                   }
+
                    myViewHolder.rlt.setAlpha((float)0.5);
                }
             }

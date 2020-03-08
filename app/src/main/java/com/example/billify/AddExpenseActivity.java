@@ -157,19 +157,11 @@ public class AddExpenseActivity extends AppCompatActivity
         par_friends.add(you);
 
        // grid = findViewById(R.id.grid);
-        grid.setNumColumns(num);
+//        grid.setNumColumns(num);
         final List<String> name = new ArrayList<>();
 
-        final expenceadapter expenceadapter= new expenceadapter(this,name);
 
-        /*grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                name.remove(position);
-                grid.setAdapter(expenceadapter);
 
-            }
-        });*/
 
 
         split.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -238,15 +230,17 @@ public class AddExpenseActivity extends AppCompatActivity
                             {
 
 
-                                par_friends.addAll(bf.getSelected());
+                           
+                                par_friends = bf.getSelected();
+                                participate.setText("");
                                 for(int i=0;i<bf.getSelected().size();i++)
                                 {
 
                                     name.add(bf.getSelected().get(i).getName());
-                                    //grid.setAdapter(expenceadapter);
+
                                     participate.setText(participate.getText() + ", " + bf.getSelected().get(i).getName());
                                 }
-                                bf.setSelected(null);
+
                             }
                         }).setNegativeButton("cancle",null).create();
 
