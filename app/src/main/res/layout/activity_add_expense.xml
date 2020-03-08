@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.example.billify.AddExpenseActivity"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:background="#f4f4f4">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -25,18 +26,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
 
-    <GridView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/grid"
-        android:background="@drawable/bt_ui"
-        android:layout_below="@+id/appbar"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.04" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_below="@+id/appbar"
@@ -44,19 +34,22 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_marginRight="50dp"
-            android:layout_marginLeft="80dp"
+            android:layout_marginLeft="30dp"
             android:layout_marginTop="50dp"
+            android:layout_marginRight="30dp"
             android:id="@+id/rtl"
             android:layout_height="match_parent">
 
 
 
-<FrameLayout
+
+
+            <FrameLayout
                  android:id="@+id/ef1"
 
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                >
 
 
     <EditText
@@ -119,12 +112,6 @@
                 android:paddingBottom="7dp"
                 android:autofillHints=""
                 android:textCursorDrawable="@null"
-
-
-
-
-
-
                 android:layout_height="wrap_content">
 
 
@@ -142,12 +129,28 @@
              android:text="@string/participates"
              android:textColor="@color/white"></TextView>
 
+
+
      </FrameLayout>
+            <LinearLayout
+                android:id="@+id/f1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+               android:layout_marginTop="5dp"
+                android:layout_below="@+id/ef2"
+                >
+
+                <GridView
+                    android:id="@+id/grid1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/ef3"
-                android:layout_below="@id/ef2"
+                android:layout_below="@id/f1"
                 android:layout_marginTop="20dp">
 
                 <EditText

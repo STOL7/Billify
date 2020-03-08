@@ -28,6 +28,7 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -92,7 +93,13 @@ public class AddExpenseActivity extends AppCompatActivity
     int height;
     int dpi;
     GridView grid;
-
+    LinearLayout ly;
+    double pcount=0;
+    int numcolume;
+    int numrow=1;
+    int size=80;
+    double total;
+    int nu=0;
     FirebaseFirestore firestore;
     private static Calendar calender;
     FloatingActionButton bill_image;
@@ -119,7 +126,8 @@ public class AddExpenseActivity extends AppCompatActivity
         height = dm.heightPixels;
         dpi=dm.densityDpi;
         dpwidth=(width*160)/dpi;
-        int num=dpwidth/120;
+        final int num=dpwidth/140;
+
 
         databaseReference= FirebaseDatabase.getInstance().getReference("Users");
         databaseReference.keepSynced(true);
@@ -150,13 +158,13 @@ public class AddExpenseActivity extends AppCompatActivity
         final Billify bf=(Billify)getApplicationContext();
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayShowHomeEnabled(true);
         you = bf.getYou();
         youid=you.getId();
         par_friends.add(you);
-
-        grid = findViewById(R.id.grid);
+        ly = (LinearLayout) findViewById(R.id.f1);
+        grid = findViewById(R.id.grid1);
         grid.setNumColumns(num);
         final List<String> name = new ArrayList<>();
 
@@ -212,7 +220,20 @@ public class AddExpenseActivity extends AppCompatActivity
         });
 
 
+        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                name.remove(position);
+                grid.setAdapter(expenceadapter);
+                total = name.size();
+                pcount = total/num;
+                pcount = Math.ceil(pcount);
+                ly.setMinimumHeight(90*(int)pcount);
 
+
+
+            }
+        });
 
         participate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -243,8 +264,16 @@ public class AddExpenseActivity extends AppCompatActivity
                                 {
 
                                     name.add(bf.getSelected().get(i).getName());
-                                    //grid.setAdapter(expenceadapter);
-                                    participate.setText(participate.getText() + ", " + bf.getSelected().get(i).getName());
+                                    total = name.size();
+
+                                    pcount = total/num;
+
+                                    pcount = Math.ceil(pcount);
+                                    ly.setMinimumHeight(90*(int)pcount);
+
+                                    grid.setAdapter(expenceadapter);
+
+                                    //participate.setText(participate.getText() + ", " + bf.getSelected().get(i).getName());
                                 }
                                 bf.setSelected(null);
                             }
@@ -615,13 +644,13 @@ public class AddExpenseActivity extends AppCompatActivity
             }
         });
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
-                finish();
-            }
-        });
+//        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v)
+//            {
+//                finish();
+//            }
+//        });
 
         bill_image.setOnClickListener(new View.OnClickListener()
         {
