@@ -83,10 +83,11 @@ private TextView txt;
 
         layoutmanager=new LinearLayoutManager(con);
 
-        fAuth = FirebaseAuth.getInstance();
-        fStore = FirebaseFirestore.getInstance();
+       // fAuth = FirebaseAuth.getInstance();
+      //  fStore = FirebaseFirestore.getInstance();
 
-        userId = fAuth.getCurrentUser().getUid();
+
+        //userId = fAuth.getCurrentUser().getUid();
 
 
 
@@ -139,9 +140,8 @@ private TextView txt;
         }
 
 
-
         adapt = new activityAdapter(histories);
-        Toast.makeText(getActivity(),String.valueOf(adapt.getItemCount()),Toast.LENGTH_LONG).show();
+        //Toast.makeText(getActivity(),String.valueOf(adapt.getItemCount()),Toast.LENGTH_LONG).show();
         recyclerview.setLayoutManager(layoutmanager);
         recyclerview.setHasFixedSize(true);
 

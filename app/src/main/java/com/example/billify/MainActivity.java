@@ -22,11 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
-
-import com.example.billify.Billify;
-import com.example.billify.SimpleFragmentPageAdapter;
 
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
@@ -51,11 +47,6 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity

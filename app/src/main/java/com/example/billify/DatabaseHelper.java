@@ -338,6 +338,171 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return  f;
     }
 
+    public int delete(String id)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        try
+        {
+            int r = db.delete("History   ","id=?",new String[]{String.valueOf(id)});
+            int x = db.delete("expand_history","history_id=?",new String[]{String.valueOf(id)});
+            int y = db.delete("history_details","history_id=?",new String[]{String.valueOf(id)});
+            return r;
+        }
+        catch (Exception ex)
+        {
+            return  0;
+        }
+
+    }
+    public ArrayList<friend_history> getFriendForDelete(String id)
+    {
+
+        ArrayList<friend_history> f = new ArrayList<>();
+        try
+        {
+
+
+            SQLiteDatabase databases = this.getReadableDatabase();
+
+
+            String tb="expand_history";
+
+            Cursor cursor = databases.rawQuery("SELECT * FROM "+tb+" where history_id = \""+id+"\"" , null);
+
+            cursor.moveToFirst();
+
+            while (!cursor.isAfterLast())
+            {
+
+                friend_history fs = new friend_history();
+
+
+                fs.setUser_id(cursor.getString(2));
+                fs.setPaid(cursor.getLong(3));
+                fs.setOpp_id(cursor.getString(5));
+                fs.setHistory_id(cursor.getString(1));
+                f.add(fs);
+
+
+                //Log.d("branch", "history retrived succefully ");
+                cursor.moveToNext();
+            } databases.close();
+            cursor.close();
+        }
+        catch (SQLException se)
+        {
+            Log.d("Exception", se.getMessage());
+        }
+
+        return  f;
+    }
+    public ArrayList<friend_history> getFriendHistory(String id,String friend_id)
+    {
+
+        ArrayList<friend_history> f = new ArrayList<>();
+        try
+        {
+
+
+            SQLiteDatabase databases = this.getReadableDatabase();
+
+
+            String tb="expand_history";
+
+            Cursor cursor = databases.rawQuery("SELECT * FROM "+tb+" where member_id = \""+id+"\" and opposite_id = \""+friend_id+"\"" , null);
+
+            cursor.moveToFirst();
+
+            while (!cursor.isAfterLast())
+            {
+
+                friend_history fs = new friend_history();
+
+
+                fs.setUser_id(cursor.getString(2));
+                fs.setPaid(cursor.getLong(3));
+               // fs.setOpp_id(cursor.getString(5));
+                fs.setHistory_id(cursor.getString(1));
+                f.add(fs);
+
+
+                //Log.d("branch", "history retrived succefully ");
+                cursor.moveToNext();
+            }
+             cursor = databases.rawQuery("SELECT * FROM "+tb+" where member_id = \""+friend_id+"\" and opposite_id = \""+id+"\"" , null);
+
+            cursor.moveToFirst();
+
+            while (!cursor.isAfterLast())
+            {
+
+                friend_history fs = new friend_history();
+
+
+                fs.setUser_id(cursor.getString(2));
+                fs.setPaid(cursor.getLong(3));
+                fs.setHistory_id(cursor.getString(1));
+                f.add(fs);
+
+                cursor.moveToNext();
+            }
+            databases.close();
+            cursor.close();
+        }
+        catch (SQLException se)
+        {
+            Log.d("Exception", se.getMessage());
+        }
+
+        return  f;
+    }
+
+    public History getHistory1(String id)
+    {
+
+        History hs = new History();;
+        try
+        {
+
+            SQLiteDatabase databases = this.getReadableDatabase();
+
+
+            String tb="History";
+
+            Cursor cursor = databases.rawQuery("SELECT * FROM "+tb+" where id = \""+id+"\"" , null);
+
+            cursor.moveToFirst();
+            int cnt=0;
+            while (!cursor.isAfterLast())
+            {
+                Log.d("branch"+ cnt++, id);
+                hs.setAmount(cursor.getLong(1));
+                hs.setBillIMage(cursor.getString(3));
+                hs.setDate(cursor.getString(2));
+
+                hs.setDescription(cursor.getString(5));
+                hs.setId(cursor.getString(0));
+
+                hs.setTitle(cursor.getString(6));
+                hs.setCategory(cursor.getString(7));
+
+                hs.setSync(cursor.getInt(4));
+                cursor.moveToNext();
+            }
+
+
+            databases.close();
+            cursor.close();
+        }
+        catch (SQLException se)
+        {
+            Log.d("Exception", se.getMessage());
+        }
+
+        return  hs;
+    }
+
     public String getMemberName(String id)
     {
 

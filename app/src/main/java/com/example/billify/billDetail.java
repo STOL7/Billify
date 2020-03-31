@@ -1,10 +1,12 @@
 package com.example.billify;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -13,7 +15,10 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -25,8 +30,15 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class billDetail extends AppCompatActivity
@@ -43,11 +55,17 @@ public class billDetail extends AppCompatActivity
     private RecyclerView recyclerview;
     private RecyclerView.Adapter adapter;
     public ArrayList<history_membor> histories;
+    public ArrayList<friend_history> netdata;
     private RecyclerView.LayoutManager layoutmanager;
     private TextView title,amount,date;
     String nm;
+    DatabaseReference databaseReference;
+    FirebaseFirestore firestore;
+    DatabaseHelper db;
+    AddExpenseActivity ex;
     private billAdapter adapt;
-
+     Billify bf;
+     String uid,hid;
 
 
 
@@ -57,12 +75,16 @@ public class billDetail extends AppCompatActivity
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_bill_detail);
+        databaseReference= FirebaseDatabase.getInstance().getReference("Users");
+        databaseReference.keepSynced(true);
+        firestore = FirebaseFirestore.getInstance();
 
         pieChart = findViewById(R.id.pieChart);
         PieEntryName = new ArrayList();
         pieEntries = new ArrayList<>();
         layoutmanager=new LinearLayoutManager(this);
 
+        ex = new AddExpenseActivity();
         title = (TextView) findViewById(R.id.txttitle);
         amount =(TextView) findViewById(R.id.txtmoney);
         date  =(TextView) findViewById(R.id.txtdate);
@@ -76,10 +98,17 @@ public class billDetail extends AppCompatActivity
 
         recyclerview.setHasFixedSize(true);
         recyclerview.setLayoutManager(layoutmanager);
+        toolbar = findViewById(R.id.toolbar);
+        bf = (Billify)getApplicationContext();
 
+        uid=bf.you.getId();
+        hid=history.getId();
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         recyclerview.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
 
-    DatabaseHelper db = new DatabaseHelper(this);
+        db= new DatabaseHelper(this);
         db.createDataBase();
         db.openDataBase();
 
@@ -110,6 +139,29 @@ public class billDetail extends AppCompatActivity
         pieDataSet.setValueTextColor(Color.WHITE);
         pieDataSet.setValueTextSize(10f);
     }
+    public boolean deleteHistory()
+    {
+        firestore.collection("Users").document(uid).
+                collection("Transactions").document(history.getId())
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("Delete history", "DocumentSnapshot successfully deleted!");
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("Fail delete", "Error deleting document", e);
+                    }
+                });
+        return true;
+
+    }
+
+
     public void onStart()
     {
 
@@ -118,6 +170,76 @@ public class billDetail extends AppCompatActivity
 
 
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
 
+        getMenuInflater().inflate(R.menu.bill_menu,menu);
+
+        return super.onCreateOptionsMenu(menu);
+
+
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+
+
+        int id = item.getItemId();
+
+
+        if (id == R.id.edit)
+        {
+            Intent intent  = new Intent(billDetail.this,AddExpenseActivity.class);
+            //intent.putExtra("user",user);
+            startActivity(intent);
+
+            finish();
+        }
+        else if(id == R.id.delete)
+        {
+            //Toast.makeText(this,""+uid,Toast.LENGTH_LONG).show();
+            int j= db.delete(history.getId());
+            String k,k1;
+            Long am;
+            friend_history fs;
+            if(j != 0)
+            {
+
+
+                this.deleteHistory();
+                netdata = db.getFriendForDelete(hid);
+                if(netdata != null)
+                {
+                    for(int i=0;i<netdata.size();i++)
+                    {
+                        fs = netdata.get(i);
+                        k = fs.getUser_id();
+                        k1= fs.getOpp_id();
+                        am = fs.getPaid();
+
+                        ex.getForNetUpdate(k,k1,-am);
+                        ex.getForNetUpdate(k1,k,am);
+                    }
+
+                    db.delete(hid);
+                }
+
+
+               // bdr.setFlag(j);
+                Toast.makeText(this,"Item Successfully deleted",Toast.LENGTH_LONG).show();
+                finish();
+
+            }
+            else
+            Toast.makeText(this,"unsuccessfully",Toast.LENGTH_LONG).show();
+        }
+        else
+        {
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 }

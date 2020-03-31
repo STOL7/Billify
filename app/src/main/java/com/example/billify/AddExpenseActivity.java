@@ -92,7 +92,7 @@ public class AddExpenseActivity extends AppCompatActivity
     DatabaseHelper db;
     int count=0;
     int width;
-    int dpwidth;
+    int dpwidth,dpheight;
     int height;
     int dpi;
     GridView grid;
@@ -128,6 +128,7 @@ public class AddExpenseActivity extends AppCompatActivity
         width = dm.widthPixels;
         height = dm.heightPixels;
         dpi=dm.densityDpi;
+        //dpheight=height*160/dpi;
         dpwidth=(width*160)/dpi;
         final int num=dpwidth/140;
 
@@ -161,8 +162,8 @@ public class AddExpenseActivity extends AppCompatActivity
         final Billify bf=(Billify)getApplicationContext();
         setSupportActionBar(toolbar);
 
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         you = bf.getYou();
         youid=you.getId();
         par_friends.add(you);
@@ -173,14 +174,7 @@ public class AddExpenseActivity extends AppCompatActivity
 
         final expenceadapter[] expenceadapter = {new expenceadapter(this, par_friends)};
 
-//        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-//                name.remove(position);
-//                grid.setAdapter(expenceadapter);
-//
-//            }
-//        });
+
 
 
         split.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -188,6 +182,7 @@ public class AddExpenseActivity extends AppCompatActivity
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(position == 2)
                 {
+
 
                     split_arr = popup();
 
@@ -208,6 +203,7 @@ public class AddExpenseActivity extends AppCompatActivity
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(position == 2)
                 {
+
 
 
                     paid_arr =  popup();
@@ -232,7 +228,7 @@ public class AddExpenseActivity extends AppCompatActivity
                 total = par_friends.size();
                 pcount = total/num;
                 pcount = Math.ceil(pcount);
-                ly.setMinimumHeight(90*(int)pcount);
+                ly.setMinimumHeight((dpi*42/160)*(int)pcount);
 
 
 
@@ -267,17 +263,18 @@ public class AddExpenseActivity extends AppCompatActivity
                             public void onClick(DialogInterface dialog, int which)
                             {
 
-
-                                expenceadapter[0] = new expenceadapter(AddExpenseActivity.this,par_friends);
+                                bf.getSelected().add(you);
                                 par_friends = bf.getSelected();
+                                expenceadapter[0] = new expenceadapter(AddExpenseActivity.this,par_friends);
 
-                                participate.setText("");
+
                                 total = par_friends.size();
 
                                 pcount = total/num;
 
                                 pcount = Math.ceil(pcount);
-                                ly.setMinimumHeight(90*(int)pcount);
+                                ly.setMinimumHeight((dpi*42/160)*(int)pcount);
+                                //Toast.makeText(AddExpenseActivity.this,""+dpheight+" "+dpi,Toast.LENGTH_LONG).show();
                                 grid.setAdapter(expenceadapter[0]);
 
                             }
@@ -301,7 +298,7 @@ public class AddExpenseActivity extends AppCompatActivity
 
                 String amo = String.valueOf(amount.getText());
 
-                int devide=0,lst;
+                int devide=0;
                 String uuid = UUID.randomUUID().toString();
                 String uuid1,details_id;
                 SimpleDateFormat currentDate = new SimpleDateFormat("dd/MM/yyyy");
@@ -319,18 +316,18 @@ public class AddExpenseActivity extends AppCompatActivity
                 else
                 {
                     int total = Integer.parseInt(amo);
-                    if(billed_by.getSelectedItemPosition() == 1)
+                    if(billed_by.getSelectedItemPosition() == 1 || billed_by.getSelectedItemPosition() == 0)
                     {
                         paid_arr = new int[size_jk];
-                        paid_arr[0] = Integer.parseInt(amo);
-                        for(int i=1;i<size_jk;i++)
+                        paid_arr[size_jk-1] = Integer.parseInt(amo);
+                        for(int i=0;i<size_jk-1;i++)
                         {
                             paid_arr[i]=0;
                         }
                     }
 
 
-                    if(split.getSelectedItemPosition() == 1)
+                    if(split.getSelectedItemPosition() == 1 || split.getSelectedItemPosition() == 0)
                     {
                         split_arr = new int[size_jk];
                         devide = Integer.parseInt(amo)/size_jk;
@@ -382,7 +379,12 @@ public class AddExpenseActivity extends AppCompatActivity
                                     db.addIndivisual(uuid1,uuid,key,key1,value,0);
                                     addOwesToFirestore(uuid,key,key1,value);
 
-                                    db.updateExpense(key1,give_hash.get(key1)+value);
+                                    if(key1.equals(youid) || key.equals(youid))
+                                    {
+                                        db.updateExpense(key1,give_hash.get(key1)+value);
+                                        db.updateExpense(key,give_hash.get(key)-value);
+                                    }
+
                                     getForNetUpdate(key,key1,value);
 
                                     getForNetUpdate(key1,key,-value);
@@ -394,8 +396,13 @@ public class AddExpenseActivity extends AppCompatActivity
                                 {
                                     db.addIndivisual(uuid1,uuid,key,key1,value1,0);
                                     addOwesToFirestore(uuid,key,key1,value1);
-                                    db.updateExpense(key1,give_hash.get(key1)+value1);
+                                    if(key1.equals(youid) || key.equals(youid))
+                                    {
+                                        db.updateExpense(key1,give_hash.get(key1)+value1);
 
+                                        db.updateExpense(key,give_hash.get(key)-value1);
+
+                                    }
 
                                     getForNetUpdate(key,key1,value1);
                                     getForNetUpdate(key1,key,-value1);
@@ -648,13 +655,13 @@ public class AddExpenseActivity extends AppCompatActivity
             }
         });
 
-//        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v)
-//            {
-//                finish();
-//            }
-//        });
+        toolbar.setNavigationOnClickListener(new View.OnClickListener()
+        {         @Override
+            public void onClick(View v)
+           {
+                finish();
+           }
+       });
 
         bill_image.setOnClickListener(new View.OnClickListener()
         {
@@ -676,7 +683,7 @@ public class AddExpenseActivity extends AppCompatActivity
 
 
 
-    private long getForNetUpdate(final String key, final String key1, final long value)
+    public long getForNetUpdate(final String key, final String key1, final long value)
     {
 
         firestore.collection("Users").document(key)
@@ -696,6 +703,7 @@ public class AddExpenseActivity extends AppCompatActivity
                     }
                     else
                     {
+                        addToFirestore(key,key1,value);
                         Log.d("no data", "No such document");
                     }
                 } else {
@@ -707,7 +715,7 @@ public class AddExpenseActivity extends AppCompatActivity
         return balance_fire;
     }
 
-    private void addDetailsToFirestore( String uuid, String id, int i, int i1)
+    public void addDetailsToFirestore( String uuid, String id, int i, int i1)
     {
         Map<String, Object> transaction = new HashMap<>();
 
@@ -783,9 +791,11 @@ public class AddExpenseActivity extends AppCompatActivity
                 Log.d("success", "Transaction done successfully");
             }
         })
-                .addOnFailureListener(new OnFailureListener() {
+                .addOnFailureListener(new OnFailureListener()
+                {
                     @Override
-                    public void onFailure(@NonNull Exception e) {
+                    public void onFailure(@NonNull Exception e)
+                    {
                         Log.w("fail", "Error writing document", e);
                     }
                 });
@@ -806,9 +816,11 @@ public class AddExpenseActivity extends AppCompatActivity
                 Log.d("success ", "DocumentSnapshot successfully written!");
             }
         })
-                .addOnFailureListener(new OnFailureListener() {
+                .addOnFailureListener(new OnFailureListener()
+                {
                     @Override
-                    public void onFailure(@NonNull Exception e) {
+                    public void onFailure(@NonNull Exception e)
+                    {
                         Log.w("fail", "Error writing document", e);
                     }
                 });

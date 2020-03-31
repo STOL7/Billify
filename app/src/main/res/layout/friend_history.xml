@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+
+        android:layout_margin="5dp"
+        android:id="@+id/rlt">
+
+
+
+
+        <TextView
+            android:id="@+id/titl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginStart="40dp"
+            android:layout_toEndOf="@+id/bill"
+            android:layout_toRightOf="@+id/bill"
+            android:text="Title"
+
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/name"
+            android:layout_marginLeft="40dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="25dp"
+
+            android:layout_toEndOf="@+id/bill"
+            android:layout_toRightOf="@+id/bill"
+            android:ellipsize="end"
+            android:maxLines="1"
+
+            android:text="13/05/2000" />
+
+
+        <TextView
+            android:id="@+id/expense"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_centerVertical="true"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textColor="@color/colorBill"
+           android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:text="500" />
+
+
+    </RelativeLayout>
+
+
+
+</LinearLayout>
