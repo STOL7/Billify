@@ -2,6 +2,7 @@ package com.example.billify;
 
 import android.content.Context;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
@@ -90,7 +91,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
         myViewHolder.names.setText(nm);
         myViewHolder.net.setText(net_expense+"");
 
+        myViewHolder.rlt.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v)
+            {
+                Intent itn =  new Intent(context,frienddetails.class);
+                itn.putExtra("user",  friends.get(i));
 
+                context.startActivity(itn);
+
+            }
+        });
 
 
 

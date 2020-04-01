@@ -21,6 +21,8 @@ import android.util.Log;
 import android.util.Size;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -63,6 +65,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -78,7 +81,7 @@ public class AddExpenseActivity extends AppCompatActivity
     DatabaseReference databaseReference;
     EditText discription,title,participate,amount,f_name,f_email,f_contact;
     Spinner category,billed_by,split;
-    Toolbar toolbar;
+    Toolbar toolbar,toolbar1;;
     Button add_new,add_exp;
     ImageView ln_image;
     ArrayList<Friend> par_friends = new ArrayList<Friend>();
@@ -89,7 +92,7 @@ public class AddExpenseActivity extends AppCompatActivity
     DatabaseHelper db;
     int count=0;
     int width;
-    int dpwidth;
+    int dpwidth,dpheight;
     int height;
     int dpi;
     GridView grid;
@@ -125,6 +128,7 @@ public class AddExpenseActivity extends AppCompatActivity
         width = dm.widthPixels;
         height = dm.heightPixels;
         dpi=dm.densityDpi;
+        //dpheight=height*160/dpi;
         dpwidth=(width*160)/dpi;
         final int num=dpwidth/140;
 
@@ -158,40 +162,19 @@ public class AddExpenseActivity extends AppCompatActivity
         final Billify bf=(Billify)getApplicationContext();
         setSupportActionBar(toolbar);
 
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         you = bf.getYou();
         youid=you.getId();
         par_friends.add(you);
         ly = (LinearLayout) findViewById(R.id.f1);
         grid = findViewById(R.id.grid1);
         grid.setNumColumns(num);
-        final List<String> name = new ArrayList<>();
-
-        final expenceadapter expenceadapter= new expenceadapter(this,name);
-
-//        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-//                name.remove(position);
-//                grid.setAdapter(expenceadapter);
-//
-//            }
-//        });
-        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                name.remove(position);
-                grid.setAdapter(expenceadapter);
-                total = name.size();
-                pcount = total/num;
-                pcount = Math.ceil(pcount);
-                ly.setMinimumHeight((dpi*42/160)*(int)pcount);
 
 
+        final expenceadapter[] expenceadapter = {new expenceadapter(this, par_friends)};
 
-            }
-        });
+
 
 
         split.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -199,6 +182,7 @@ public class AddExpenseActivity extends AppCompatActivity
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(position == 2)
                 {
+
 
                     split_arr = popup();
 
@@ -221,6 +205,7 @@ public class AddExpenseActivity extends AppCompatActivity
                 {
 
 
+
                     paid_arr =  popup();
 
                 }
@@ -234,14 +219,33 @@ public class AddExpenseActivity extends AppCompatActivity
         });
 
 
+        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                par_friends.remove(position);
+                expenceadapter[0] = new expenceadapter(AddExpenseActivity.this,par_friends);
+                grid.setAdapter(expenceadapter[0]);
+                total = par_friends.size();
+                pcount = total/num;
+                pcount = Math.ceil(pcount);
+                ly.setMinimumHeight((dpi*42/160)*(int)pcount);
 
+
+
+            }
+        });
 
         participate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view)
             {
                 LayoutInflater inflater = getLayoutInflater();
-                View alertLayout = inflater.inflate(R.layout.recyclerview, null);
+                View alertLayout = inflater.inflate(R.layout.showcontact, null);
+                toolbar1 = alertLayout.findViewById(R.id.toolbar1);
+                setSupportActionBar(toolbar1);
+
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setDisplayShowHomeEnabled(true);
                 recyclerview = (RecyclerView) alertLayout.findViewById(R.id.recycler_view);
                 recyclerview.setHasFixedSize(true);
                 recyclerview.setLayoutManager(new LinearLayoutManager(AddExpenseActivity.this));
@@ -259,25 +263,20 @@ public class AddExpenseActivity extends AppCompatActivity
                             public void onClick(DialogInterface dialog, int which)
                             {
 
-
-                                par_friends.addAll(bf.getSelected());
-                                for(int i=0;i<bf.getSelected().size();i++)
-                                {
-
-                                    name.add(bf.getSelected().get(i).getName());
+                                bf.getSelected().add(you);
+                                par_friends = bf.getSelected();
+                                expenceadapter[0] = new expenceadapter(AddExpenseActivity.this,par_friends);
 
 
-                                    //participate.setText(participate.getText() + ", " + bf.getSelected().get(i).getName());
-                                }
-                                total = name.size();
+                                total = par_friends.size();
 
                                 pcount = total/num;
 
                                 pcount = Math.ceil(pcount);
                                 ly.setMinimumHeight((dpi*42/160)*(int)pcount);
+                                //Toast.makeText(AddExpenseActivity.this,""+dpheight+" "+dpi,Toast.LENGTH_LONG).show();
+                                grid.setAdapter(expenceadapter[0]);
 
-                                grid.setAdapter(expenceadapter);
-                                bf.setSelected(null);
                             }
                         }).setNegativeButton("cancle",null).create();
 
@@ -299,7 +298,7 @@ public class AddExpenseActivity extends AppCompatActivity
 
                 String amo = String.valueOf(amount.getText());
 
-                int devide=0,lst;
+                int devide=0;
                 String uuid = UUID.randomUUID().toString();
                 String uuid1,details_id;
                 SimpleDateFormat currentDate = new SimpleDateFormat("dd/MM/yyyy");
@@ -317,18 +316,18 @@ public class AddExpenseActivity extends AppCompatActivity
                 else
                 {
                     int total = Integer.parseInt(amo);
-                    if(billed_by.getSelectedItemPosition() == 1)
+                    if(billed_by.getSelectedItemPosition() == 1 || billed_by.getSelectedItemPosition() == 0)
                     {
                         paid_arr = new int[size_jk];
-                        paid_arr[0] = Integer.parseInt(amo);
-                        for(int i=1;i<size_jk;i++)
+                        paid_arr[size_jk-1] = Integer.parseInt(amo);
+                        for(int i=0;i<size_jk-1;i++)
                         {
                             paid_arr[i]=0;
                         }
                     }
 
 
-                    if(split.getSelectedItemPosition() == 1)
+                    if(split.getSelectedItemPosition() == 1 || split.getSelectedItemPosition() == 0)
                     {
                         split_arr = new int[size_jk];
                         devide = Integer.parseInt(amo)/size_jk;
@@ -380,7 +379,12 @@ public class AddExpenseActivity extends AppCompatActivity
                                     db.addIndivisual(uuid1,uuid,key,key1,value,0);
                                     addOwesToFirestore(uuid,key,key1,value);
 
-                                    db.updateExpense(key1,give_hash.get(key1)+value);
+                                    if(key1.equals(youid) || key.equals(youid))
+                                    {
+                                        db.updateExpense(key1,give_hash.get(key1)+value);
+                                        db.updateExpense(key,give_hash.get(key)-value);
+                                    }
+
                                     getForNetUpdate(key,key1,value);
 
                                     getForNetUpdate(key1,key,-value);
@@ -392,8 +396,13 @@ public class AddExpenseActivity extends AppCompatActivity
                                 {
                                     db.addIndivisual(uuid1,uuid,key,key1,value1,0);
                                     addOwesToFirestore(uuid,key,key1,value1);
-                                    db.updateExpense(key1,give_hash.get(key1)+value1);
+                                    if(key1.equals(youid) || key.equals(youid))
+                                    {
+                                        db.updateExpense(key1,give_hash.get(key1)+value1);
 
+                                        db.updateExpense(key,give_hash.get(key)-value1);
+
+                                    }
 
                                     getForNetUpdate(key,key1,value1);
                                     getForNetUpdate(key1,key,-value1);
@@ -646,13 +655,13 @@ public class AddExpenseActivity extends AppCompatActivity
             }
         });
 
-//        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v)
-//            {
-//                finish();
-//            }
-//        });
+        toolbar.setNavigationOnClickListener(new View.OnClickListener()
+        {         @Override
+            public void onClick(View v)
+           {
+                finish();
+           }
+       });
 
         bill_image.setOnClickListener(new View.OnClickListener()
         {
@@ -674,7 +683,7 @@ public class AddExpenseActivity extends AppCompatActivity
 
 
 
-    private long getForNetUpdate(final String key, final String key1, final long value)
+    public long getForNetUpdate(final String key, final String key1, final long value)
     {
 
         firestore.collection("Users").document(key)
@@ -694,6 +703,7 @@ public class AddExpenseActivity extends AppCompatActivity
                     }
                     else
                     {
+                        addToFirestore(key,key1,value);
                         Log.d("no data", "No such document");
                     }
                 } else {
@@ -705,7 +715,7 @@ public class AddExpenseActivity extends AppCompatActivity
         return balance_fire;
     }
 
-    private void addDetailsToFirestore( String uuid, String id, int i, int i1)
+    public void addDetailsToFirestore( String uuid, String id, int i, int i1)
     {
         Map<String, Object> transaction = new HashMap<>();
 
@@ -781,9 +791,11 @@ public class AddExpenseActivity extends AppCompatActivity
                 Log.d("success", "Transaction done successfully");
             }
         })
-                .addOnFailureListener(new OnFailureListener() {
+                .addOnFailureListener(new OnFailureListener()
+                {
                     @Override
-                    public void onFailure(@NonNull Exception e) {
+                    public void onFailure(@NonNull Exception e)
+                    {
                         Log.w("fail", "Error writing document", e);
                     }
                 });
@@ -804,9 +816,11 @@ public class AddExpenseActivity extends AppCompatActivity
                 Log.d("success ", "DocumentSnapshot successfully written!");
             }
         })
-                .addOnFailureListener(new OnFailureListener() {
+                .addOnFailureListener(new OnFailureListener()
+                {
                     @Override
-                    public void onFailure(@NonNull Exception e) {
+                    public void onFailure(@NonNull Exception e)
+                    {
                         Log.w("fail", "Error writing document", e);
                     }
                 });
@@ -1068,8 +1082,59 @@ public class AddExpenseActivity extends AppCompatActivity
 
 
 
-    public void UploadData() {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
 
+        getMenuInflater().inflate(R.menu.search,menu);
+
+        //SearchView sv = (SearchView)menu.findItem(R.id.search).getActionView();
+
+
+        return super.onCreateOptionsMenu(menu);
+
+
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+
+
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+
+        if (id == R.id.search)
+        {
+
+
+            SearchView sv = (SearchView)item.getActionView();
+
+            sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String s)
+                {
+
+                    return  false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String s)
+                {
+                    final Billify bd=(Billify) getApplicationContext();
+                    bd.getCadpt().getFilter().filter(s);
+
+                    return true;
+                }
+            });
+
+
+        }
+
+//        else if (id == R.id.action_refresh)
+//        {
+//            checkDevice();
+//        }
+        return super.onOptionsItemSelected(item);
     }
 }
 

@@ -1,6 +1,8 @@
 package com.example.billify;
 
-class Friend
+import java.io.Serializable;
+
+class Friend implements Serializable
 {
     public String name;
     public String email;

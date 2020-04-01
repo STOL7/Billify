@@ -26,6 +26,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -33,6 +34,8 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -48,6 +51,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
@@ -60,12 +64,12 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
 
     ProgressDialog progressDialog;
     private EditText inputUserName,inputPhone,inputEmail,inputPassword;
-    private Button btnSignIn,btnSignUp,btnResetPassword,btnGoogle;
+    private Button btnSignIn,btnSignUp,btnResetPassword,btnGoogle,btnFaceboook;
     private ProgressBar progressBar;
     private FirebaseAuth auth;
     private CallbackManager callbackManager;
     private SignInButton btnGoogleSignIn;
-    private LoginButton btnFacebook;
+    private LoginButton btnFacebookLogIn;
     private CallbackManager callbackManager1;
     private static Animation shakeAnimation;
     private static FragmentManager fragmentManager;
@@ -95,14 +99,16 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
 
         fragmentManager =getActivity().getSupportFragmentManager();
 
-        btnFacebook = (LoginButton) view.findViewById(R.id.login_button);
+        btnFacebookLogIn = (LoginButton) view.findViewById(R.id.login_button);
+        btnFaceboook = (Button) view.findViewById(R.id.fb);
+
         btnGoogleSignIn = (SignInButton) view.findViewById(R.id.google_button);
         btnGoogle = (Button) view.findViewById(R.id.google);
 
 
 
         callbackManager = CallbackManager.Factory.create();
-        btnFacebook.setPermissions(Arrays.asList("email", "public_profile"));
+        btnFacebookLogIn.setPermissions(Arrays.asList("email", "public_profile"));
 
 
         btnSignUp.setOnClickListener(this);
@@ -127,6 +133,39 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 startActivityForResult(intent,RC_SIGN_IN);      }
         });
 
+        btnFaceboook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnFacebookLogIn.performClick();
+                btnFacebookLogIn.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        inputUserName.setText("success");
+                        gotoMainActivity();
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        inputUserName.setText("cancel");
+                        gotoMainActivity();
+
+                        Toast.makeText(getActivity(),"cancel",Toast.LENGTH_SHORT).show();
+
+                    }
+
+                    @Override
+                    public void onError(FacebookException error) {
+                        inputUserName.setText("error");
+                        gotoMainActivity();
+
+                        Toast.makeText(getActivity(),error.getMessage(),Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+
+            }
+        });
 
 
 
@@ -338,13 +377,23 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        callbackManager.onActivityResult(requestCode,resultCode,data);
 
         if(requestCode==RC_SIGN_IN){
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(result);
         }
 
-        callbackManager.onActivityResult(requestCode,resultCode,data);
+
+
+        AccessTokenTracker tokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
+                loaduserprofile(currentAccessToken);
+            }
+        };
+
+
     }
 
     private void handleSignInResult(GoogleSignInResult result){
@@ -380,6 +429,62 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
             Toast.makeText(getActivity(),"sign in cancle",Toast.LENGTH_SHORT).show();
             startActivity(new Intent(getActivity(),ChooseLoginSignupActivity.class));
         }
+
+        gotoMainActivity();
+
+    }
+
+    private void loaduserprofile(AccessToken newAccessToken){
+        Toast.makeText(getActivity(),"load user profile",Toast.LENGTH_SHORT).show();
+        gotoMainActivity();
+
+        GraphRequest graphRequest = GraphRequest.newMeRequest(newAccessToken, new GraphRequest.GraphJSONObjectCallback() {
+            @Override
+            public void onCompleted(JSONObject jsonObject, GraphResponse graphResponse) {
+                String userName = null;
+                try {
+                    userName = jsonObject.getString("first_name");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                String userEmail = null;
+                try {
+                    userEmail = jsonObject.getString("email");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                String userId = null;
+                try {
+                    userId = jsonObject.getString("id");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
+
+                f = new Friend();
+
+                f = new Friend();
+                f.setName(userName);
+                f.setEmail(userEmail);
+                f.setContact("");
+                f.setProfile("");
+                f.setBalance(0);
+                f.setId(userId);
+
+                bf.setYou(f);
+
+                ref.child("Email").setValue(userEmail);
+                ref.child("Contact").setValue("");
+                ref.child("Balance").setValue("");
+                ref.child("Profile").setValue("");
+                ref.child("Name").setValue(userName);
+                Toast.makeText(getActivity(),"sign in successfull",Toast.LENGTH_SHORT).show();
+            }
+
+
+
+        });
 
         gotoMainActivity();
 
