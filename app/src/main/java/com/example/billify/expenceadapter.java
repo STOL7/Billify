@@ -7,21 +7,22 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class expenceadapter extends BaseAdapter {
-    private List<String> name;
+    private ArrayList<Friend> friends;
     private Context appicationContext;
     private LayoutInflater inflater;
-    public expenceadapter(Context appicationContext, List<String> name)
+    public expenceadapter(Context appicationContext, ArrayList<Friend> friends)
     {
-        this.name=name;
+        this.friends=friends;
         this.appicationContext=appicationContext;
         inflater=LayoutInflater.from(appicationContext);
     }
     @Override
     public int getCount() {
-       return name.size();
+        return friends.size();
     }
 
     @Override
@@ -36,9 +37,9 @@ public class expenceadapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-       View view= inflater.inflate(R.layout.expence,null);
+        View view= inflater.inflate(R.layout.expence,null);
         TextView tx = view.findViewById(R.id.textView);
-        tx.setText(name.get(position));
+        tx.setText(friends.get(position).getName());
 
 
 
