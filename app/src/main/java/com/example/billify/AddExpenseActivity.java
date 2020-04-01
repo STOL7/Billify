@@ -170,11 +170,25 @@ public class AddExpenseActivity extends AppCompatActivity
 
         final expenceadapter expenceadapter= new expenceadapter(this,name);
 
+//        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+//                name.remove(position);
+//                grid.setAdapter(expenceadapter);
+//
+//            }
+//        });
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 name.remove(position);
                 grid.setAdapter(expenceadapter);
+                total = name.size();
+                pcount = total/num;
+                pcount = Math.ceil(pcount);
+                ly.setMinimumHeight((dpi*42/160)*(int)pcount);
+
+
 
             }
         });
@@ -220,20 +234,7 @@ public class AddExpenseActivity extends AppCompatActivity
         });
 
 
-        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                name.remove(position);
-                grid.setAdapter(expenceadapter);
-                total = name.size();
-                pcount = total/num;
-                pcount = Math.ceil(pcount);
-                ly.setMinimumHeight(90*(int)pcount);
 
-
-
-            }
-        });
 
         participate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -264,17 +265,18 @@ public class AddExpenseActivity extends AppCompatActivity
                                 {
 
                                     name.add(bf.getSelected().get(i).getName());
-                                    total = name.size();
 
-                                    pcount = total/num;
-
-                                    pcount = Math.ceil(pcount);
-                                    ly.setMinimumHeight(90*(int)pcount);
-
-                                    grid.setAdapter(expenceadapter);
 
                                     //participate.setText(participate.getText() + ", " + bf.getSelected().get(i).getName());
                                 }
+                                total = name.size();
+
+                                pcount = total/num;
+
+                                pcount = Math.ceil(pcount);
+                                ly.setMinimumHeight((dpi*42/160)*(int)pcount);
+
+                                grid.setAdapter(expenceadapter);
                                 bf.setSelected(null);
                             }
                         }).setNegativeButton("cancle",null).create();

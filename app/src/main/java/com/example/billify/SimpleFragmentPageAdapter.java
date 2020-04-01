@@ -27,6 +27,7 @@ public class SimpleFragmentPageAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
+
                 return new display_friends();
             case 1:
                 return new display_friends();
@@ -62,12 +63,7 @@ public class SimpleFragmentPageAdapter extends FragmentPagerAdapter {
         super.destroyItem(container, position, object);
     }
 
-    /**
-     * get fragment from current tab
-     *
-     * @param position
-     * @return current fragment
-     */
+
     public Fragment getRegisteredFragment(int position) {
         return registeredFragments.get(position);
     }

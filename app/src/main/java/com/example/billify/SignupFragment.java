@@ -6,12 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -73,11 +75,12 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     Friend f;
     private GoogleSignInOptions gso;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private View view;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        View view = inflater.inflate(R.layout.activity_signup,container,false);
+         view = inflater.inflate(R.layout.activity_signup,container,false);
 
         auth = FirebaseAuth.getInstance();
 
@@ -151,7 +154,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                                 "ForgotPassword_Fragment").commit();
                 break;*/
             case R.id.sign_up_button:
-
+                isValid(view);
                 checkValidation();
                 break;
         }
@@ -393,6 +396,94 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
             googleApiClient.stopAutoManage(getActivity());
             googleApiClient.disconnect();
         }
+    }
+
+    private class Task1 extends AsyncTask<Void, Void, Void> {
+        private View rootView;
+        private View progressBar;
+        private View btnLogin;
+
+        public Task1 (View rootView){
+            this.rootView = rootView;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            progressBar = rootView.findViewById(R.id.login_progressbar);
+            progressBar.setVisibility(View.VISIBLE);
+
+            btnLogin = rootView.findViewById(R.id.sign_in_button);
+            btnLogin.setVisibility(View.GONE);
+            // fadeAnimation(btnLogin, true);
+
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            progressBar.setVisibility(View.GONE);
+            btnLogin = rootView.findViewById(R.id.sign_in_button);
+            btnLogin.setVisibility(View.VISIBLE);
+
+
+            //CircularReveal circular = getInstance();
+
+//            if (circular == null){
+//                Toast.makeText(getContext(),"in",Toast.LENGTH_SHORT);
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                    Toast.makeText(getContext(),"in",Toast.LENGTH_SHORT);
+//                    circular.expand();
+//                }
+//            }
+
+            //fadeAnimation(btnLogin, false);
+        }
+    }
+
+
+    private void shakeView(View view){
+        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.shake);
+
+        view.startAnimation(animation);
+    }
+
+
+    private boolean isValid(View rootView){
+//        EditText login = (EditText) rootView.findViewById(R.id.email);
+//        EditText password = (EditText) rootView.findViewById(R.id.password);
+//       EditText UserName = (EditText) rootView.findViewById(R.id.username);
+//       EditText Phone = (EditText) rootView.findViewById(R.id.phone);
+
+        if (inputUserName.getText().toString().isEmpty()){
+            shakeView(inputUserName);
+            return false;
+        }if (inputPhone.getText().toString().isEmpty()){
+            shakeView(inputPhone);
+            return false;
+        }
+        if (inputEmail.getText().toString().isEmpty()){
+            shakeView(inputEmail);
+            return false;
+        }
+        if (inputPassword.getText().toString().isEmpty()){
+            shakeView(inputPassword);
+            return false;
+        }
+
+        return true;
     }
 
 

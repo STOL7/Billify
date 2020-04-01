@@ -5,7 +5,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".VerifyPhoneFragment">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@mipmap/frontbackground"
+        android:scaleType="centerCrop">
 
+    </ImageView>
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        >
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
@@ -14,43 +28,51 @@
         android:layout_marginTop="25dp"
         android:text="Wait for the code I sent You"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
-        android:textColor="@color/colorPrimary" />
+        android:textColor="@color/white" />
 
 
-    <EditText
-        android:id="@+id/editTextCode"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:digits="0123456789"
-        android:drawablePadding="10dp"
-        android:hint="enter verification code"
-        android:inputType="phone"
-        android:maxLength="10" />
+        <EditText
+            android:id="@+id/editTextCode"
+            android:layout_width="230dp"
+            android:layout_height="30dp"
+            android:layout_below="@id/textView"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/et_ui"
+            android:digits="0123456789"
+            android:drawablePadding="10dp"
+            android:hint="enter verification code"
+            android:inputType="phone"
+           android:textColor="@color/white"
+            android:maxLength="10"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp" />
 
-    <Button
-        android:id="@+id/buttonSignIn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/editTextCode"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp"
-        android:background="@color/colorPrimaryDark"
-        android:text="Sign In"
-        android:textAllCaps="false"
-        android:textColor="#cdd8f1" />
+        <Button
+            android:id="@+id/buttonSignIn"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_below="@id/editTextCode"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/bg_button_white"
+            android:text="Sign In"
+            android:textAllCaps="false"
+            android:textColor="#cdd8f1" />
 
-    <Button
-        android:id="@+id/resendOtp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/editTextCode"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="90dp"
-        android:background="@color/colorPrimaryDark"
-        android:text="Resend Otp"
-        android:textAllCaps="false"
-        android:textColor="#cdd8f1" />
+        <Button
+            android:id="@+id/resendOtp"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_below="@id/editTextCode"
+            android:layout_centerHorizontal="true"
+
+            android:layout_marginTop="72dp"
+            android:layout_marginEnd="323dp"
+            android:background="@drawable/bg_button_white"
+            android:text="Resend Otp"
+            android:textAllCaps="false"
+            android:textColor="#cdd8f1" />
+    </RelativeLayout>
+</ScrollView>
 </RelativeLayout>

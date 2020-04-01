@@ -14,8 +14,13 @@
         android:id="@+id/tab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/app_bar_style"
+        android:elevation="10dp"
+
         app:tabSelectedTextColor="#FFFFFF"
+        android:pointerIcon="cell"
+
+        app:tabUnboundedRipple="true"
         app:tabGravity="fill"
         app:tabMaxWidth="0dp"
         app:tabMode="fixed"
