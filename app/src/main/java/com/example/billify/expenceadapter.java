@@ -23,7 +23,7 @@ public class expenceadapter extends BaseAdapter {
     }
     @Override
     public int getCount() {
-       return friends.size();
+        return friends.size();
     }
 
     @Override
@@ -38,7 +38,7 @@ public class expenceadapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-       View view= inflater.inflate(R.layout.expence,null);
+        View view= inflater.inflate(R.layout.expence,null);
         TextView tx = view.findViewById(R.id.textView);
         tx.setText(friends.get(position).getName());
 

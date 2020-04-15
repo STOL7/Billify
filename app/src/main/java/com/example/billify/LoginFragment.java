@@ -1,5 +1,6 @@
 package com.example.billify;
 
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -9,6 +10,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -20,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -78,7 +82,10 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class LoginFragment extends Fragment implements View.OnClickListener {
 
+    //private CircularReveal circularReveal;
     private static final int RC_SIGN_IN = 1001;
+    public View view;
+
 
 
     private EditText inputEmail, inputPassword;
@@ -103,10 +110,40 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     }
 
+//    private CircularReveal getInstance(){
+//        if (circularReveal != null){
+//            return circularReveal;
+//        }
+//
+//        View centerView = view.findViewById(R.id.login_progressbar);
+//        View reveal = view.findViewById(R.id.circularReveal);
+//
+//        if (centerView == null){
+//            return null;
+//        }
+//
+//        int centerY = reveal.getHeight() / 2;
+//        int centerX = reveal.getWidth() / 2;
+//
+//        circularReveal = new CircularReveal(reveal, centerX, centerY);
+//        circularReveal.setExpandDur(700);
+//        circularReveal.setBackgroundColor(R.color.colorAccent);
+//
+//        circularReveal.setCircularRevealListener(new CircularReveal.CircularRevealListener() {
+//            @Override
+//            public void onAnimationEnd(int animState) {
+//               // Intent intent = new Intent(getContext(), ProfileActivity.class);
+//                //startActivity(intent);
+//            }
+//        });
+//
+//        return circularReveal;
+//    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        View view = inflater.inflate(R.layout.activity_login,container,false);
+         view = inflater.inflate(R.layout.activity_login,container,false);
 
 
         auth = FirebaseAuth.getInstance();
@@ -216,7 +253,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.sign_in_button:
-                checkValidation();
+                isValid(view);
+                checkValidation(view);
                 break;
 
             case R.id.btn_reset_password:
@@ -242,7 +280,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     }
 
-    private void checkValidation() {
+    private void checkValidation(final View rootView) {
         // Get email id and password
         ConnectivityManager conMgr = (ConnectivityManager)getActivity().getSystemService (Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = conMgr.getActiveNetworkInfo();
@@ -285,12 +323,16 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         {
 
 
-            progressDialog = new ProgressDialog(getActivity());
-            progressDialog.setMax(100);
-            progressDialog.setMessage("Its loading....");
-            progressDialog.setTitle("Please wait");
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            progressDialog.show();
+//            progressDialog = new ProgressDialog(getActivity());
+//            progressDialog.setMax(100);
+//            progressDialog.setMessage("Its loading....");
+//            progressDialog.setTitle("Please wait");
+//            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+//            progressDialog.show();
+
+
+            Task1 task = new Task1(rootView);
+            task.execute();
 
 
             auth.signInWithEmailAndPassword(getEmailId,getPassword)
@@ -322,7 +364,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                                 @Override
                                                 public void onSuccess(Void aVoid)
                                                 {
-                                                    Toast.makeText(getApplicationContext(), token , Toast.LENGTH_LONG).show();
+                                                   //
+                                                   //  Toast.makeText(getApplicationContext(), token , Toast.LENGTH_LONG).show();
                                                 }
 
                                             }).addOnFailureListener(new OnFailureListener() {
@@ -490,6 +533,135 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             googleApiClient.disconnect();
         }
     }
+
+//    private void tryLogin(View rootView){
+//        ProgressBar progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
+//        Button btnLogin = (Button) rootView.findViewById(R.id.sign_in_button);
+//        if (progressBar != null) {
+//            progressBar.setVisibility(View.VISIBLE);
+//            btnLogin.setVisibility(View.INVISIBLE);
+//        }
+//
+//        Thread t = new Thread(new Runnable() {
+//            public void run() {
+//                try {
+//                    Thread.sleep(1000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//
+//        t.start();
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            CircularReveal circularReveal = getInstance();
+//
+//            if (circularReveal != null){
+//                circularReveal.expand();
+//            }
+//        }
+//    }
+
+    private class Task1 extends AsyncTask<Void, Void, Void> {
+        private View rootView;
+        private View progressBar;
+        private View btnLogin;
+
+        public Task1(View rootView){
+            this.rootView = rootView;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            progressBar = rootView.findViewById(R.id.login_progressbar);
+            progressBar.setVisibility(View.VISIBLE);
+
+            btnLogin = rootView.findViewById(R.id.sign_in_button);
+             btnLogin.setVisibility(view.GONE);
+           // fadeAnimation(btnLogin, true);
+
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            progressBar.setVisibility(View.GONE);
+
+            btnLogin.setVisibility(View.VISIBLE);
+
+
+            //CircularReveal circular = getInstance();
+
+//            if (circular == null){
+//                Toast.makeText(getContext(),"in",Toast.LENGTH_SHORT);
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                    Toast.makeText(getContext(),"in",Toast.LENGTH_SHORT);
+//                    circular.expand();
+//                }
+//            }
+
+            //fadeAnimation(btnLogin, false);
+        }
+    }
+
+    private boolean isValid(View rootView){
+        EditText login = (EditText) rootView.findViewById(R.id.email);
+        EditText password = (EditText) rootView.findViewById(R.id.password);
+
+        if (login.getText().toString().isEmpty()){
+            shakeView(login);
+            return false;
+        }
+
+        if (password.getText().toString().isEmpty()){
+            shakeView(password);
+            return false;
+        }
+
+        return true;
+    }
+
+    private void shakeView(View view){
+        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.shake);
+
+        view.startAnimation(animation);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        View rootView = getView();
+
+        if (rootView == null){
+            return;
+        }
+
+        View btnLogin = rootView.findViewById(R.id.sign_in_button);
+        btnLogin.setAlpha(1f);
+    }
+
+//    private void fadeAnimation(final View v, boolean isFadeOut){
+//        ObjectAnimator fadeOut = isFadeOut? ObjectAnimator.ofFloat(v, "alpha",  1f, 0f) :
+//                ObjectAnimator.ofFloat(v, "alpha",  0f, 1f);
+//        fadeOut.setDuration(500);
+//        fadeOut.start();
+//    }
+
 
 }
 
