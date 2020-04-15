@@ -5,6 +5,7 @@ package com.example.billify;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -13,7 +14,9 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -22,6 +25,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.facebook.AccessToken;
@@ -73,7 +77,10 @@ public class MainActivity extends AppCompatActivity
     View headerView;
     Billify billify;
     FragmentManager mFragmentManager;
-    Menu mn;
+     public Menu mn;
+
+    public static final String SHARED_PREFS = "sharedPrefs";
+    public static final String SWITCH = "SWITCH";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -91,10 +98,23 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         mFragmentManager = getSupportFragmentManager();
 
-
-
         mn = mNavigationView.getMenu();
         mitem=mn.findItem(R.id.nav_item_login);
+
+
+
+        SharedPreferences sharedPreferences = getSharedPreferences("data",Context.MODE_PRIVATE);
+          Boolean mode = sharedPreferences.getBoolean("mode",false);
+
+          if(mode)
+          {
+
+            mn.getItem(5).setTitle("Night Mode: ON");
+            mn.getItem(5).setIcon(R.drawable.ic_night_mode_on);
+          }
+
+
+
 
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener()
         {
@@ -123,6 +143,35 @@ public class MainActivity extends AppCompatActivity
 
 
                 }
+                if(menuItem.getItemId()==R.id.night_mode)
+                {
+
+                    SharedPreferences sharedPreferences = getSharedPreferences("data", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                    if(menuItem.getTitle().toString().equals("Night Mode: OFF"))
+                    {
+
+                        editor.putBoolean("mode",true);
+                        editor.commit();
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                        menuItem.setTitle("Night Mode: ON");
+                        menuItem.setIcon(R.drawable.ic_night_mode_on);
+
+                    }
+                    else if(menuItem.getTitle().toString().equals("Night Mode: ON"))
+                    {
+
+                        editor.putBoolean("mode",false);
+                        editor.commit();
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                        menuItem.setTitle("Night Mode: OFF");
+                        menuItem.setIcon(R.drawable.ic_nightmode_off_black_24dp);
+
+                    }
+
+                }
+
 
                 if(menuItem.getItemId()==R.id.nav_item_help)
                 {
@@ -144,10 +193,10 @@ public class MainActivity extends AppCompatActivity
                     Intent share = new Intent(Intent.ACTION_SEND);
                     share.setType("text/plain");
                     String shareBody ="https://play.google.com/store/apps/details?id="+getPackageName();
-                    share.putExtra(android.content.Intent.EXTRA_SUBJECT, "Birthday Reminder");
+                    share.putExtra(Intent.EXTRA_SUBJECT, "Birthday Reminder");
                     share.putExtra(Intent.EXTRA_TITLE, "Birthday Reminder");
                     // share.setData();
-                    share.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                    share.putExtra(Intent.EXTRA_TEXT, shareBody);
                     startActivity(Intent.createChooser(share, "Share via"));
                     return true;
                 }
@@ -220,6 +269,31 @@ public class MainActivity extends AppCompatActivity
         mDrawerToggle.syncState();
     }
 
+//    public void night_mode_change(Menu mn) {
+//
+//        //Toast.makeText(getApplicationContext(),"in chnage",Toast.LENGTH_SHORT).show();
+//        SharedPreferences sharedPreferences = getSharedPreferences("data",Context.MODE_PRIVATE);
+//        Boolean mode = sharedPreferences.getBoolean("mode",false);
+//       // Toast.makeText(getApplicationContext(),mode.toString(),Toast.LENGTH_SHORT).show();
+//
+//
+//        if(mode)
+//        {
+//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+//            mn.getItem(5).setTitle("Night Mode: ON");
+//            mn.getItem(5).setIcon(R.drawable.ic_night_mode_on);
+//
+//        }
+//        else
+//        {
+//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+//             mn.getItem(5).setTitle("Night Mode: OFF");
+//             mn.getItem(5).setIcon(R.drawable.ic_nightmode_off_black_24dp);
+//        }
+//
+//
+//
+//    }
 
 
     @Override
@@ -239,6 +313,7 @@ public class MainActivity extends AppCompatActivity
         tabLayout.getTabAt(0).setText("All");
         tabLayout.getTabAt(1).setText("Group");
         tabLayout.getTabAt(2).setText("History");
+
 
          account = GoogleSignIn.getLastSignedInAccount(this);
         accessToken = AccessToken.getCurrentAccessToken();

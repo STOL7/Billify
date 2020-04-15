@@ -6,6 +6,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -18,19 +19,20 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.Size;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,9 +54,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -65,6 +67,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -73,16 +76,15 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
-
-public class AddExpenseActivity extends AppCompatActivity
-{
+public class AddExpenseActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     DatabaseReference databaseReference;
     EditText discription,title,participate,amount,f_name,f_email,f_contact;
     Spinner category,billed_by,split;
     Toolbar toolbar,toolbar1;;
     Button add_new,add_exp;
+    TextView billbytext;
+    TextView billtypetext;
     ImageView ln_image;
     ArrayList<Friend> par_friends = new ArrayList<Friend>();
     String image="";
@@ -102,6 +104,7 @@ public class AddExpenseActivity extends AppCompatActivity
     int numrow=1;
     int size=80;
     double total;
+    private  ImageView im;
     int nu=0;
     FirebaseFirestore firestore;
     private static Calendar calender;
@@ -115,6 +118,24 @@ public class AddExpenseActivity extends AppCompatActivity
     String youid;
     int[] split_arr;
     int[] paid_arr;
+    private Spinner categorySpinner;
+    ArrayList<CustomSpinnerItem> customList;
+    CustomSpinnerAdpter customSpinnerAdpter;
+    String BillBy[] = {
+            "You",
+            "Multiple",
+
+    };
+    String type[] = {
+            "Equally",
+            "UnEqually",
+
+    };
+    ArrayAdapter AdpterParticipate,AdpterType;
+    String text;
+    List<String> participatelist,TypeList;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -133,6 +154,26 @@ public class AddExpenseActivity extends AppCompatActivity
         final int num=dpwidth/140;
 
 
+       Button b =(Button) findViewById(R.id.night);
+        Button p =(Button) findViewById(R.id.popup);
+
+        p.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               ShowPopUp();
+            }
+
+
+        });
+
+       b.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+               //startActivity(new Intent(getApplicationContext(),AddExpenseActivity.class));
+               //finish();
+           }
+       });
         databaseReference= FirebaseDatabase.getInstance().getReference("Users");
         databaseReference.keepSynced(true);
         firestore =FirebaseFirestore.getInstance();
@@ -148,12 +189,16 @@ public class AddExpenseActivity extends AppCompatActivity
         db = new DatabaseHelper(this);
         add_new=(Button)findViewById(R.id.add_new);
         add_exp=(Button)findViewById(R.id.add_exp);
+        categorySpinner = (Spinner) findViewById(R.id.category);
 
+
+        billbytext = (TextView) findViewById(R.id.billbytext);
+        billtypetext =(TextView) findViewById(R.id.billtypetext);
 
         paid_hash = new HashMap<String, Integer>();
         boorow_hash = new HashMap<String, Integer>();
         give_hash = new HashMap<String, Long>();
-
+        im = (ImageView) findViewById(R.id.titleimage);
         sz= par_friends.size();
         participate.setText("");
         bill_image=(FloatingActionButton)findViewById(R.id.bill_image);
@@ -172,21 +217,115 @@ public class AddExpenseActivity extends AppCompatActivity
         grid.setNumColumns(num);
 
 
+
+        participatelist =  new ArrayList(Arrays.asList(BillBy));
+        TypeList = new ArrayList(Arrays.asList(type));
+
+        AdpterParticipate = new ArrayAdapter(this,R.layout.spinnercontent,participatelist);
+        AdpterType = new ArrayAdapter(this,R.layout.spinnercontent, TypeList);
+
+        AdpterParticipate.setDropDownViewResource(R.layout.spinnercontent);
+        AdpterType.setDropDownViewResource(R.layout.spinnercontent);
+
+
+
         final expenceadapter[] expenceadapter = {new expenceadapter(this, par_friends)};
 
+       customList= new ArrayList<>();
+        customList.add(new CustomSpinnerItem("",R.mipmap.title));
+        customList.add(new CustomSpinnerItem("Games",R.mipmap.game));
+        customList.add(new CustomSpinnerItem("Movies",R.mipmap.movie));
+        customList.add(new CustomSpinnerItem("Music",R.mipmap.music));
+        customList.add(new CustomSpinnerItem("Sports",R.mipmap.sport));
+        customList.add(new CustomSpinnerItem("Dining Out",R.mipmap.diningout));
+        customList.add(new CustomSpinnerItem("Groceries",R.mipmap.shopping));
+        customList.add(new CustomSpinnerItem("Liquor",R.mipmap.drinks));
+        customList.add(new CustomSpinnerItem("Electronics",R.mipmap.electonics));
+        customList.add(new CustomSpinnerItem("Furniture",R.mipmap.furniture));
+        customList.add(new CustomSpinnerItem("HouseHold Supplies",R.mipmap.homeoutsupplies));
+        customList.add(new CustomSpinnerItem("Maintenance",R.mipmap.maintanance));
+        customList.add(new CustomSpinnerItem("Pets",R.mipmap.pet));
+        customList.add(new CustomSpinnerItem("Rent",R.mipmap.rent));
+        customList.add(new CustomSpinnerItem("Service",R.mipmap.service));
+        customList.add(new CustomSpinnerItem("ChildCare",R.mipmap.childcare));
+        customList.add(new CustomSpinnerItem("Clothing",R.mipmap.clothing));
+        customList.add(new CustomSpinnerItem("Education",R.mipmap.education));
+        customList.add(new CustomSpinnerItem("Gifts",R.mipmap.gift));
+        customList.add(new CustomSpinnerItem("Insurance",R.mipmap.insurance));
+        customList.add(new CustomSpinnerItem("Medical Expances",R.mipmap.medical));
+        customList.add(new CustomSpinnerItem("Taxes",R.mipmap.taxes));
+        customList.add(new CustomSpinnerItem("Bicycle",R.mipmap.bycyle));
+        customList.add(new CustomSpinnerItem("Bus/Train",R.mipmap.bus));
+        customList.add(new CustomSpinnerItem("Car",R.mipmap.car));
+        customList.add(new CustomSpinnerItem("Fule",R.mipmap.fule));
+        customList.add(new CustomSpinnerItem("Hotel",R.mipmap.hotel));
+        customList.add(new CustomSpinnerItem("Parking",R.mipmap.parking));
+        customList.add(new CustomSpinnerItem("Plane",R.mipmap.plane));
+        customList.add(new CustomSpinnerItem("Taxi",R.mipmap.taxi));
+        customList.add(new CustomSpinnerItem("Cleaning",R.mipmap.cleaning));
+        customList.add(new CustomSpinnerItem("Electricity",R.mipmap.elecricity));
+        customList.add(new CustomSpinnerItem("Heat/gas",R.mipmap.gas));
+        customList.add(new CustomSpinnerItem("Trash",R.mipmap.trash));
+        customList.add(new CustomSpinnerItem("TV/Phone/Internet",R.mipmap.wifi));
+        customList.add(new CustomSpinnerItem ("Water",R.mipmap.water));
+
+         customSpinnerAdpter= new CustomSpinnerAdpter(this,customList);
+
+
+        im.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                categorySpinner.performClick();
+              //  Object ob = new CustomSpinnerItem ("Water",R.mipmap.water);
+                //customList.remove(ob);
+
+            }
+        });
+
+        billtypetext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                split.performClick();
+            }
+        });
+        billbytext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               billed_by.performClick();
+            }
+        });
+
+         if(split!=null)
+         {
+             split.setAdapter(AdpterType);
+             split.setOnItemSelectedListener(this);
+         }
+
+         if(billed_by!=null)
+         {
+             billed_by.setAdapter(AdpterParticipate);
+             billed_by.setOnItemSelectedListener(this);
+         }
+        if (categorySpinner!=null)
+        {
+            categorySpinner.setAdapter(customSpinnerAdpter);
+            categorySpinner.setOnItemSelectedListener(this);
+
+        }
 
 
 
         split.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position == 2)
+                if(position == 1)
                 {
 
 
                     split_arr = popup();
 
                 }
+                billtypetext.setText(split.getSelectedItem().toString());
 
             }
 
@@ -201,7 +340,7 @@ public class AddExpenseActivity extends AppCompatActivity
         billed_by.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position == 2)
+                if(position == 1)
                 {
 
 
@@ -209,6 +348,7 @@ public class AddExpenseActivity extends AppCompatActivity
                     paid_arr =  popup();
 
                 }
+                billbytext.setText(billed_by.getSelectedItem().toString());
 
             }
 
@@ -222,6 +362,8 @@ public class AddExpenseActivity extends AppCompatActivity
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                AdpterParticipate.remove(par_friends.get(position).getName());
+
                 par_friends.remove(position);
                 expenceadapter[0] = new expenceadapter(AddExpenseActivity.this,par_friends);
                 grid.setAdapter(expenceadapter[0]);
@@ -229,6 +371,9 @@ public class AddExpenseActivity extends AppCompatActivity
                 pcount = total/num;
                 pcount = Math.ceil(pcount);
                 ly.setMinimumHeight((dpi*42/160)*(int)pcount);
+
+                AdpterParticipate.notifyDataSetChanged();
+                billed_by.setAdapter(AdpterParticipate);
 
 
 
@@ -264,8 +409,17 @@ public class AddExpenseActivity extends AppCompatActivity
                             {
 
                                 bf.getSelected().add(you);
+
                                 par_friends = bf.getSelected();
-                                expenceadapter[0] = new expenceadapter(AddExpenseActivity.this,par_friends);
+                                        for(Friend f:par_friends)
+                                        {
+                                             if(!participatelist.contains(f.getName())) {
+                                                 participatelist.add(f.getName());
+                                             }
+                                        }
+                                        AdpterParticipate.notifyDataSetChanged();
+                                        billed_by.setAdapter(AdpterParticipate);
+                                       expenceadapter[0] = new expenceadapter(AddExpenseActivity.this,par_friends);
 
 
                                 total = par_friends.size();
@@ -276,6 +430,7 @@ public class AddExpenseActivity extends AppCompatActivity
                                 ly.setMinimumHeight((dpi*42/160)*(int)pcount);
                                 //Toast.makeText(AddExpenseActivity.this,""+dpheight+" "+dpi,Toast.LENGTH_LONG).show();
                                 grid.setAdapter(expenceadapter[0]);
+
 
                             }
                         }).setNegativeButton("cancle",null).create();
@@ -456,6 +611,7 @@ public class AddExpenseActivity extends AppCompatActivity
 
             }
         });
+
 
         add_new.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -650,6 +806,7 @@ public class AddExpenseActivity extends AppCompatActivity
                         })
                         .setNegativeButton("Cancel", null)
                         .create();
+
                 dialog.show();
 
             }
@@ -657,11 +814,11 @@ public class AddExpenseActivity extends AppCompatActivity
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener()
         {         @Override
-            public void onClick(View v)
-           {
-                finish();
-           }
-       });
+        public void onClick(View v)
+        {
+            finish();
+        }
+        });
 
         bill_image.setOnClickListener(new View.OnClickListener()
         {
@@ -680,6 +837,7 @@ public class AddExpenseActivity extends AppCompatActivity
         });
 
     }
+
 
 
 
@@ -1079,6 +1237,191 @@ public class AddExpenseActivity extends AppCompatActivity
 
 
     }
+    private void ShowPopUp() {
+
+        final Dialog tempDilog = new Dialog(AddExpenseActivity.this);
+        tempDilog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        tempDilog.setContentView(R.layout.addfriendpopup);
+        Button add = tempDilog.findViewById(R.id.add);
+
+        f_contact = (EditText)tempDilog.findViewById(R.id.f_contact);
+        f_name = (EditText)tempDilog.findViewById(R.id.f_name);
+        f_email = (EditText)tempDilog.findViewById(R.id.f_email);
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                final String name = String.valueOf(f_name.getText());
+                final String email = String.valueOf(f_email.getText());
+                final String contact = String.valueOf(f_contact.getText());
+
+                if(name.length() == 0)
+                {
+                    Toast.makeText(AddExpenseActivity.this,"Please enter name",Toast.LENGTH_LONG).show();
+                }
+                else
+                {
+                    if(contact.length() == 0)
+                    {
+                        if(email.length() == 0)
+                        {
+
+                            Toast.makeText(AddExpenseActivity.this,"Please enter contact no or email",Toast.LENGTH_LONG).show();
+                        }
+                        else
+                        {
+                            Pattern p = Pattern.compile("[a-zA-Z0-9._-]+@[a" +
+                                    "-z]+\\.+[a-z]+");
+
+                            Matcher m = p.matcher(email);
+                            if(!m.find())
+                            {
+                                Toast.makeText(AddExpenseActivity.this,"Please enter valid email",Toast.LENGTH_LONG).show();
+                            }
+                            else
+                            {
+                                final String nm=name;
+                                final String em=email;
+
+                                final String[][] uid = {new String[5]};
+
+                                if(db.findByEmail(email))
+                                    Toast.makeText(AddExpenseActivity.this,"Already available your friend list",Toast.LENGTH_LONG).show();
+                                else
+                                {
+                                    databaseReference.orderByChild("Email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot)
+                                        {
+
+
+
+                                            if(dataSnapshot.getValue() == null)
+                                            {
+                                                //send request for add new friend on server
+                                                if(db.addNew(email,nm,em,"",0,""))
+                                                {
+
+                                                    addToFirestore(youid,email,0);
+                                                    addToFirestore(email,youid,0);
+                                                    Toast.makeText(AddExpenseActivity.this,"Send request to friend",Toast.LENGTH_LONG).show();
+                                                }
+
+
+                                            }
+                                            else
+                                            {
+                                                for(DataSnapshot data:dataSnapshot.getChildren())
+                                                {
+                                                    Log.i("result",data.toString());
+
+                                                    String key = data.getKey().toString();
+                                                    String  cn = data.child("Contact").getValue().toString();
+                                                    String profile = data.child("Profile").getValue().toString();
+                                                    //String Name = data.child("Name").getValue().toString();
+                                                    if(cn == null)
+                                                        cn="";
+                                                    if(profile == null)
+                                                        profile="";
+                                                    if(db.addNew(key,name,email,cn,0,profile))
+                                                    {
+
+                                                        addToFirestore(youid,key,0);
+
+                                                        addToFirestore(key,youid,0);
+
+                                                    }
+                                                }
+                                            }
+
+                                        }
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError)
+                                        {
+
+                                        }
+                                    });
+                                }
+
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        if(db.findByContact(contact))
+                            Toast.makeText(AddExpenseActivity.this,"All ready your friend",Toast.LENGTH_LONG).show();
+                        else
+                        {
+                            final String nm=name;
+                            final String cn=contact;
+
+                            final String[][] uid = {new String[5]};
+                            databaseReference.orderByChild("Contact").equalTo(contact).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                    if (dataSnapshot.getValue() == null)
+                                    {
+                                        if (db.addNew(contact, nm, "", cn, 0, ""))
+                                        {
+                                            addToFirestore(youid,contact,0);
+                                            addToFirestore(contact,youid,0);
+                                            Toast.makeText(AddExpenseActivity.this, "Send request by  contact", Toast.LENGTH_LONG).show();
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                            Log.i("result", data.toString());
+
+                                            String key = data.getKey().toString();
+                                            String em = data.child("Email").getValue().toString();
+                                            String profile = data.child("Profile").getValue().toString();
+                                            //String Name = data.child("Name").getValue().toString();
+                                            if (em == null)
+                                                em = "";
+                                            if (profile == null)
+                                                profile = "";
+                                            if (db.addNew(key, name, em, contact, 0, profile)) {
+
+                                                addToFirestore(youid, key,0);
+                                                addToFirestore(key, youid,0);
+
+
+                                            }
+
+                                        }
+
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(DatabaseError databaseError)
+                                {
+
+                                }
+                            });
+
+                        }
+
+                    }
+                }
+
+
+            }
+        });
+        Button cancle = tempDilog.findViewById(R.id.cancle);
+        cancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tempDilog.cancel();
+            }
+        });
+
+        tempDilog.show();
+
+    }
 
 
 
@@ -1136,5 +1479,39 @@ public class AddExpenseActivity extends AppCompatActivity
 //        }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long id) {
+
+        if(adapterView.getId()==R.id.category) {
+            CustomSpinnerItem items = (CustomSpinnerItem) adapterView.getSelectedItem();
+            int n = items.getSpinnerImg();
+
+            items.getSpinnerImg();
+            im.setImageResource(items.getSpinnerImg());
+
+            title.setText(items.getSpinnerText());
+        }
+        if(adapterView.getId()==R.id.paid)
+
+        {
+
+        }
+        if(adapterView.getId()==R.id.split)
+
+        {
+
+        }
+
+
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+
 }
 

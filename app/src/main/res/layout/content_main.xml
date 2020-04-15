@@ -7,15 +7,20 @@
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.billify.MainActivity"
-
+android:background="@color/Activitybackground"
     tools:showIn="@layout/activity_main">
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/app_bar_style"
+        android:elevation="10dp"
+
         app:tabSelectedTextColor="#FFFFFF"
+        android:pointerIcon="cell"
+        app:tabTextColor="@color/tabtext"
+        app:tabUnboundedRipple="true"
         app:tabGravity="fill"
         app:tabMaxWidth="0dp"
         app:tabMode="fixed"
@@ -24,7 +29,10 @@
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+
+
+        />
 
 
 

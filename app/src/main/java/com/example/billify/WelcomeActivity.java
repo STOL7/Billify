@@ -1,6 +1,8 @@
 package com.example.billify;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -8,6 +10,7 @@ import android.os.Bundle;
 
 import android.util.Base64;
 import android.util.Log;
+import android.view.Menu;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -15,6 +18,7 @@ import android.widget.Toast;
 
 
 import com.example.billify.R;
+import com.google.android.material.navigation.NavigationView;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -22,6 +26,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 public class WelcomeActivity extends AppCompatActivity
 {
@@ -33,6 +38,15 @@ public class WelcomeActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
+        SharedPreferences sharedPreferences = getSharedPreferences("data", Context.MODE_PRIVATE);
+        Boolean mode = sharedPreferences.getBoolean("mode",false);
+
+
+
+        if(mode)
+        {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+           }
 
         top = findViewById(R.id.splashb);
         bot = findViewById(R.id.splasht);

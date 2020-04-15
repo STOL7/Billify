@@ -1,17 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/Activitybackground">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:background="@color/Activitybackground"
+
         android:layout_height="match_parent"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
         android:layout_marginRight="20dp">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/adt"
+            android:text="Make New Friends..."
+            android:textColor="@color/edittext"
+            android:textSize="25dp"
+            ></TextView>
+
         <FrameLayout
+            android:layout_below="@+id/adt"
             android:id="@+id/af1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -104,21 +115,21 @@
             android:id="@+id/opid"
 
             >
-           <RelativeLayout
-               android:layout_width="match_parent"
-               android:layout_height="match_parent">
-           <TextView
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:text="OR"
-               android:textColor="@color/edittext"
-               android:layout_centerHorizontal="true"
-               android:layout_marginTop="3dp"
-               android:textSize="20dp"
-               >
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="OR"
+                    android:textColor="@color/edittext"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="3dp"
+                    android:textSize="20dp"
+                    >
 
-           </TextView>
-           </RelativeLayout>
+                </TextView>
+            </RelativeLayout>
         </FrameLayout>
         <FrameLayout
             android:id="@+id/af3"
@@ -155,15 +166,39 @@
 
         </FrameLayout>
 
-        <!--        <EditText-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:hint="Email"-->
-        <!--            android:layout_below="@+id/f_contact"-->
-        <!--            android:id="@+id/f_email"-->
-        <!--            android:layout_marginTop="50dp"-->
-        <!--            android:layout_height="match_parent">-->
+   <FrameLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:id="@+id/af4"
+       android:layout_below="@+id/af3"
+      >
+       <LinearLayout
 
-        <!--        </EditText>-->
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal"
+           android:gravity="right">
+
+
+           <Button
+               android:id="@+id/cancle"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_below="@+id/add"
+               android:background="@color/transparent"
+               android:text="cancle"
+               android:textColor="@color/colorAccent"></Button>
+
+           <Button
+               android:id="@+id/add"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:background="@color/transparent"
+               android:text="add"
+               android:textColor="@color/colorAccent"></Button>
+       </LinearLayout>
+
+   </FrameLayout>
 
 
     </RelativeLayout>

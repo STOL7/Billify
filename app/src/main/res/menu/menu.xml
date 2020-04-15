@@ -30,6 +30,10 @@
         android:icon="@drawable/baseline_backup_24"
         android:id="@+id/nav_item_backup"/>
 
+    <item android:title="Night Mode: OFF"
+        android:icon="@drawable/ic_nightmode_off_black_24dp"
+        android:id="@+id/night_mode"/>
+
       <item android:title="Help"
       android:icon="@drawable/baseline_help_24"
       android:id="@+id/nav_item_help"/>
@@ -38,6 +42,7 @@
     <item android:title="Share"
         android:icon="@drawable/baseline_share_24"
         android:id="@+id/nav_item_share"/>
+
 
 
 

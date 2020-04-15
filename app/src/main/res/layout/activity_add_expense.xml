@@ -7,11 +7,15 @@
     android:orientation="vertical"
     tools:context="com.example.billify.AddExpenseActivity"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    android:background="#f4f4f4">
+
+    >
+
+
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:id="@+id/appbar"
         android:theme="@style/AppTheme.AppBarOverlay">
 
@@ -19,18 +23,29 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="@color/toolbarcolor"
             app:titleTextAppearance="@style/ToolbarTitle"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:foregroundGravity="center"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/add_expance_background"
+       >
+
+    </ImageView>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_below="@+id/appbar"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+
+        >
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -44,6 +59,7 @@
 
 
 
+
             <FrameLayout
                  android:id="@+id/ef1"
 
@@ -52,62 +68,65 @@
                 >
 
 
-    <EditText
-        android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="97dp"
-        android:paddingTop="7dp"
-        android:paddingBottom="7dp"
-        android:autofillHints=""
-        android:textCursorDrawable="@null"
+                <EditText
+                    android:id="@+id/title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="75dp"
+                    android:autofillHints=""
+                    android:background="@drawable/onesidecorneredittext"
+                    android:paddingLeft="25dp"
+                    android:paddingTop="7dp"
+                    android:paddingBottom="7dp"
+                    android:textColor="@color/edittext"
 
 
+                    android:textCursorDrawable="@null">
 
+                </EditText>
 
+                <FrameLayout
+                    android:layout_width="91dp"
+                    android:layout_height="39dp"
+                    android:background="@drawable/title_bl">
+                    <ImageView
+                        android:id="@+id/titleimage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/elecricity"
 
-        android:background="@drawable/bt_ui">
+                        android:padding="3dp"
+                        android:layout_gravity="center"
+                        >
 
-    </EditText>
+                    </ImageView>
 
-    <TextView
-        android:layout_width="91dp"
+                    <Spinner
+                        android:id="@+id/category"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
 
-        android:layout_height="match_parent"
-        android:background="@drawable/title_bl"
-        android:textAlignment="center"
-        android:paddingTop="10dp"
-        android:text="@string/title"
-        android:textColor="@color/white"></TextView>
+                        android:defaultFocusHighlightEnabled="true"
+                        android:hint="Category"
+                        android:visibility="invisible"></Spinner>
+                </FrameLayout>
 
 </FrameLayout>
 
 
 
-            <Spinner
-                android:layout_width="wrap_content"
-                android:id="@+id/category"
-                android:hint="Category"
-                android:layout_below="@id/ef1"
-                android:layout_marginTop="20dp"
-
-                android:defaultFocusHighlightEnabled="true"
-
-                android:entries="@array/category_array"
-                android:layout_height="wrap_content">
-
-            </Spinner>
      <FrameLayout
          android:id="@+id/ef2"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         android:layout_below="@id/category"
+         android:layout_below="@id/ef1"
          android:layout_marginTop="20dp">
             <EditText
                 android:layout_width="match_parent"
                 android:id="@+id/participate"
                 android:background="@drawable/bt_ui"
                 android:paddingLeft="97dp"
+                android:textColor="@color/edittext"
                 android:paddingTop="7dp"
                 android:paddingBottom="7dp"
                 android:autofillHints=""
@@ -161,6 +180,7 @@
                     android:background="@drawable/bt_ui"
                     android:paddingTop="7dp"
                     android:paddingBottom="7dp"
+                    android:textColor="@color/edittext"
                     android:paddingLeft="97dp"
                     android:textCursorDrawable="@null">
 
@@ -174,7 +194,7 @@
 
                     android:paddingTop="10dp"
                     android:text="@string/discription"
-                    android:textColor="@color/white"></TextView>
+                    android:textColor="@color/titletext"></TextView>
             </FrameLayout>
 
            <FrameLayout
@@ -187,7 +207,7 @@
             <EditText
                 android:layout_width="match_parent"
                 android:id="@+id/amount"
-
+                android:textColor="@color/edittext"
                 android:inputType="number"
                 android:autofillHints=""
                 android:background="@drawable/bt_ui"
@@ -208,38 +228,121 @@
 
                    android:paddingTop="10dp"
                    android:text="@string/amount"
-                   android:textColor="@color/white"></TextView>
+                   android:textColor="@color/titletext"></TextView>
            </FrameLayout>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ef4"
+                android:id="@+id/ef5"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp"
+                >
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Paid By  "
+                         android:textSize="15dp"
+                        android:textColor="@color/textcolor">
+
+                    </TextView>
+                    <FrameLayout
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:background="@drawable/spinnerbutton"
+                            android:id="@+id/billbytext"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="You"
+                            android:paddingRight="10dp"
+                            android:paddingLeft="10dp"
+                            android:paddingTop="4dp"
+                            android:paddingBottom="4dp"
+                            android:textSize="20dp"
+                            android:gravity="center_vertical"
+                            android:textColor="@color/textcolor">
+
+                        </TextView>
             <Spinner
                 android:layout_width="wrap_content"
                 android:id="@+id/paid"
                 android:hint="Category"
-                android:layout_below="@id/ef4"
-                android:layout_marginTop="20dp"
+                android:visibility="invisible"
 
                 android:defaultFocusHighlightEnabled="true"
 
-                android:entries="@array/paid_array"
+                android:background="@color/spinnercontent"
                 android:layout_height="wrap_content">
 
             </Spinner>
+                    </FrameLayout>
 
 
-            <Spinner
+
+                </LinearLayout>
+            </FrameLayout>
+            <FrameLayout
+                android:id="@+id/ef6"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_below="@id/ef5"
                 android:layout_width="wrap_content"
-                android:id="@+id/split"
-                android:hint="Category"
-                android:layout_below="@id/ef4"
-
-                android:layout_marginTop="20dp"
-                android:layout_marginLeft="150dp"
-                android:defaultFocusHighlightEnabled="true"
-
-                android:entries="@array/split_array"
                 android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
-            </Spinner>
+                    <TextView
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:text="Split"
+                        android:textSize="15dp"
+                        android:textColor="@color/textcolor">
+
+                    </TextView>
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                  >
+                <TextView
+                    android:background="@drawable/spinnerbutton"
+                    android:id="@+id/billtypetext"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    android:textSize="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Equally"
+                    android:textColor="@color/textcolor">
+
+                </TextView>
+                <Spinner
+                    android:visibility="invisible"
+                    android:layout_width="wrap_content"
+                    android:id="@+id/split"
+                    android:hint="Category"
+
+                    android:defaultFocusHighlightEnabled="true"
+                    android:background="@color/spinnercontent"
+                    android:entries="@array/split_array"
+                    android:layout_height="wrap_content">
+
+                </Spinner>
+                </FrameLayout>
+                </LinearLayout>
+            </FrameLayout>
 
 
             <RelativeLayout
@@ -247,7 +350,7 @@
 
                 android:layout_marginTop="25dp"
                 android:gravity="center"
-                android:layout_below="@+id/split"
+                android:layout_below="@+id/ef6"
                 android:id="@+id/ln1_image"
 
 
@@ -280,7 +383,7 @@
                 android:layout_below="@+id/ln1_image"
                 android:id="@+id/add_exp"
                 android:layout_centerHorizontal="true"
-
+                android:elevation="10dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="80dp"
                 android:textColor="@color/white"
@@ -299,8 +402,41 @@
                 android:layout_marginTop="70dp"
                 android:layout_marginBottom="80dp"
                 android:textColor="@color/white"
+                android:elevation="100dp"
                 android:background="@drawable/button1_ly"
                 android:text="@string/add_new">
+
+            </Button>
+
+
+            <Button
+                android:id="@+id/night"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:layout_below="@+id/ln1_image"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="120dp"
+                android:layout_marginEnd="115dp"
+                android:layout_marginBottom="80dp"
+                android:background="@drawable/button1_ly"
+                android:elevation="100dp"
+                android:text="night"
+                android:textColor="@color/white">
+
+            </Button>
+            <Button
+                android:id="@+id/popup"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:layout_below="@+id/ln1_image"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="170dp"
+                android:layout_marginEnd="115dp"
+                android:layout_marginBottom="80dp"
+                android:background="@drawable/button1_ly"
+                android:elevation="100dp"
+                android:text="popup"
+                android:textColor="@color/white">
 
             </Button>
 
@@ -308,6 +444,7 @@
 
 
     </ScrollView>
+
 
 
 

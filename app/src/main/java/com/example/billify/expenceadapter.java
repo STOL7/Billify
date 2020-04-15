@@ -14,6 +14,7 @@ public class expenceadapter extends BaseAdapter {
     private ArrayList<Friend> friends;
     private Context appicationContext;
     private LayoutInflater inflater;
+
     public expenceadapter(Context appicationContext, ArrayList<Friend> friends)
     {
         this.friends=friends;
