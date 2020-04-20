@@ -1,6 +1,7 @@
 package com.example.billify;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
@@ -25,15 +26,15 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.MyViewHolder
 
 
 
-    public ArrayList<Friend> fiter;
+    public ArrayList<Group> fiter;
 
 
-    public ArrayList<Friend> friends;
+    public ArrayList<Group> groups;
 
-    public GroupAdapter(ArrayList<Friend> friends)
+    public GroupAdapter(ArrayList<Group> groups)
     {
-        this.friends=friends;
-        this.fiter=friends;
+        this.groups=groups;
+        this.fiter=groups;
 
     }
 
@@ -56,15 +57,15 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.MyViewHolder
     {
         //String im=img.get(i);
         final int j=i;
-        final String nm=friends.get(i).getName();
+        final String nm=groups.get(i).getName();
 //        String em=emails.get(i);
 
-        String img=friends.get(i).getProfile();
-        long net_expense=friends.get(i).getBalance();
-        final String bd=friends.get(i).getContact();
+        String img=groups.get(i).getImage();
+        String net_expense=groups.get(i).getDate();
+        final String bd="";
 
         final Context context=myViewHolder.img.getContext();
-        if(img.equals(""))
+        if(img.equals("") || img == null)
         {
             myViewHolder.img.setImageResource(R.drawable.profile);
         }
@@ -84,7 +85,16 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.MyViewHolder
         myViewHolder.names.setText(nm);
         myViewHolder.net.setText(net_expense+"");
 
+        myViewHolder.rlt.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v)
+            {
+                Intent itn =  new Intent(context,groupdetails.class);
+                itn.putExtra("group",  groups.get(i));
 
+                context.startActivity(itn);
+
+            }
+        });
 
 
 
@@ -97,7 +107,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.MyViewHolder
     @Override
     public int getItemCount()
     {
-        return friends.size();
+        return groups.size();
     }
 
 

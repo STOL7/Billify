@@ -103,9 +103,12 @@ public class billDetail extends AppCompatActivity
 
         uid=bf.you.getId();
         hid=history.getId();
+
         setSupportActionBar(toolbar);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         recyclerview.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
 
         db= new DatabaseHelper(this);

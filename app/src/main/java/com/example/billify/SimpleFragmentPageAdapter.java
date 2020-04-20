@@ -30,7 +30,7 @@ public class SimpleFragmentPageAdapter extends FragmentPagerAdapter {
 
                 return new display_friends();
             case 1:
-                return new display_friends();
+                return new display_groups();
             case 2:
                 return new display_activity();
 

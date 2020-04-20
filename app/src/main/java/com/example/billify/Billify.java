@@ -11,6 +11,15 @@ public class Billify extends Application
     ContactAdapter cadpt;
     ArrayList<Friend> selected;
     Friend you;
+    ArrayList<Group>  group;
+
+    public ArrayList<Group> getGroup() {
+        return group;
+    }
+
+    public void setGroup(ArrayList<Group> group) {
+        this.group = group;
+    }
 
     public Friend getYou() {
         return you;

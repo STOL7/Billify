@@ -193,8 +193,8 @@ public class MainActivity extends AppCompatActivity
                     Intent share = new Intent(Intent.ACTION_SEND);
                     share.setType("text/plain");
                     String shareBody ="https://play.google.com/store/apps/details?id="+getPackageName();
-                    share.putExtra(Intent.EXTRA_SUBJECT, "Birthday Reminder");
-                    share.putExtra(Intent.EXTRA_TITLE, "Birthday Reminder");
+                    share.putExtra(Intent.EXTRA_SUBJECT, "Billify");
+                    share.putExtra(Intent.EXTRA_TITLE, "Billify");
                     // share.setData();
                     share.putExtra(Intent.EXTRA_TEXT, shareBody);
                     startActivity(Intent.createChooser(share, "Share via"));

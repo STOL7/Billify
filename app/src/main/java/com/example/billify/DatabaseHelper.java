@@ -33,13 +33,14 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public ArrayList<String> name=new ArrayList<String>();
     public ArrayList<String> image=new ArrayList<>();
     public ArrayList<String> email=new ArrayList<>();
-    public ArrayList<String> b_date=new ArrayList<>();
+    public ArrayList<Group> groups=new ArrayList<>();
     public ArrayList<Friend> friends=new ArrayList<>();
     public ArrayList<History> histories=new ArrayList<>();
 
 
     private static Calendar startDate, endDate;
     public Friend friend;
+    public  Group group;
     public  History history;
     public void createDataBase(){
 
@@ -190,7 +191,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public ArrayList<Friend> geFriend()
     {
 
-        File dbFile = new File(DATABASE_PATH + DATABASE_NAME);
 
      try
         {
@@ -238,6 +238,103 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
 
 
+    public ArrayList<Group> getGroups()
+    {
+
+
+        try
+        {
+
+
+            SQLiteDatabase databases = this.getReadableDatabase();
+
+
+
+            Cursor cursor = databases.rawQuery("SELECT * FROM Group_T", null);
+
+            Log.d("branch", "database accessed successfully  123456");
+
+            cursor.moveToFirst();
+
+
+
+            while (!cursor.isAfterLast())
+            {
+                //list.add(cursor.getString(1));
+                group = new Group();
+                group.setName(cursor.getString(1));
+                group.setImage(cursor.getString(2));
+                group.setDescription(cursor.getString(3));
+
+                group.setId(cursor.getString(0));
+
+                group.setDate(cursor.getString(4));
+
+                groups.add(group);
+
+                Log.d("branch", "database accessed successfully  ");
+                cursor.moveToNext();
+            }
+            databases.close();
+            cursor.close();
+        }
+        catch (SQLException se)
+        {
+            Log.d("Exception", se.getMessage());
+        }
+
+        return  groups;
+    }
+
+    public ArrayList<Friend> getGroupMembers(String id)
+    {
+
+
+        try
+        {
+
+
+            SQLiteDatabase databases = this.getReadableDatabase();
+
+
+
+            Cursor cursor = databases.rawQuery("SELECT * FROM group_members where group_id = \""+id+"\"", null);
+
+            Log.d("branch", "database accessed successfully  123456");
+
+            cursor.moveToFirst();
+
+
+
+            while (!cursor.isAfterLast())
+            {
+                Cursor cursor1 = databases.rawQuery("SELECT * FROM partner where id = \""+cursor.getString(1)+"\"", null);
+                cursor1.moveToFirst();
+                friend = new Friend();
+                friend.setName(cursor1.getString(1));
+                friend.setProfile(cursor1.getString(5));
+                friend.setEmail(cursor1.getString(3));
+
+                friend.setContact(cursor1.getString(2));
+                friend.setId(cursor1.getString(0));
+
+                friend.setBalance(cursor1.getInt(4));
+
+                friends.add(friend);
+                Log.d("branch", "database accessed successfully  ");
+                cursor.moveToNext();
+            }
+            databases.close();
+            cursor.close();
+        }
+        catch (SQLException se)
+        {
+            Log.d("Exception", se.getMessage());
+        }
+
+        return  friends;
+    }
+
     public ArrayList<History> geHistory()
     {
 
@@ -273,7 +370,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 history.setTitle(cursor.getString(6));
                 history.setCategory(cursor.getString(7));
 
-                history.setSync(cursor.getInt(4));
+                history.setGroup_id(cursor.getString(4));
                 histories.add(history);
 
                 Log.d("branch", "history retrived succefully ");
@@ -293,7 +390,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public ArrayList<history_membor> geHistoryMember(String id)
     {
 
-        File dbFile = new File(DATABASE_PATH + DATABASE_NAME);
+
         ArrayList<history_membor> f = new ArrayList<>();
         try
         {
@@ -458,6 +555,53 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return  f;
     }
 
+    public ArrayList<History> getGroupHistory(String id)
+    {
+
+
+        try
+        {
+
+            SQLiteDatabase databases = this.getReadableDatabase();
+
+
+            String tb="History";
+
+            Cursor cursor = databases.rawQuery("SELECT * FROM "+tb+" where group_id = \""+id+"\"" , null);
+
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+
+                history = new History();
+                history.setAmount(cursor.getLong(1));
+                history.setBillIMage(cursor.getString(3));
+                history.setDate(cursor.getString(2));
+
+                history.setDescription(cursor.getString(5));
+                history.setId(cursor.getString(0));
+
+                history.setTitle(cursor.getString(6));
+                history.setCategory(cursor.getString(7));
+
+                history.setGroup_id(cursor.getString(4));
+                histories.add(history);
+
+                cursor.moveToNext();
+            }
+
+
+
+            databases.close();
+            cursor.close();
+        }
+        catch (SQLException se)
+        {
+            Log.d("Exception", se.getMessage());
+        }
+
+        return  histories;
+    }
+
     public History getHistory1(String id)
     {
 
@@ -487,7 +631,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 hs.setTitle(cursor.getString(6));
                 hs.setCategory(cursor.getString(7));
 
-                hs.setSync(cursor.getInt(4));
+                hs.setGroup_id(cursor.getString(4));
                 cursor.moveToNext();
             }
 
@@ -575,7 +719,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     }
 
-    public  boolean addExpense(String id,String dis,String title,String category, int amount,String date,String bill,int sync)
+    public  boolean addExpense(String id,String dis,String title,String category, int amount,String date,String bill,String gid)
     {
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -589,7 +733,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
         values.put("date",date);
         values.put("billImage",bill);
-        values.put("sync",sync);
+        values.put("group_id",gid);
         values.put("category",category);
         values.put("title",title);
         values.put("description",dis);
@@ -610,7 +754,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     }
 
-    public  boolean addIndivisual(String id,String his_id, String mem_id,String opp_id, int paid,int sync)
+    public  boolean addIndivisual(String id,String his_id, String mem_id,String opp_id, int paid)
     {
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -623,7 +767,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         values.put("paid",paid);
 
         values.put("opposite_id",opp_id);
-        values.put("sync",sync);
+
 
 
 
@@ -660,6 +804,57 @@ public class DatabaseHelper extends SQLiteOpenHelper
         try
         {
             long newRowId = db.insert("history_details", null, values);
+            return  true;
+        }
+
+        catch (Exception ex)
+        {
+            return  false;
+        }
+
+
+    }
+
+    public  boolean newGroup(String id,String title, String dis, String date,String image)
+    {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+
+        values.put("id",id);
+        values.put("name",title);
+        values.put("Description",dis);
+        values.put("Image",image);
+        values.put("date",date);
+
+        try
+        {
+            long newRowId = db.insert("Group_T", null, values);
+            return  true;
+        }
+
+        catch (Exception ex)
+        {
+            return  false;
+        }
+
+
+    }
+
+    public  boolean groupMember(String id,String mid)
+    {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+
+        values.put("group_id",id);
+        values.put("member_id",mid);
+
+        try
+        {
+            long newRowId = db.insert("group_members", null, values);
             return  true;
         }
 

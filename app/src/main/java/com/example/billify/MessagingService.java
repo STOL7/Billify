@@ -52,9 +52,9 @@ public class MessagingService extends FirebaseMessagingService
         final String hid= Message.get("transaction_id");
         final String[] did = {""};
         Log.d("Amount received",uid);
-        Log.d("billImage received",Message.get("billImage"));
-        Log.d("category received",Message.get("category"));
-        Log.d("description received",Message.get("description"));
+        //Log.d("billImage received",Message.get("billImage"));
+     //   Log.d("category received",Message.get("category"));
+       // Log.d("description received",Message.get("description"));
 
 
         firestore =FirebaseFirestore.getInstance();
@@ -110,7 +110,7 @@ public class MessagingService extends FirebaseMessagingService
 
             db.addExpense(hid,Message.get("description"),Message.get("title"),
                     Message.get("category"),Integer.parseInt(Message.get("amount")),
-                    Message.get("date"),Message.get("billImage"),Integer.parseInt(Message.get("sync")));
+                    Message.get("date"),Message.get("billImage"),Message.get("groupId"));
 
 
             firestore.collection("Users").document(uid).
@@ -160,7 +160,7 @@ public class MessagingService extends FirebaseMessagingService
 
 
                                                              }
-                                                             db.addIndivisual(uuid,hid,did[0],document.getId(),j,0);
+                                                             db.addIndivisual(uuid,hid,uid,document.getId(),j);
                                                            // Log.d("Tag",document.getId() + " => " + document.getData());
                                                         }
                                                     } else {

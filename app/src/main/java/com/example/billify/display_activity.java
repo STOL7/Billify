@@ -48,10 +48,6 @@ public class display_activity extends Fragment
     private RecyclerView.LayoutManager layoutmanager;
 private TextView txt;
 
-    FirebaseAuth fAuth;
-    FirebaseFirestore fStore;
-    String userId;
-    History history;
     private static final String title[] = new String[100];
     public int a=0;
     SharedPreferences sharedPreferences;

@@ -119,6 +119,7 @@ public class AddExpenseActivity extends AppCompatActivity implements AdapterView
     int[] split_arr;
     int[] paid_arr;
     private Spinner categorySpinner;
+    String gid="";
     ArrayList<CustomSpinnerItem> customList;
     CustomSpinnerAdpter customSpinnerAdpter;
     String BillBy[] = {
@@ -276,11 +277,35 @@ public class AddExpenseActivity extends AppCompatActivity implements AdapterView
             @Override
             public void onClick(View v) {
                 categorySpinner.performClick();
+
               //  Object ob = new CustomSpinnerItem ("Water",R.mipmap.water);
                 //customList.remove(ob);
 
             }
         });
+
+
+
+        if(getIntent().getStringExtra("group") != null)
+        {
+            gid = getIntent().getStringExtra("group");
+
+            par_friends.addAll(db.getGroupMembers(gid));
+
+            expenceadapter[0] = new expenceadapter(AddExpenseActivity.this,par_friends);
+
+
+            total = par_friends.size();
+
+            pcount = total/num;
+
+            pcount = Math.ceil(pcount);
+            ly.setMinimumHeight((dpi*42/160)*(int)pcount);
+            //Toast.makeText(AddExpenseActivity.this,""+dpheight+" "+dpi,Toast.LENGTH_LONG).show();
+            grid.setAdapter(expenceadapter[0]);
+            bf.setSelected(par_friends);
+        }
+
 
         billtypetext.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -408,7 +433,10 @@ public class AddExpenseActivity extends AppCompatActivity implements AdapterView
                             public void onClick(DialogInterface dialog, int which)
                             {
 
-                                bf.getSelected().add(you);
+                                if(!bf.getSelected().contains(you))
+                                {
+                                    bf.getSelected().add(you);
+                                }
 
                                 par_friends = bf.getSelected();
                                         for(Friend f:par_friends)
@@ -482,7 +510,7 @@ public class AddExpenseActivity extends AppCompatActivity implements AdapterView
                     }
 
 
-                    if(split.getSelectedItemPosition() == 1 || split.getSelectedItemPosition() == 0)
+                    if(split.getSelectedItemPosition() == 0)
                     {
                         split_arr = new int[size_jk];
                         devide = Integer.parseInt(amo)/size_jk;
@@ -494,9 +522,9 @@ public class AddExpenseActivity extends AppCompatActivity implements AdapterView
 
                     if(implementHashing(split_arr,paid_arr,size_jk))
                     {
-                        if(db.addExpense(uuid,dis,tt,categ,total,thisDate,image,0))
+                        if(db.addExpense(uuid,dis,tt,categ,total,thisDate,image,gid))
                         {
-                            addExpenseToFirestore(uuid,dis,tt,categ,total,image,0);
+                            addExpenseToFirestore(uuid,dis,tt,categ,total,image,gid);
 
                             for(int i=0;i<size_jk;i++)
                             {
@@ -531,7 +559,7 @@ public class AddExpenseActivity extends AppCompatActivity implements AdapterView
                                 if(net <= 0)
                                 {
 
-                                    db.addIndivisual(uuid1,uuid,key,key1,value,0);
+                                    db.addIndivisual(uuid1,uuid,key,key1,value);
                                     addOwesToFirestore(uuid,key,key1,value);
 
                                     if(key1.equals(youid) || key.equals(youid))
@@ -549,7 +577,7 @@ public class AddExpenseActivity extends AppCompatActivity implements AdapterView
                                 }
                                 else
                                 {
-                                    db.addIndivisual(uuid1,uuid,key,key1,value1,0);
+                                    db.addIndivisual(uuid1,uuid,key,key1,value1);
                                     addOwesToFirestore(uuid,key,key1,value1);
                                     if(key1.equals(youid) || key.equals(youid))
                                     {
@@ -684,6 +712,17 @@ public class AddExpenseActivity extends AppCompatActivity implements AdapterView
 
                                                                     addToFirestore(youid,email,0);
                                                                     addToFirestore(email,youid,0);
+
+                                                                    Intent share = new Intent(Intent.ACTION_SEND);
+                                                                    share.setType("text/plain");
+                                                                    String shareBody ="Please install Billify app, " +
+                                                                            " https://play.google.com/store/apps/details?id="+getPackageName();
+                                                                    share.putExtra(Intent.EXTRA_SUBJECT, "Billify");
+                                                                    share.putExtra(Intent.EXTRA_TITLE, "Billify");
+                                                                    // share.setData();
+                                                                    share.putExtra(Intent.EXTRA_TEXT, shareBody);
+                                                                    startActivity(Intent.createChooser(share, "Share via"));
+
                                                                     Toast.makeText(AddExpenseActivity.this,"Send request to friend",Toast.LENGTH_LONG).show();
                                                                 }
 
@@ -927,14 +966,14 @@ public class AddExpenseActivity extends AppCompatActivity implements AdapterView
 
 
     private void addExpenseToFirestore(String uuid, String dis,
-                                       String tt, String categ, int total, String image, int i)
+                                       String tt, String categ, int total, String image, String gid)
     {
         Map<String, Object> transaction = new HashMap<>();
         transaction.put("amount", total);
 
         transaction.put("date",new Date());
         transaction.put("billImage", image);
-        transaction.put("sync", i);
+        transaction.put("groupId", gid);
         transaction.put("description", dis);
         transaction.put("title", tt);
         transaction.put("category", categ);

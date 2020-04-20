@@ -8,7 +8,16 @@ public class History implements Serializable
     long amount;
     String date;
     String billIMage;
-    int sync;
+    String group_id;
+
+    public String getGroup_id() {
+        return group_id;
+    }
+
+    public void setGroup_id(String group_id) {
+        this.group_id = group_id;
+    }
+
     String description;
     String title;
     String category;
@@ -51,13 +60,7 @@ public class History implements Serializable
         this.billIMage = billIMage;
     }
 
-    public int getSync() {
-        return sync;
-    }
 
-    public void setSync(int sync) {
-        this.sync = sync;
-    }
 
     public String getDescription() {
         return description;

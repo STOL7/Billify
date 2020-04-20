@@ -139,7 +139,8 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 btnFacebookLogIn.performClick();
                 btnFacebookLogIn.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
                     @Override
-                    public void onSuccess(LoginResult loginResult) {
+                    public void onSuccess(LoginResult loginResult)
+                    {
                         inputUserName.setText("success");
                         gotoMainActivity();
 
