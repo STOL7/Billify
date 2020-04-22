@@ -8,5 +8,15 @@
         android:id="@+id/show_member"
 
         />
+    <item android:title="Edit"
+        android:icon="@drawable/baseline_create_24"
+        android:id="@+id/edit"
+
+        />
+
+    <item android:title="Delete"
+        android:icon="@drawable/baseline_delete_24"
+
+        android:id="@+id/delete"/>
 
 </menu>

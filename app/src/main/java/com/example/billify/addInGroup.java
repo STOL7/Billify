@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -29,7 +30,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -38,7 +42,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class addInGroup extends AppCompatActivity
@@ -53,6 +59,7 @@ public class addInGroup extends AppCompatActivity
     Button create;
     Friend you;
     FloatingActionButton f_action_btn;
+    String tt,ds,id1,dd;
     Uri imgUri;
     ImageView profile;
     String id,date,image;
@@ -60,6 +67,7 @@ public class addInGroup extends AppCompatActivity
     GridView grid;
     List<String> participatelist,TypeList;
     LinearLayout ly;
+    FirebaseFirestore firestore;
     double pcount=0;
     FloatingActionButton group_image;
     @Override
@@ -68,6 +76,7 @@ public class addInGroup extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_in_group);
 
+         firestore = FirebaseFirestore.getInstance();
 
         image="";
 
@@ -154,16 +163,71 @@ public class addInGroup extends AppCompatActivity
                 SimpleDateFormat currentDate = new SimpleDateFormat("dd/MM/yyyy");
                 date = currentDate.format(todayDate);
 
+                dd = date;
+                tt = title.getText().toString();
+                ds = discription.getText().toString();
+                db.newGroup(id,tt,ds,dd,image);
+                Map<String, Object> group = new HashMap<>();
+                Map<String, Object> nt = new HashMap<>();
+                group.put("title", tt);
+                group.put("discription", ds);
+                group.put("date", date);
+                group.put("image", image);
 
-                db.newGroup(id,title.getText().toString(),discription.getText().toString(),date,image);
+
+
+                firestore.collection("Groups").document(id).
+                        set(group).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("Group added", "successfully");
+                    }
+                })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d("fail to add in group", "Error writing document", e);
+                            }
+                        });
+
                 int i=0;
                 for( i =0;i<par_friends.size();i++)
                 {
-                    db.groupMember(id,par_friends.get(i).getId());
+                    id1 = par_friends.get(i).getId();
+                    db.groupMember(id,id1);
+                    firestore.collection("Users").document(id1).
+                            collection("Groups").document(id).set(nt).
+                            addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("Group added", "users account");
+                        }
+                    })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d("fail to add in group", "Error writing document", e);
+                                }
+                            });
+
+                    firestore.collection("Groups").document(id).
+                            collection("Members").document(id1).set(nt).
+                            addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d("Members  added ", "in group");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d("fail to add members ", " in group Error writing document", e);
+                                }
+                            });
                 }
 
-                if(i == par_friends.size())
-                    finish();
+                //if(i == par_friends.size())
+                   // finish();
             }
         });
         participate.setOnClickListener(new View.OnClickListener()

@@ -723,7 +723,7 @@ public class AddExpenseActivity extends AppCompatActivity implements AdapterView
                                                                     share.putExtra(Intent.EXTRA_TEXT, shareBody);
                                                                     startActivity(Intent.createChooser(share, "Share via"));
 
-                                                                    Toast.makeText(AddExpenseActivity.this,"Send request to friend",Toast.LENGTH_LONG).show();
+                                                                    Toast.makeText(AddExpenseActivity.this,"Please invite your friend",Toast.LENGTH_LONG).show();
                                                                 }
 
 
@@ -800,7 +800,17 @@ public class AddExpenseActivity extends AppCompatActivity implements AdapterView
                                                         {
                                                             addToFirestore(youid,contact,0);
                                                             addToFirestore(contact,youid,0);
-                                                            Toast.makeText(AddExpenseActivity.this, "Send request by  contact", Toast.LENGTH_LONG).show();
+                                                            Intent share = new Intent(Intent.ACTION_SEND);
+                                                            share.setType("text/plain");
+                                                            String shareBody ="Please install Billify app, " +
+                                                                    " https://play.google.com/store/apps/details?id="+getPackageName();
+                                                            share.putExtra(Intent.EXTRA_SUBJECT, "Billify");
+                                                            share.putExtra(Intent.EXTRA_TITLE, "Billify");
+                                                            // share.setData();
+                                                            share.putExtra(Intent.EXTRA_TEXT, shareBody);
+                                                            startActivity(Intent.createChooser(share, "Share via"));
+
+                                                            Toast.makeText(AddExpenseActivity.this,"Please invite your friend",Toast.LENGTH_LONG).show();
                                                         }
 
                                                     }

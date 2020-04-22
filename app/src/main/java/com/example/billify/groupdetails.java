@@ -121,6 +121,18 @@ public class groupdetails extends AppCompatActivity {
 
             recyclerview.setAdapter(adapter);
         }
+        if (id == R.id.edit)
+        {
+            Intent intent  = new Intent(groupdetails.this,AddExpenseActivity.class);
+            //intent.putExtra("user",user);
+            startActivity(intent);
+
+            finish();
+        }
+        if(id == R.id.delete)
+        {
+
+        }
         return true;
     }
 }

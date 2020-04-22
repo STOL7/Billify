@@ -200,7 +200,7 @@ public class billDetail extends AppCompatActivity
 
             finish();
         }
-        else if(id == R.id.delete)
+        if(id == R.id.delete)
         {
             //Toast.makeText(this,""+uid,Toast.LENGTH_LONG).show();
             int j= db.delete(history.getId());
@@ -238,10 +238,7 @@ public class billDetail extends AppCompatActivity
             else
             Toast.makeText(this,"unsuccessfully",Toast.LENGTH_LONG).show();
         }
-        else
-        {
 
-        }
         return super.onOptionsItemSelected(item);
     }
 
