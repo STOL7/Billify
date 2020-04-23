@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity
         mNavigationView = (NavigationView) findViewById(R.id.shitstuff) ;
         headerView = mNavigationView.getHeaderView(0);
         tx = (TextView)headerView.findViewById(R.id.usermail);
+
         billify=(Billify) getApplicationContext();
 
         toolbar = findViewById(R.id.toolbar);
@@ -269,31 +270,6 @@ public class MainActivity extends AppCompatActivity
         mDrawerToggle.syncState();
     }
 
-//    public void night_mode_change(Menu mn) {
-//
-//        //Toast.makeText(getApplicationContext(),"in chnage",Toast.LENGTH_SHORT).show();
-//        SharedPreferences sharedPreferences = getSharedPreferences("data",Context.MODE_PRIVATE);
-//        Boolean mode = sharedPreferences.getBoolean("mode",false);
-//       // Toast.makeText(getApplicationContext(),mode.toString(),Toast.LENGTH_SHORT).show();
-//
-//
-//        if(mode)
-//        {
-//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-//            mn.getItem(5).setTitle("Night Mode: ON");
-//            mn.getItem(5).setIcon(R.drawable.ic_night_mode_on);
-//
-//        }
-//        else
-//        {
-//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-//             mn.getItem(5).setTitle("Night Mode: OFF");
-//             mn.getItem(5).setIcon(R.drawable.ic_nightmode_off_black_24dp);
-//        }
-//
-//
-//
-//    }
 
 
     @Override
@@ -321,6 +297,7 @@ public class MainActivity extends AppCompatActivity
         if(accessToken != null)
         {
            final String[] username = new String[1];
+
 
             tx.setText(billify.fb_flag);
             mitem.setTitle("Logout");

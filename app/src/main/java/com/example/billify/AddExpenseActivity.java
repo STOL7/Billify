@@ -499,7 +499,7 @@ public class AddExpenseActivity extends AppCompatActivity implements AdapterView
                 else
                 {
                     int total = Integer.parseInt(amo);
-                    if(billed_by.getSelectedItemPosition() == 1 || billed_by.getSelectedItemPosition() == 0)
+                    if(billed_by.getSelectedItemPosition() != 1)
                     {
                         paid_arr = new int[size_jk];
                         paid_arr[size_jk-1] = Integer.parseInt(amo);
@@ -710,8 +710,8 @@ public class AddExpenseActivity extends AppCompatActivity implements AdapterView
                                                                 if(db.addNew(email,nm,em,"",0,""))
                                                                 {
 
-                                                                    addToFirestore(youid,email,0);
-                                                                    addToFirestore(email,youid,0);
+//                                                                    addToFirestore(youid,email,0);
+//                                                                    addToFirestore(email,youid,0);
 
                                                                     Intent share = new Intent(Intent.ACTION_SEND);
                                                                     share.setType("text/plain");
@@ -798,8 +798,8 @@ public class AddExpenseActivity extends AppCompatActivity implements AdapterView
                                                     {
                                                         if (db.addNew(contact, nm, "", cn, 0, ""))
                                                         {
-                                                            addToFirestore(youid,contact,0);
-                                                            addToFirestore(contact,youid,0);
+                                                           // addToFirestore(youid,contact,0);
+                                                            //addToFirestore(contact,youid,0);
                                                             Intent share = new Intent(Intent.ACTION_SEND);
                                                             share.setType("text/plain");
                                                             String shareBody ="Please install Billify app, " +

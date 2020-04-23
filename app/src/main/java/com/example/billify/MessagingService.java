@@ -16,6 +16,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -32,6 +37,8 @@ import java.util.UUID;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
+import static com.facebook.FacebookSdk.getApplicationContext;
+
 public class MessagingService extends FirebaseMessagingService
 {
 
@@ -40,6 +47,8 @@ public class MessagingService extends FirebaseMessagingService
     String tt,dd,dt,img,mid,gid,id1;
     Map<String,Object> docu;
     String[] mids;
+
+    private DatabaseReference databaseReference;
     List<String> coll = new ArrayList<>();
     String uuid;
     private static final String NOTIFICATION_CHANNEL_ID = "my_notification_channel";
@@ -54,6 +63,8 @@ public class MessagingService extends FirebaseMessagingService
         final Map<String, String> Message = remoteMessage.getData();
         firestore =FirebaseFirestore.getInstance();
 
+        databaseReference= FirebaseDatabase.getInstance().getReference("Users");
+
         final Billify bf=(Billify)getApplicationContext();
         you = bf.getYou();
 
@@ -61,6 +72,43 @@ public class MessagingService extends FirebaseMessagingService
         db.createDataBase();
         db.openDataBase();
         //Toast.makeText(this,title,Toast.LENGTH_LONG);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+                .setVibrate(new long[]{0, 100, 100, 100, 100, 100})
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                .setSmallIcon(R.drawable.baseline_backup_black_36)
+                .setContentTitle("New Group Created")
+                .setColor(this.getResources().getColor(R.color.colorPrimary))
+                .setAutoCancel(true)
+
+                .setContentText("Updated new group");
+
+
+
+        Intent todayBirthdayIntent = new Intent(this, WelcomeActivity.class);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, todayBirthdayIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        builder.setContentIntent(pendingIntent);
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
+            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "My Notifications", NotificationManager.IMPORTANCE_DEFAULT);
+
+
+            notificationChannel.setDescription("Channel description");
+            notificationChannel.enableLights(true);
+
+            notificationChannel.setLightColor(Color.RED);
+            notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
+            notificationChannel.enableVibration(true);
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+
+
+
         if(title.equals("New Group"))
         {
             //Toast.makeText(this,"came into the picure",Toast.LENGTH_LONG);
@@ -105,39 +153,15 @@ public class MessagingService extends FirebaseMessagingService
 
                     }
 
-                    NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-                            .setVibrate(new long[]{0, 100, 100, 100, 100, 100})
-                            .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                            .setSmallIcon(R.drawable.baseline_backup_black_36)
-                            .setContentTitle("New Group Created")
-                            .setColor(this.getResources().getColor(R.color.colorPrimary))
-                            .setAutoCancel(true)
-
-                            .setContentText("Updated new group");
 
 
-                    Intent todayBirthdayIntent = new Intent(this, WelcomeActivity.class);
-                    PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, todayBirthdayIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                    builder.setContentIntent(pendingIntent);
-
-                    NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                    {
-                        NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "My Notifications", NotificationManager.IMPORTANCE_DEFAULT);
 
 
-                        notificationChannel.setDescription("Channel description");
-                        notificationChannel.enableLights(true);
-
-                        notificationChannel.setLightColor(Color.RED);
-                        notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
-                        notificationChannel.enableVibration(true);
-                        notificationManager.createNotificationChannel(notificationChannel);
-                    }
 
 
-                    notificationManager.notify(2, builder.build());
+
+
+                    notificationManager.notify(1, builder.build());
 
 
                 }
@@ -145,7 +169,54 @@ public class MessagingService extends FirebaseMessagingService
 
         }
 
+        if(title.equals("New Friend"))
+        {
+            final String fid = Message.get("friendId");
+            Log.d("Friend request received",fid);
 
+            databaseReference.child(fid).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot)
+                {
+
+                    String nm = (String) dataSnapshot.child("Name").getValue();
+                    String pr = (String) dataSnapshot.child("Profile").getValue();
+                    String em = (String) dataSnapshot.child("Email").getValue();
+                    String cn = (String) dataSnapshot.child("Contact").getValue();
+                    String bl =  (String) dataSnapshot.child("Balance").getValue();
+
+
+
+
+                    if(db.findByEmail(em))
+                    {
+                        Toast.makeText(getApplicationContext(), "Already you friend" , Toast.LENGTH_LONG).show();
+                    }
+
+                    else
+                    {
+                        if(db.addNew(fid, nm, em, cn, 0, pr));
+                        Toast.makeText(getApplicationContext(), "Added to your list" , Toast.LENGTH_LONG).show();
+                    }
+
+
+
+
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError)
+                {
+
+
+                }
+            });
+
+
+            builder.setContentTitle("New Friend  added to your list");
+            builder.setContentText("Updated new friend");
+
+            notificationManager.notify(2, builder.build());
+        }
        if(title.equals("New transction"))
         {
             final String uid= Message.get("user_id");
@@ -162,36 +233,13 @@ public class MessagingService extends FirebaseMessagingService
 
 
 
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-                        .setVibrate(new long[]{0, 100, 100, 100, 100, 100})
-                        .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                        .setSmallIcon(R.drawable.baseline_cake_24)
-                        .setContentTitle("New Expense")
-                        .setColor(this.getResources().getColor(R.color.colorPrimary))
-                        .setAutoCancel(true)
-
-                        .setContentText("Updated new expense ");
 
 
-                Intent todayBirthdayIntent = new Intent(this, WelcomeActivity.class);
-                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, todayBirthdayIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                builder.setContentIntent(pendingIntent);
-
-                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                {
-                    NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "My Notifications", NotificationManager.IMPORTANCE_DEFAULT);
+                builder.setContentTitle("New Expense added");
+                builder.setContentText("Updated new group");
 
 
-                    notificationChannel.setDescription("Channel description");
-                    notificationChannel.enableLights(true);
 
-                    notificationChannel.setLightColor(Color.RED);
-                    notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
-                    notificationChannel.enableVibration(true);
-                    notificationManager.createNotificationChannel(notificationChannel);
-                }
 
 
                 notificationManager.notify(3, builder.build());

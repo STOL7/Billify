@@ -44,19 +44,28 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class SignupFragment extends Fragment implements View.OnClickListener {
 
@@ -77,6 +86,8 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     private GoogleApiClient googleApiClient;
     Billify bf;
     Friend f;
+    FirebaseFirestore firestore;
+    DatabaseHelper hp;
     private GoogleSignInOptions gso;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private View view;
@@ -88,6 +99,8 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
 
         auth = FirebaseAuth.getInstance();
 
+        firestore = FirebaseFirestore.getInstance();
+
         btnSignIn = (Button) view.findViewById(R.id.sign_in_button);
         btnSignUp = (Button) view.findViewById(R.id.sign_up_button);
         inputEmail = (EditText) view.findViewById(R.id.email);
@@ -96,6 +109,8 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         btnResetPassword = (Button) view.findViewById(R.id.btn_reset_password);
         inputUserName = (EditText) view.findViewById(R.id.username);
         inputPhone = (EditText) view.findViewById(R.id.phone);
+
+        hp =new DatabaseHelper(getActivity());
 
         fragmentManager =getActivity().getSupportFragmentManager();
 
@@ -185,14 +200,6 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                                 "Login_Fragment").commit();
                 break;
 
-           /* case R.id.btn_reset_password:
-
-                fragmentManager
-                        .beginTransaction()
-                        .replace(R.id.fragmentContainer,
-                                new ResetPasswordFragment(),
-                                "ForgotPassword_Fragment").commit();
-                break;*/
             case R.id.sign_up_button:
                 isValid(view);
                 checkValidation();
@@ -207,7 +214,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     private void checkValidation()
     {
         ConnectivityManager conMgr = (ConnectivityManager)getActivity().getSystemService (Context.CONNECTIVITY_SERVICE);
-        // Get all edittext texts
+
         final String getFullName = inputUserName.getText().toString().trim();
         final String getEmailId = inputEmail.getText().toString().trim();
         final String getMobileNumber = inputPhone.getText().toString().trim();
@@ -248,11 +255,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
             dialog.show();
         }
 
-        // Check if both password should be equal
-       /* else if (!getConfirmPassword.equals(getPassword))
-            Toast.makeText(getActivity(), "Both password doesn't match.", Toast.LENGTH_SHORT)
-                    .show();*/
-        // Else do signup or do your stuff
+
         else if (conMgr == null || activeNetworkInfo == null)
         {
 
@@ -402,7 +405,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
             GoogleSignInAccount account = result.getSignInAccount();
             String userName = account.getDisplayName().toString();
             String userEmail = account.getEmail().toString();
-            String userId = account.getId().toString();
+            final String userId = account.getId().toString();
 
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
 
@@ -423,6 +426,40 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
             ref.child("Balance").setValue("");
             ref.child("Profile").setValue("");
             ref.child("Name").setValue(userName);
+
+            if(hp.findByEmail(userEmail))
+            {
+                Toast.makeText(getApplicationContext(), "email exist" , Toast.LENGTH_LONG).show();
+            }
+
+            else
+            {
+                if(hp.addNew(userId, userName, userEmail, "", 0, ""))
+                    Toast.makeText(getApplicationContext(), "added profile" , Toast.LENGTH_LONG).show();
+            }
+            final String token = FirebaseInstanceId.getInstance().getToken();
+
+                    Map<String,String> mp = new HashMap();
+                    mp.put("token",token);
+
+                    firestore.collection("Users").document(userId).set(mp).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid)
+                        {
+                            //
+                            //  Toast.makeText(getApplicationContext(), token , Toast.LENGTH_LONG).show();
+                        }
+
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+            //Toast.makeText(getActivity(),"token is "+token,Toast.LENGTH_SHORT).show();
+
+
+
             Toast.makeText(getActivity(),"sign in successfull",Toast.LENGTH_SHORT).show();
         }
 
@@ -545,17 +582,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
             btnLogin.setVisibility(View.VISIBLE);
 
 
-            //CircularReveal circular = getInstance();
 
-//            if (circular == null){
-//                Toast.makeText(getContext(),"in",Toast.LENGTH_SHORT);
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                    Toast.makeText(getContext(),"in",Toast.LENGTH_SHORT);
-//                    circular.expand();
-//                }
-//            }
-
-            //fadeAnimation(btnLogin, false);
         }
     }
 
@@ -568,10 +595,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
 
 
     private boolean isValid(View rootView){
-//        EditText login = (EditText) rootView.findViewById(R.id.email);
-//        EditText password = (EditText) rootView.findViewById(R.id.password);
-//       EditText UserName = (EditText) rootView.findViewById(R.id.username);
-//       EditText Phone = (EditText) rootView.findViewById(R.id.phone);
+//
 
         if (inputUserName.getText().toString().isEmpty()){
             shakeView(inputUserName);

@@ -102,43 +102,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private DatabaseReference databaseReference;
     private GoogleSignInOptions gso;
     FirebaseFirestore firestore;
-    private FirebaseAuth.AuthStateListener mAuthListener;
+
     Billify bf;
     ProgressDialog progressDialog;
     Friend f;
+    DatabaseHelper hp;
     public LoginFragment(){
 
     }
-
-//    private CircularReveal getInstance(){
-//        if (circularReveal != null){
-//            return circularReveal;
-//        }
-//
-//        View centerView = view.findViewById(R.id.login_progressbar);
-//        View reveal = view.findViewById(R.id.circularReveal);
-//
-//        if (centerView == null){
-//            return null;
-//        }
-//
-//        int centerY = reveal.getHeight() / 2;
-//        int centerX = reveal.getWidth() / 2;
-//
-//        circularReveal = new CircularReveal(reveal, centerX, centerY);
-//        circularReveal.setExpandDur(700);
-//        circularReveal.setBackgroundColor(R.color.colorAccent);
-//
-//        circularReveal.setCircularRevealListener(new CircularReveal.CircularRevealListener() {
-//            @Override
-//            public void onAnimationEnd(int animState) {
-//               // Intent intent = new Intent(getContext(), ProfileActivity.class);
-//                //startActivity(intent);
-//            }
-//        });
-//
-//        return circularReveal;
-//    }
 
     @Nullable
     @Override
@@ -167,7 +138,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         btnGoogleSignIn = (SignInButton) view.findViewById(R.id.google_button);
 
 
-
+        hp =new DatabaseHelper(getActivity());
 
         callbackManager = CallbackManager.Factory.create();
         btnFacebook.setPermissions(Arrays.asList("email", "public_profile"));
@@ -211,39 +182,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
 
 
-        // Set check listener over checkbox for showing and hiding password
-        /*show_hide_password
-                .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
-                    @Override
-                    public void onCheckedChanged(CompoundButton button,
-                                                 boolean isChecked) {
-
-                        // If it is checkec then show password else hide
-                        // password
-                        if (isChecked) {
-
-                            show_hide_password.setText("Hide password");// change
-                            // checkbox
-                            // text
-
-                            password.setInputType(InputType.TYPE_CLASS_TEXT);
-                            password.setTransformationMethod(HideReturnsTransformationMethod
-                                    .getInstance());// show password
-                        } else {
-                            show_hide_password.setText("Show Password");// change
-                            // checkbox
-                            // text
-
-                            inputPassword.setInputType(InputType.TYPE_CLASS_TEXT
-                                    | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                            inputPassword.setTransformationMethod(PasswordTransformationMethod
-                                    .getInstance());// hide password
-
-                        }
-
-                    }
-                });*/
     }
 
 
@@ -323,12 +262,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         {
 
 
-//            progressDialog = new ProgressDialog(getActivity());
-//            progressDialog.setMax(100);
-//            progressDialog.setMessage("Its loading....");
-//            progressDialog.setTitle("Please wait");
-//            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-//            progressDialog.show();
 
 
             Task1 task = new Task1(rootView);
@@ -356,7 +289,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                         public void onSuccess(GetTokenResult getTokenResult)
                                         {
 
-                                            final String token_id = getTokenResult.getToken();
+
                                             Map<String,String>  mp = new HashMap();
                                             mp.put("token",token);
 
@@ -382,7 +315,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                         public void onFailure(@NonNull Exception e) {
                                             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                                         }
-                                    });;
+                                    });
 
 
                                     databaseReference.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -398,19 +331,16 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
 
 
-                                            DatabaseHelper hp =new DatabaseHelper(getActivity());
+
                                             if(hp.findByEmail(em))
                                             {
                                                 Toast.makeText(getApplicationContext(), "email exist" , Toast.LENGTH_LONG).show();
                                             }
-                                            /*else if(cn!= null && hp.findByContact(cn))
-                                            {
-                                                Toast.makeText(getApplicationContext(), "contact exist" , Toast.LENGTH_LONG).show();
-                                            }*/
+
                                             else
                                             {
-                                                 if(hp.addNew(user.getUid(), nm, em, cn, Integer.parseInt(bl), pr))
-                                                Toast.makeText(getApplicationContext(), "added profile" , Toast.LENGTH_LONG).show();
+                                                 if(hp.addNew(user.getUid(), nm, em, cn, Integer.parseInt(bl), pr));
+                                                 Toast.makeText(getApplicationContext(), "added profile" , Toast.LENGTH_LONG).show();
                                             }
 
                                             getActivity().finish();
@@ -426,7 +356,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                     });
 
 
-                                    //getActivity().finish();
+
                                 }
                                 else
                                 {
@@ -483,7 +413,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
     private void handleSignInResult(GoogleSignInResult result){
-        if(result.isSuccess()) {
+        if(result.isSuccess())
+        {
             GoogleSignInAccount account = result.getSignInAccount();
             String userName = account.getDisplayName().toString();
             String userEmail = account.getEmail().toString();
@@ -508,6 +439,38 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             ref.child("Balance").setValue("");
             ref.child("Profile").setValue("");
             ref.child("Name").setValue(userName);
+
+            final String token = FirebaseInstanceId.getInstance().getToken();
+
+            Map<String,String> mp = new HashMap();
+            mp.put("token",token);
+
+            if(hp.findByEmail(userEmail))
+            {
+                Toast.makeText(getApplicationContext(), "email exist" , Toast.LENGTH_LONG).show();
+            }
+
+            else
+            {
+                if(hp.addNew(userId, userName, userEmail, "", 0, ""))
+                    Toast.makeText(getApplicationContext(), "added profile" , Toast.LENGTH_LONG).show();
+            }
+
+            firestore.collection("Users").document(userId).set(mp).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid)
+                {
+                    //
+                    //  Toast.makeText(getApplicationContext(), token , Toast.LENGTH_LONG).show();
+                }
+
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+
 
             Toast.makeText(getActivity(),"sign in successfull",Toast.LENGTH_SHORT).show();
         }
@@ -534,34 +497,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-//    private void tryLogin(View rootView){
-//        ProgressBar progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
-//        Button btnLogin = (Button) rootView.findViewById(R.id.sign_in_button);
-//        if (progressBar != null) {
-//            progressBar.setVisibility(View.VISIBLE);
-//            btnLogin.setVisibility(View.INVISIBLE);
-//        }
-//
-//        Thread t = new Thread(new Runnable() {
-//            public void run() {
-//                try {
-//                    Thread.sleep(1000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//
-//        t.start();
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            CircularReveal circularReveal = getInstance();
-//
-//            if (circularReveal != null){
-//                circularReveal.expand();
-//            }
-//        }
-//    }
+
 
     private class Task1 extends AsyncTask<Void, Void, Void> {
         private View rootView;
@@ -604,17 +540,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             btnLogin.setVisibility(View.VISIBLE);
 
 
-            //CircularReveal circular = getInstance();
-
-//            if (circular == null){
-//                Toast.makeText(getContext(),"in",Toast.LENGTH_SHORT);
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                    Toast.makeText(getContext(),"in",Toast.LENGTH_SHORT);
-//                    circular.expand();
-//                }
-//            }
-
-            //fadeAnimation(btnLogin, false);
         }
     }
 
@@ -655,12 +580,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         btnLogin.setAlpha(1f);
     }
 
-//    private void fadeAnimation(final View v, boolean isFadeOut){
-//        ObjectAnimator fadeOut = isFadeOut? ObjectAnimator.ofFloat(v, "alpha",  1f, 0f) :
-//                ObjectAnimator.ofFloat(v, "alpha",  0f, 1f);
-//        fadeOut.setDuration(500);
-//        fadeOut.start();
-//    }
 
 
 }

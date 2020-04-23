@@ -21,6 +21,8 @@ import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskExecutors;
 import com.google.android.material.snackbar.Snackbar;
@@ -36,10 +38,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.example.billify.MainActivity.tx;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class VerifyPhoneFragment extends Fragment {
 
@@ -50,6 +57,7 @@ public class VerifyPhoneFragment extends Fragment {
     private Button signin,resend;
 
     private FirebaseAuth mAuth;
+    DatabaseHelper hp;
 
     private static FragmentManager fragmentManager;
 
@@ -57,7 +65,7 @@ public class VerifyPhoneFragment extends Fragment {
     private GoogleSignInOptions gso;
     private GoogleApiClient googleApiClient;
     PhoneAuthProvider.ForceResendingToken mResendToken;
-
+FirebaseFirestore firestore;
 
 
     @Nullable
@@ -68,7 +76,8 @@ public class VerifyPhoneFragment extends Fragment {
 
         fragmentManager = getActivity().getSupportFragmentManager();
 
-
+        hp =new DatabaseHelper(getActivity());
+        firestore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         editTextCode = view.findViewById(R.id.editTextCode);
 
@@ -186,7 +195,14 @@ public class VerifyPhoneFragment extends Fragment {
                 .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
+                        if (task.isSuccessful())
+                        {
+                            final FirebaseUser user = mAuth.getCurrentUser();
+                            final String token = FirebaseInstanceId.getInstance().getToken();
+
+                            Map<String,String> mp = new HashMap();
+                            mp.put("token",token);
+
 
                             FirebaseUser currentperson = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -194,15 +210,30 @@ public class VerifyPhoneFragment extends Fragment {
 
                             ref.child("Name").setValue(username);
 
-                            ref.child("Phone").setValue(phone);
+                            ref.child("Contact").setValue(phone);
+                            ref.child("Balance").setValue("");
+                            ref.child("Profile").setValue("");
+                            ref.child("Email").setValue("");
 
-                            ref.child("Email").setValue(email);
+                            hp.addNew(user.getUid(), username, email, phone, 0, "");
 
-                            ref.child("Password").setValue(password);
+                            firestore.collection("Users").document(user.getUid()).set(mp).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid)
+                                {
+                                    Intent intent = new Intent(getActivity(), MainActivity.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(intent);
+                                }
 
-                            Intent intent = new Intent(getActivity(), MainActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            });;
+
+
 
                         } else {
 
