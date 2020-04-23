@@ -103,6 +103,8 @@ public class display_friends extends Fragment
 
                 Intent myIntent = new Intent(getActivity(), AddExpenseActivity.class);
                 getActivity().startActivity(myIntent);
+                getActivity().overridePendingTransition(0,0);
+
 
 
             }

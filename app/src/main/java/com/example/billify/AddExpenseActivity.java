@@ -2,28 +2,35 @@ package com.example.billify;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.animation.Animator;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewAnimationUtils;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -136,6 +143,8 @@ public class AddExpenseActivity extends AppCompatActivity implements AdapterView
     String text;
     List<String> participatelist,TypeList;
 
+    private View Layout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -144,6 +153,31 @@ public class AddExpenseActivity extends AppCompatActivity implements AdapterView
         setContentView(R.layout.activity_add_expense);
 
 //        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
+        Layout = (View) findViewById(R.id.AddExpanceRelative);
+      if (savedInstanceState==null)
+      {
+          Layout.setVisibility(View.INVISIBLE);
+          final ViewTreeObserver viewTreeObserver = Layout.getViewTreeObserver();
+          if(viewTreeObserver.isAlive()){
+              viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                  @Override
+                  public void onGlobalLayout() {
+                      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                          circularRevealActivity();
+                      }
+                      if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                          Layout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                      } else {
+                          Layout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                      }
+                  }
+              });
+          }
+
+      }
+
+
 
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -456,6 +490,7 @@ public class AddExpenseActivity extends AppCompatActivity implements AdapterView
 
                                 pcount = Math.ceil(pcount);
                                 ly.setMinimumHeight((dpi*42/160)*(int)pcount);
+
                                 //Toast.makeText(AddExpenseActivity.this,""+dpheight+" "+dpi,Toast.LENGTH_LONG).show();
                                 grid.setAdapter(expenceadapter[0]);
 
@@ -653,7 +688,7 @@ public class AddExpenseActivity extends AppCompatActivity implements AdapterView
                 f_name = (EditText)alertLayout.findViewById(R.id.f_name);
                 f_email = (EditText)alertLayout.findViewById(R.id.f_email);
 
-                AlertDialog dialog = new AlertDialog.Builder(AddExpenseActivity.this)
+                AlertDialog dialog = new AlertDialog.Builder(AddExpenseActivity.this,R.style.AddPopUp)
                         .setTitle("New Connection")
                         .setView(alertLayout)
                         .setPositiveButton("Add", new DialogInterface.OnClickListener() {
@@ -1547,18 +1582,35 @@ public class AddExpenseActivity extends AppCompatActivity implements AdapterView
 
         }
         if(adapterView.getId()==R.id.split)
-
         {
-
         }
-
-
 
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void circularRevealActivity() {
+        int cx = Layout.getWidth()-getDips(44);
+        int cy = Layout.getHeight()-getDips(44);
+        float finalRadius = Math.max(Layout.getWidth(), Layout.getHeight());
+        Animator anim =
+                ViewAnimationUtils.createCircularReveal(Layout, cx, cy, 0, finalRadius);
+        anim.setDuration(300);
+        Layout.setVisibility(View.VISIBLE);
+
+        anim.start();
+    }
+    private  int getDips(int dps)
+    {
+        Resources resource = getResources();
+        int i = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, dps, resource.getDisplayMetrics()
+        );
+        return i;
     }
 
 

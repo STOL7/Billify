@@ -339,7 +339,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
                                             else
                                             {
-                                                 if(hp.addNew(user.getUid(), nm, em, cn, Integer.parseInt(bl), pr));
+                                                 if(hp.addNew(user.getUid(), nm, em, cn,0, pr));
                                                  Toast.makeText(getApplicationContext(), "added profile" , Toast.LENGTH_LONG).show();
                                             }
 

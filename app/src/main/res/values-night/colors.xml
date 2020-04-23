@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorBill">#F12626</color>
+    <color name="colorPrimary">#00bcd4</color>
+    <color name="colorPrimaryDark">#0097a7</color>
+    <color name="colorAccent">#D81B60</color>
+
+    <color name="bg_login">#26ae90</color>
+    <color name="bg_register">#2e3237</color>
+    <color name="bg_main">#428bca</color>
+    <color name="white">#ffffff</color>
+    <color name="input_login">#222222</color>
+    <color name="input_login_hint">#999999</color>
+    <color name="input_register">#888888</color>
+    <color name="input_register_bg">#3b4148</color>
+    <color name="input_register_hint">#5e6266</color>
+    <color name="btn_login">#26ae90</color>
+    <color name="btn_login_bg">#eceef1</color>
+    <color name="lbl_name">#333333</color>
+    <color name="btn_logut_bg">#ff6861</color>
+    <color name="red" >#ff0000</color>
+    <color name="black">#000000</color>
+    <color name="blue">#100D49</color>
+    <color name="gradiantstart">#E2570A64</color>
+    <color name="toolbartext">#40FBC6</color>
+    <color name="toolbarcolor">#DF292727</color>
+    <color name="textcolor">#FFFFFF</color>
+    <color name="edittext">#FFFFFF</color>
+    <color name="titletext">#FFFFFF</color>
+    <color name="button_1ly">#3949AB</color>
+    <color name="spinnerbutton">#AD1B1A1A</color>
+    <color name="spinnerbuttonborder">#391B1A1A</color>
+    <color name="transparent">#00000000</color>
+    <color name="content_black">#EB222222</color>
+    <color name="tabtext">#689F38</color>
+
+    <color name="title_bl">#8E24AA</color>
+    <color name="bt_ui">#AD1B1A1A</color>
+    <color name="expance_ly">#DF1B1A1A</color>
+
+    <color name="spinnercontent">#AD1B1A1A</color>
+    <color name="spinnercontentborder">#82B1FF</color>
+    <color name="history_header">#5E35B1</color>
+    <color name="Activitybackground">#0A0A0A</color>
+
+
+</resources>

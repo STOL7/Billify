@@ -48,6 +48,16 @@ public class WelcomeActivity extends AppCompatActivity
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
            }
 
+//        SharedPreferences sharedPreferences = getSharedPreferences("data", Context.MODE_PRIVATE);
+//        Boolean mode = sharedPreferences.getBoolean("mode",false);
+
+
+
+        if(mode)
+        {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+           }
+
         top = findViewById(R.id.splashb);
         bot = findViewById(R.id.splasht);
         topanim = AnimationUtils.loadAnimation(this, R.anim.splash_top);
@@ -59,9 +69,18 @@ public class WelcomeActivity extends AppCompatActivity
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
+                SharedPreferences sharedPreferences = getSharedPreferences("data", Context.MODE_PRIVATE);
+                Boolean fresh = sharedPreferences.getBoolean("fresh",false);
+                if(fresh){
+                    Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+                    startActivity(intent);
 
-                Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
-                startActivity(intent);
+                }
+                else {
+                    Intent intent = new Intent(WelcomeActivity.this, SliderGuid.class);
+                    startActivity(intent);
+
+                }
                 finish();
             }
         }, 5000);

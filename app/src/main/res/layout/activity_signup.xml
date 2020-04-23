@@ -56,6 +56,7 @@
                 android:layout_marginBottom="20dp"
                 android:autofillHints=""
 
+
                 android:background="@drawable/et_ui"
                 android:hint="@string/username"
                 android:inputType="text"
@@ -84,6 +85,7 @@
                 android:hint="@string/phone"
                 android:inputType="textPhonetic"
                 android:paddingLeft="25dp"
+
                 android:paddingTop="15dp"
                 android:paddingBottom="15dp"
                 android:textColor="@android:color/white"
@@ -133,6 +135,7 @@
                 android:imeOptions="actionUnspecified"
                 android:inputType="textPassword"
                 android:maxLines="1"
+                android:textColor="@color/white"
                 android:paddingLeft="25dp"
                 android:paddingTop="15dp"
                 android:paddingBottom="15dp"

@@ -6,7 +6,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.example.billify.AddExpenseActivity"
-    android:background="#f4f4f4">
+    android:background="#f4f4f4"
+    android:id="@+id/AddGroupLayout"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+  >
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -18,83 +21,203 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="@color/toolbarcolor"
             app:titleTextAppearance="@style/ToolbarTitle"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </com.google.android.material.appbar.AppBarLayout>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:foregroundGravity="center"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/add_expance_background"
+        ></ImageView>
 
 
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_below="@+id/appbar"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
 
         <RelativeLayout
+
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:layout_marginRight="8dp"
+            android:layout_marginLeft="8dp"
+        android:layout_gravity="center_vertical">
+           <FrameLayout
+               android:id="@+id/gf1"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_marginTop="20dp"
+              >
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/group_profile"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+               <de.hdodenhof.circleimageview.CircleImageView
+                   android:id="@+id/group_profile"
+                   android:layout_width="150dp"
+                   android:layout_height="150dp"
+                   android:layout_gravity="center"
+                   android:layout_marginLeft="5dp"
+                   android:src="@drawable/profile" />
 
-                android:layout_centerInParent="true"
-                android:layout_marginLeft="5dp"
-                android:src="@color/colorPrimary" />
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:layout_width="wrap_content"
-                android:id="@+id/group_image"
-
-                android:layout_centerInParent="true"
-
-                android:background="@color/colorPrimary"
-                android:src="@android:drawable/ic_menu_camera"
-                android:layout_height="wrap_content" />
+               <com.google.android.material.floatingactionbutton.FloatingActionButton
+                   android:id="@+id/group_image"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
 
 
-            <EditText
+                   android:layout_centerHorizontal="true"
+                   android:layout_centerVertical="true"
+                   android:layout_gravity="center"
+                   android:background="@color/blue"
+                   android:src="@android:drawable/ic_menu_camera" />
+
+           </FrameLayout>
+
+
+     <FrameLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:id="@+id/gf2"
+         android:layout_below="@id/gf1"
+         android:layout_marginTop="20dp">
+<!--            <EditText-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:hint="@string/title"-->
+<!--                android:layout_marginTop="50dp"-->
+<!--                android:id="@+id/title"-->
+<!--             -->
+<!--                android:layout_height="wrap_content">-->
+
+<!--            </EditText>-->
+         <EditText
+             android:layout_width="match_parent"
+             android:id="@+id/title"
+             android:background="@drawable/textboxback"
+             android:paddingLeft="97dp"
+             android:textColor="@color/edittext"
+             android:paddingTop="7dp"
+             android:inputType="text"
+             android:paddingBottom="7dp"
+             android:autofillHints=""
+             android:textCursorDrawable="@null"
+             android:layout_height="wrap_content">
+
+
+         </EditText>
+
+
+         <TextView
+             android:layout_width="91dp"
+             android:layout_height="match_parent"
+             android:background="@drawable/title_bl"
+            android:gravity="center"
+             android:text="@string/title"
+             android:textSize="14dp"
+             android:textAlignment="center"
+             android:textColor="@color/white"></TextView>
+     </FrameLayout>
+
+
+
+  <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:id="@+id/gf3"
+      android:layout_below="@id/gf2"
+      android:layout_marginTop="20dp">
+<!--            <EditText-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:hint="@string/discription"-->
+<!--                android:id="@+id/discription"-->
+<!--               -->
+<!--                android:layout_height="wrap_content">-->
+
+<!--            </EditText>-->
+      <EditText
+          android:layout_width="match_parent"
+          android:id="@+id/discription"
+          android:background="@drawable/textboxback"
+          android:paddingLeft="97dp"
+          android:textColor="@color/edittext"
+          android:paddingTop="7dp"
+          android:inputType="text"
+          android:paddingBottom="7dp"
+          android:autofillHints=""
+          android:textCursorDrawable="@null"
+          android:layout_height="wrap_content">
+
+
+      </EditText>
+      <TextView
+          android:layout_width="91dp"
+          android:layout_height="match_parent"
+          android:background="@drawable/title_bl"
+          android:gravity="center"
+          android:text="@string/description"
+          android:textSize="12dp"
+          android:textAlignment="center"
+          android:textColor="@color/white"></TextView>
+  </FrameLayout>
+
+
+
+
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:hint="@string/title"
-                android:layout_marginTop="50dp"
-                android:id="@+id/title"
-                android:layout_below="@id/group_profile"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:id="@+id/gf4"
+                android:layout_marginTop="20dp"
+                android:layout_below="@id/gf3">
 
-            </EditText>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:id="@+id/participate"
+                    android:background="@drawable/textboxback"
+                    android:paddingLeft="97dp"
+                    android:inputType="text"
+                    android:textColor="@color/edittext"
+                    android:paddingTop="7dp"
+                    android:paddingBottom="7dp"
+                    android:autofillHints=""
+                    android:textCursorDrawable="@null"
+                    android:layout_height="wrap_content">
 
 
-            <EditText
+                </EditText>
+
+
+                <TextView
+                    android:layout_width="91dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/title_bl"
+                    android:gravity="center"
+                    android:text="You And"
+                    android:textSize="12dp"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"></TextView>
+
+            </FrameLayout>
+
+
+
+
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:hint="@string/discription"
-                android:id="@+id/discription"
-                android:layout_below="@id/title"
-                android:layout_height="wrap_content">
-
-            </EditText>
-
-            <EditText
-                android:layout_width="match_parent"
-                android:id="@+id/participate"
-
-
-                android:textColor="@color/edittext"
-
-                android:hint="@string/participates"
-
-                android:layout_height="wrap_content">
-
-
-            </EditText>
-
+                android:layout_height="wrap_content"
+                android:id="@+id/gf5"
+                android:layout_marginTop="20dp"
+                android:layout_below="@id/gf4">
             <LinearLayout
                 android:id="@+id/f1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:layout_below="@+id/participate"
+
                 >
 
                 <GridView
@@ -102,15 +225,42 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
             </LinearLayout>
+            </FrameLayout>
 
-            <Button
-                android:layout_width="wrap_content"
-                android:text="@string/create_group"
-                android:id="@+id/create"
-                android:layout_below="@+id/discription"
-                android:layout_height="wrap_content">
 
-            </Button>
+
+
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/gf6"
+    android:layout_below="@+id/gf5"
+    android:layout_marginTop="20dp">
+<!--            <Button-->
+<!--              -->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:text="@string/create_group"-->
+<!--                android:id="@+id/create"-->
+<!--                -->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="center">-->
+<!--                -->
+<!--            </Button>-->
+    <Button
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+
+        android:id="@+id/create"
+       android:layout_gravity="center"
+        android:elevation="10dp"
+
+        android:textColor="@color/white"
+        android:background="@drawable/button1_ly"
+        android:text="@string/create_group"
+        >
+
+    </Button>
+</FrameLayout>
         </RelativeLayout>
 
     </ScrollView>

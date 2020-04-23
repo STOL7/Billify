@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:background="#E6EBEAEA"
+    android:background="@color/Activitybackground"
     android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -96,6 +96,7 @@
                 android:layout_marginTop="20dp"
                 android:text="Expance Details"
                 android:textSize="20dp"
+                android:textColor="@color/edittext"
                 android:textStyle="bold">
 
             </TextView>

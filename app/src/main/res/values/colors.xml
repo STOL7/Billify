@@ -28,7 +28,7 @@
         <color name="textcolor">#000000</color>
         <color name="edittext">#000000</color>
         <color name="titletext">#FFFFFF</color>
-    <color name="button_1ly">#F80B1BAD</color>
+    <color name="button_1ly">#CB0B1BAD</color>
     <color name="spinnerbutton">#E6E2E2</color>
     <color name="spinnerbuttonborder">#A3E0D9D9</color>
     <color name="tabtext">#1B1B1B</color>
@@ -43,6 +43,10 @@
     <color name="Activitybackground">#F1ECEC</color>
     <color name="transparent">#00000000</color>
     <color name="content_black">#DAE0DEDE</color>
+
+    <color name="cameraback">#7C58501B</color>
+
+    <color name="history_header">#DF292727</color>
 
 
 </resources>

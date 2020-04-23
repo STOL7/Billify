@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:id="@+id/AddExpanceRelative"
     tools:context="com.example.billify.AddExpenseActivity"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
 
@@ -79,7 +80,7 @@
                     android:paddingTop="7dp"
                     android:paddingBottom="7dp"
                     android:textColor="@color/edittext"
-
+                    android:inputType="text"
 
                     android:textCursorDrawable="@null">
 
@@ -124,11 +125,12 @@
             <EditText
                 android:layout_width="match_parent"
                 android:id="@+id/participate"
-                android:background="@drawable/bt_ui"
+                android:background="@drawable/textboxback"
                 android:paddingLeft="97dp"
                 android:textColor="@color/edittext"
                 android:paddingTop="7dp"
                 android:paddingBottom="7dp"
+                android:inputType="text"
                 android:autofillHints=""
                 android:textCursorDrawable="@null"
                 android:layout_height="wrap_content">
@@ -177,8 +179,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:autofillHints=""
-                    android:background="@drawable/bt_ui"
+                    android:background="@drawable/textboxback"
                     android:paddingTop="7dp"
+                    android:inputType="text"
                     android:paddingBottom="7dp"
                     android:textColor="@color/edittext"
                     android:paddingLeft="97dp"
@@ -193,7 +196,7 @@
                     android:background="@drawable/title_bl"
 
                     android:paddingTop="10dp"
-                    android:text="@string/discription"
+                    android:text="@string/description"
                     android:textColor="@color/titletext"></TextView>
             </FrameLayout>
 
@@ -210,7 +213,7 @@
                 android:textColor="@color/edittext"
                 android:inputType="number"
                 android:autofillHints=""
-                android:background="@drawable/bt_ui"
+                android:background="@drawable/textboxback"
                 android:paddingTop="7dp"
                 android:paddingBottom="7dp"
                 android:paddingLeft="97dp"

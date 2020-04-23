@@ -67,6 +67,7 @@
                 android:paddingBottom="15dp"
                 android:singleLine="true"
                 android:textColorHint="@android:color/white"
+                android:textColor="@color/white"
                 app:layout_constraintBottom_toTopOf="@+id/sign_up_button"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
