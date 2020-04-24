@@ -189,26 +189,8 @@ public class AddExpenseActivity extends AppCompatActivity implements AdapterView
         final int num=dpwidth/140;
 
 
-       Button b =(Button) findViewById(R.id.night);
-        Button p =(Button) findViewById(R.id.popup);
-
-        p.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               ShowPopUp();
-            }
 
 
-        });
-
-       b.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-               //startActivity(new Intent(getApplicationContext(),AddExpenseActivity.class));
-               //finish();
-           }
-       });
         databaseReference= FirebaseDatabase.getInstance().getReference("Users");
         databaseReference.keepSynced(true);
         firestore =FirebaseFirestore.getInstance();

@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,6 +25,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -176,7 +178,10 @@ public class MainActivity extends AppCompatActivity
 
                 if(menuItem.getItemId()==R.id.nav_item_help)
                 {
-
+                    final Dialog tempDilog = new Dialog(MainActivity.this);
+                    tempDilog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    tempDilog.setContentView(R.layout.help);
+                    tempDilog.show();
                 }
                 if(menuItem.getItemId()==R.id.nav_item_feedback)
                 {

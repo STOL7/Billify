@@ -9,25 +9,497 @@
     tools:context="com.example.billify.WelcomeActivity"
     android:gravity="center_horizontal">
 
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-<TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text= "Welcome To BilliFy"
-    android:textColor="@color/edittext"
-    android:textSize="30dp"
-    android:layout_marginTop="25dp"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text= "Welcome To BilliFy"
+            android:textColor="@color/edittext"
+            android:textSize="30dp"
+            android:layout_marginTop="25dp"
 
 
-    ></TextView>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text= "\u25CF Here is some Guied"
-        android:textColor="@color/edittext"
-        android:textSize="20dp"
-        android:layout_marginTop="25dp"
+            ></TextView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text= "\u25BA Here is some guied about how  to use "
+            android:textColor="@color/edittext"
+            android:textSize="20dp"
+            android:layout_marginTop="25dp"
 
 
-        ></TextView>
+            ></TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text= "1) SignIn"
+            android:textColor="@color/edittext"
+            android:textSize="25dp"
+            android:layout_marginTop="25dp"
+
+
+            ></TextView>
+        <ImageView
+            android:layout_width="301dp"
+            android:layout_height="310dp"
+            android:src="@mipmap/signin"
+            android:layout_marginTop="10dp">
+
+        </ImageView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text= "    For use this application You must have to LoggedIn.For log in you have to fill the details or you can login by google or facebook to."
+            android:textColor="@color/edittext"
+            android:textSize="20dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="25dp"
+
+
+            ></TextView>
+
+
+
+
+
+
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text= "2) SignUp "
+            android:textColor="@color/edittext"
+            android:textSize="25dp"
+            android:layout_marginTop="25dp"
+
+
+            ></TextView>
+        <ImageView
+            android:layout_width="301dp"
+            android:layout_height="310dp"
+            android:src="@mipmap/signup"
+            android:layout_marginTop="10dp">
+
+        </ImageView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text= "   Don't have account,don't worry.just fill details as above and verify your contect number or email address.or you can just signup with google or facebook to."
+            android:textColor="@color/edittext"
+            android:textSize="20dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="25dp"
+
+
+            ></TextView>
+
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text= "3) Forgot Password"
+            android:textColor="@color/edittext"
+            android:textSize="25dp"
+            android:layout_marginTop="25dp"
+
+
+            ></TextView>
+        <ImageView
+            android:layout_width="301dp"
+            android:layout_height="310dp"
+            android:src="@mipmap/forgot_password"
+            android:layout_marginTop="10dp">
+
+        </ImageView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="   Forgot Your password? Don't Worry.Just fill above details and you will able to change your password."
+            android:textColor="@color/edittext"
+            android:textSize="20dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="25dp"
+
+
+            ></TextView>
+
+
+
+
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text= "4) Friends "
+            android:textColor="@color/edittext"
+            android:textSize="25dp"
+            android:layout_marginTop="25dp"
+
+
+            ></TextView>
+        <ImageView
+            android:layout_width="301dp"
+            android:layout_height="310dp"
+            android:src="@mipmap/all"
+            android:layout_marginTop="10dp">
+
+        </ImageView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/edittext"
+            android:textSize="20dp"
+            android:text="   You can see your all Friends list here and and check history of expence with any particular friend by just clicking on that friends's name. "
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="25dp"
+
+
+            ></TextView>
+
+
+
+
+
+
+
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text= "4) Add Expence "
+            android:textColor="@color/edittext"
+            android:textSize="25dp"
+            android:layout_marginTop="25dp"
+
+
+            ></TextView>
+        <ImageView
+            android:layout_width="301dp"
+            android:layout_height="310dp"
+            android:src="@mipmap/add_expance_help"
+            android:layout_marginTop="10dp">
+
+        </ImageView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/edittext"
+            android:textSize="20dp"
+            android:text="   for add your expence just click on flotting Button Shown in Guied 2 and you will see above layout.Now just fill above details and double click on YOU AND section to add participats.and click on Add Expence."
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="25dp"
+
+
+            ></TextView>
+
+
+
+
+
+
+
+
+
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text= "5) Add Friends "
+            android:textColor="@color/edittext"
+            android:textSize="25dp"
+            android:layout_marginTop="25dp"
+
+
+            ></TextView>
+        <ImageView
+            android:layout_width="301dp"
+            android:layout_height="310dp"
+            android:src="@mipmap/addnewfriend"
+            android:layout_marginTop="10dp">
+
+        </ImageView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/edittext"
+            android:textSize="20dp"
+            android:text="   For add new friend to your list fill above details and you and your friend will get notification for that.if your friend dose not have account then you can share link by email or messages."
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="25dp"
+
+
+            ></TextView>
+
+
+
+
+
+
+
+
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text= "6) Group "
+            android:textColor="@color/edittext"
+            android:textSize="25dp"
+            android:layout_marginTop="25dp"
+
+
+            ></TextView>
+        <ImageView
+            android:layout_width="301dp"
+            android:layout_height="310dp"
+            android:src="@mipmap/group1"
+            android:layout_marginTop="10dp">
+
+        </ImageView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/edittext"
+            android:textSize="20dp"
+            android:text="every time add too much participants to your expence is not prectical.so just make them in to one group and add expence in to group."
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="25dp"
+
+
+            ></TextView>
+
+
+
+
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text= "7) Add Group"
+            android:textColor="@color/edittext"
+            android:textSize="25dp"
+            android:layout_marginTop="25dp"
+
+
+            ></TextView>
+        <ImageView
+            android:layout_width="301dp"
+            android:layout_height="310dp"
+            android:src="@mipmap/group"
+            android:layout_marginTop="10dp">
+
+        </ImageView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/edittext"
+            android:textSize="20dp"
+            android:text="    For create a new group click on flotting button shown up on group section and you will see the layout as above.Now Fill the details and add group members.so every member will notify for new group."
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="25dp"
+
+
+            ></TextView>
+
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text= "8) Add Expence to group "
+            android:textColor="@color/edittext"
+            android:textSize="25dp"
+            android:layout_marginTop="25dp"
+
+
+            ></TextView>
+        <ImageView
+            android:layout_width="301dp"
+            android:layout_height="310dp"
+            android:src="@mipmap/add_expance_help"
+            android:layout_marginTop="10dp">
+
+        </ImageView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/edittext"
+            android:textSize="20dp"
+            android:text="  For add expance in group click on that group and add expence.All group members are all ready defined there as a participants but you you want to add friends that is not part of the group then tap on YOU AND Section and add your friend"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="25dp"
+
+
+            ></TextView>
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text= "9) History"
+            android:textColor="@color/edittext"
+            android:textSize="25dp"
+            android:layout_marginTop="25dp"
+
+
+            ></TextView>
+        <ImageView
+            android:layout_width="301dp"
+            android:layout_height="310dp"
+            android:src="@mipmap/history"
+            android:layout_marginTop="10dp">
+
+        </ImageView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/edittext"
+            android:textSize="20dp"
+            android:text="   You can trace your all expences at history section and group history is in particular group."
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="25dp"
+
+
+            ></TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text= "10) Expence Details"
+            android:textColor="@color/edittext"
+            android:textSize="25dp"
+            android:layout_marginTop="25dp"
+
+
+            ></TextView>
+        <ImageView
+            android:layout_width="301dp"
+            android:layout_height="310dp"
+            android:src="@mipmap/history_detail"
+            android:layout_marginTop="10dp">
+
+        </ImageView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/edittext"
+            android:textSize="20dp"
+            android:text="You can see your Expence details at history section by tapping on that perticular history."
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="25dp"
+            ></TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text= "11) Edit Expence"
+            android:textColor="@color/edittext"
+            android:textSize="25dp"
+            android:layout_marginTop="25dp"
+
+
+            ></TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/edittext"
+            android:textSize="20dp"
+            android:text="You can Update your Expence or delete it by option given at top section at history detail section."
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="25dp"
+            ></TextView>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text= "12) Dark Mode"
+            android:textColor="@color/edittext"
+            android:textSize="25dp"
+            android:layout_marginTop="25dp"
+
+
+            ></TextView>
+        <ImageView
+            android:layout_width="301dp"
+            android:layout_height="310dp"
+            android:src="@mipmap/dark_on"
+            android:layout_marginTop="10dp">
+
+        </ImageView>
+
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text= "13) Back/Restore "
+            android:textColor="@color/edittext"
+            android:textSize="25dp"
+            android:layout_marginTop="25dp"
+
+
+            ></TextView>
+        <ImageView
+            android:layout_width="301dp"
+            android:layout_height="310dp"
+            android:src="@mipmap/menu"
+            android:layout_marginTop="10dp">
+
+        </ImageView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/edittext"
+            android:textSize="20dp"
+            android:text="You can take backup off your friends,groups,expence by tapping on BACKUP of menu and restore them by RESTORE button and start where you are left."
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="25dp"
+            ></TextView>
+
+    </LinearLayout>
+</ScrollView>
+
 </LinearLayout>
